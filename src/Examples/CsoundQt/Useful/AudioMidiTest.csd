@@ -220,7 +220,8 @@ instr led
 	Schan = p4
 	chnset 1, Schan
 	if lastcycle() == 1 then
-		chnset k(0), Schan	
+	  kOut = 0
+		chnset kOut, Schan	
 	endif
 endin
 
