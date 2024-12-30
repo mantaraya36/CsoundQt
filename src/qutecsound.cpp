@@ -2971,7 +2971,7 @@ void CsoundQt::openPdfFile(QString name)
 
 void CsoundQt::openFLOSSManual()
 {
-    openExternalBrowser(QUrl("http://en.flossmanuals.net/csound/"));
+    openExternalBrowser(QUrl("https://flossmanual.csound.com/"));
 }
 
 void CsoundQt::openQuickRef()
