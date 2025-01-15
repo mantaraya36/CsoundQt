@@ -336,9 +336,9 @@ Abortando.</translation>
     <message>
         <location filename="../configdialog.cpp" line="45"/>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation>No se han hallado módulos para audio en tiempo real.
-Asegúrese que OPCODE6DIR64 se encuentra correctamente configurado en su sistema o en el recuadro de configuración.</translation>
+Asegúrese que OPCODE7DIR64 se encuentra correctamente configurado en su sistema o en el recuadro de configuración.</translation>
     </message>
     <message>
         <location filename="../configdialog.cpp" line="107"/>
@@ -1178,7 +1178,7 @@ Asegúrese que OPCODE6DIR64 se encuentra correctamente configurado en su sistema
     </message>
     <message>
         <location filename="../configdialog.ui" line="1556"/>
-        <source>OPCODE6DIR64</source>
+        <source>OPCODE7DIR64</source>
         <translation>RAWWAVE_PATH</translation>
     </message>
     <message>

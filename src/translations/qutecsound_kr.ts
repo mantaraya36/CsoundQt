@@ -899,8 +899,8 @@ Aborting.</source>
     </message>
     <message>
         <location filename="../configdialog.ui" line="1556"/>
-        <source>OPCODE6DIR64</source>
-        <translation>OPCODE6DIR64</translation>
+        <source>OPCODE7DIR64</source>
+        <translation>OPCODE7DIR64</translation>
     </message>
     <message>
         <location filename="../configdialog.ui" line="1573"/>
@@ -1057,8 +1057,8 @@ Aborting.</source>
     <message>
         <location filename="../configdialog.cpp" line="45"/>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
-        <translation>리얼타임 오디오 모듈을 찾을 수 없습니다. 환경설정이나 설정 창에서 OPCODE6DIR64 를 확인하십시오.</translation>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
+        <translation>리얼타임 오디오 모듈을 찾을 수 없습니다. 환경설정이나 설정 창에서 OPCODE7DIR64 를 확인하십시오.</translation>
     </message>
     <message>
         <location filename="../configdialog.cpp" line="104"/>

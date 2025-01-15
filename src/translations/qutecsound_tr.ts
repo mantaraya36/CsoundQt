@@ -861,8 +861,8 @@ Aborting.</source>
         <translation>OPCODEDIR64</translation>
     </message>
     <message>
-        <source>OPCODE6DIR64</source>
-        <translation>OPCODE6DIR64</translation>
+        <source>OPCODE7DIR64</source>
+        <translation>OPCODE7DIR64</translation>
     </message>
     <message>
         <source>Csound Executable</source>
@@ -890,7 +890,7 @@ Aborting.</source>
     </message>
     <message>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation>Gerçekzaman-Audio-Modulü bulunamadı
 OPCODEDIR64 ayarı doğru mu?</translation>
     </message>

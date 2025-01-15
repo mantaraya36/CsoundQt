@@ -1003,8 +1003,8 @@ Aborting.</source>
     </message>
     <message>
         <location filename="../configdialog.ui" line="2890"/>
-        <source>OPCODE6DIR64</source>
-        <translation>OPCODE6DIR64</translation>
+        <source>OPCODE7DIR64</source>
+        <translation>OPCODE7DIR64</translation>
     </message>
     <message>
         <location filename="../configdialog.ui" line="2936"/>
@@ -1733,16 +1733,16 @@ Default directory for sound files. Used if no full path is given for sound files
     </message>
     <message>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation type="vanished">RT аудио модули не найдены.
-Убедитесь, что OPCODE6DIR64 установлена правильно в системе или в настройках.</translation>
+Убедитесь, что OPCODE7DIR64 установлена правильно в системе или в настройках.</translation>
     </message>
     <message>
         <location filename="../configdialog.cpp" line="55"/>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your systemor the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your systemor the configuration dialog.</source>
         <translation>Модули RT Audio не найдены.
-Убедитесь, что OPCODE6DIR64 установлена правильно в системе или в настройках.</translation>
+Убедитесь, что OPCODE7DIR64 установлена правильно в системе или в настройках.</translation>
     </message>
     <message>
         <location filename="../configdialog.cpp" line="143"/>

@@ -96,12 +96,8 @@ public:
 	bool simultaneousRun; // Allow running various instances (tabs) simultaneously.
 
 	QString csdocdir;
-	QString opcodedir;
-	bool opcodedirActive;
-	QString opcodedir64;
-	bool opcodedir64Active;
-	QString opcode6dir64;
-	bool opcode6dir64Active;
+    QString opcode7dir64;
+	bool opcode7dir64Active;
 	QString sadir;
 	bool sadirActive;
 	QString ssdir;

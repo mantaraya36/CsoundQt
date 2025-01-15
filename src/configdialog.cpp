@@ -51,7 +51,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 	if(m_configlists->rtAudioNames.size() == 1) {
 		QMessageBox::warning(this, tr("No Audio Modules"),
                              tr("No real-time audio modules were found.\n"
-                                "Make sure OPCODE6DIR64 is set properly in your system"
+                                "Make sure OPCODE7DIR64 is set properly in your system"
                                 "or the configuration dialog."));
 	}
 	QHash<QString, QString> audioModNames;
@@ -320,12 +320,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 	debugPortSpinBox->setValue(m_options->debugPort);
 
 	CsdocdirLineEdit->setText(m_options->csdocdir);
-	OpcodedirCheckBox->setChecked(m_options->opcodedirActive);
-	OpcodedirLineEdit->setText(m_options->opcodedir);
-	Opcodedir64CheckBox->setChecked(m_options->opcodedir64Active);
-	Opcodedir64LineEdit->setText(m_options->opcodedir64);
-	Opcode6dir64CheckBox->setChecked(m_options->opcode6dir64Active);
-	Opcode6dir64LineEdit->setText(m_options->opcode6dir64);
+    Opcode7dir64LineEdit->setText(m_options->opcode7dir64);
 	SadirCheckBox->setChecked(m_options->sadirActive);
 	SadirLineEdit->setText(m_options->sadir);
 	SsdirCheckBox->setChecked(m_options->ssdirActive);
@@ -361,9 +356,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
     connect(inputFilenameToolButton, SIGNAL(clicked()), this, SLOT(browseInputFilename()));
 	connect(outputFilenameToolButton, SIGNAL(clicked()), this, SLOT(browseOutputFilename()));
 	connect(csdocdirToolButton, SIGNAL(clicked()), this, SLOT(browseCsdocdir()));
-	connect(opcodedirToolButton, SIGNAL(clicked()), this, SLOT(browseOpcodedir()));
-	connect(opcodedir64ToolButton, SIGNAL(clicked()), this, SLOT(browseOpcodedir64()));
-	connect(opcode6dir64ToolButton, SIGNAL(clicked()), this, SLOT(browseOpcode6dir64())); // was commented out - why?
+    connect(opcode7dir64ToolButton, SIGNAL(clicked()), this, SLOT(browseOpcode7dir64())); // was commented out - why?
 	connect(sadirToolButton, SIGNAL(clicked()), this, SLOT(browseSadir()));
 	connect(ssdirToolButton, SIGNAL(clicked()), this, SLOT(browseSsdir()));
 	connect(sfdirToolButton, SIGNAL(clicked()), this, SLOT(browseSfdir()));
@@ -594,12 +587,8 @@ void ConfigDialog::accept()
 	m_options->sampleFormat = sampleFormatComboBox->currentIndex();
 
 	m_options->csdocdir = CsdocdirLineEdit->text();
-	m_options->opcodedirActive = OpcodedirCheckBox->isChecked();
-	m_options->opcodedir = OpcodedirLineEdit->text();
-	m_options->opcodedir64Active = Opcodedir64CheckBox->isChecked();
-	m_options->opcodedir64 = Opcodedir64LineEdit->text();
-	m_options->opcode6dir64Active = Opcode6dir64CheckBox->isChecked();
-	m_options->opcode6dir64 = Opcode6dir64LineEdit->text();
+    m_options->opcode7dir64Active = Opcode7dir64CheckBox->isChecked();
+    m_options->opcode7dir64 = Opcode7dir64LineEdit->text();
 	m_options->sadirActive = SadirCheckBox->isChecked();
 	m_options->sadir = SadirLineEdit->text();
 	m_options->ssdirActive = SsdirCheckBox->isChecked();
@@ -655,22 +644,11 @@ void ConfigDialog::browseCsdocdir()
 	CsdocdirLineEdit->setText(m_options->csdocdir);
 }
 
-void ConfigDialog::browseOpcodedir()
-{
-	browseDir(m_options->opcodedir);
-	OpcodedirLineEdit->setText(m_options->opcodedir);
-}
 
-void ConfigDialog::browseOpcodedir64()
+void ConfigDialog::browseOpcode7dir64()
 {
-	browseDir(m_options->opcodedir64);
-	Opcodedir64LineEdit->setText(m_options->opcodedir64);
-}
-
-void ConfigDialog::browseOpcode6dir64()
-{
-	browseDir(m_options->opcode6dir64);
-	Opcode6dir64LineEdit->setText(m_options->opcode6dir64);
+	browseDir(m_options->opcode7dir64);
+    Opcode7dir64LineEdit->setText(m_options->opcode7dir64);
 }
 
 void ConfigDialog::browseSadir()
@@ -1057,16 +1035,16 @@ void ConfigDialog::recommendEnvironmentSettings() {
     auto dataLocationApp = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0];
     auto dataLocation = QDir(dataLocationApp);
     dataLocation.cdUp();
-    if(this->Opcode6dir64LineEdit->text().isEmpty()) {
-        auto opcdirenv = qgetenv("OPCODE6DIR64");
+    if(this->Opcode7dir64LineEdit->text().isEmpty()) {
+        auto opcdirenv = qgetenv("OPCODE7DIR64");
         if(!opcdirenv.isEmpty()) {
-            // if the user already set OPCODE6DIR64 then leave it as is. This is probably
+            // if the user already set OPCODE7DIR64 then leave it as is. This is probably
             // an expert user
-            QDEBUG << "$OPCODE6DIR64 is already set to " << opcdirenv;
-            this->Opcode6dir64LineEdit->setText(opcdirenv);
-            this->Opcode6dir64CheckBox->setChecked(false);
+            QDEBUG << "$OPCODE7DIR64 is already set to " << opcdirenv;
+            this->Opcode7dir64LineEdit->setText(opcdirenv);
+            this->Opcode7dir64CheckBox->setChecked(false);
         } else {
-            // We set OPCODE6DIR64 to the default + a user writable location
+            // We set OPCODE7DIR64 to the default + a user writable location
             auto opcdirstr = dataLocation.path() + "/csound6/plugins64";
             auto opcdir = QDir(opcdirstr);
             if(!opcdir.exists()) {
@@ -1074,8 +1052,8 @@ void ConfigDialog::recommendEnvironmentSettings() {
             }
             if(!default_opcodes64.isEmpty())
                 opcdirstr = default_opcodes64 + opcdirstr;
-            this->Opcode6dir64LineEdit->setText(opcdirstr);
-            this->Opcode6dir64CheckBox->setChecked(true);
+            this->Opcode7dir64LineEdit->setText(opcdirstr);
+            this->Opcode7dir64CheckBox->setChecked(true);
         }
     }
     if(this->IncdirLineEdit->text().isEmpty()) {

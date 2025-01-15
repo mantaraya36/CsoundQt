@@ -792,7 +792,7 @@ Aborting.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OPCODE6DIR64</source>
+        <source>OPCODE7DIR64</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -813,7 +813,7 @@ Aborting.</source>
     </message>
     <message>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
