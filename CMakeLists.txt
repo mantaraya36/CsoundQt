@@ -13,10 +13,17 @@ option(CSQT_BUILD_HTML_SUPPORT "Build Html support" ON)
 find_file(CUSTOM_CMAKE "Custom.cmake" HINTS ${CMAKE_HOME_DIRECTORY})
 if(CUSTOM_CMAKE)
     message(STATUS "Including Custom.cmake file: ${CUSTOM_CMAKE}")
-    include(${CUSTOM_CMAKE})
+    unset(CSOUND_LIBRARY CACHE) # seems necessary to avoid taking old values from cache, if Custom.cmake has changed
+    unset(CSND6_LIBRARY CACHE)
+    unset(CSQT_BUILD_DEBUGGER_SUPPORT CACHE)
+    unset(CSQT_BUILD_RECORDING_SUPPORT CACHE)
+    unset(CSQT_BUILD_RTMIDI_SUPPORT CACHE)
+    unset(CSQT_BUILD_HTML_SUPPORT CACHE)
+    include(${CUSTOM_CMAKE}) # tundub, et see ei mõjut Windowsis?
 else()
     message(STATUS "Not using Custom.cmake file.")
 endif()
+
 
 include("sources.cmake")
 
@@ -98,7 +105,7 @@ endif(CSQT_BUILD_RECORDING_SUPPORT)
 # RTMIDI -  the sources should be in ./rtmidi, pulled with git submodules
 # git submodule update --init --recursive (first time) or git submodule update --recursive (updating)
 if(CSQT_BUILD_RTMIDI_SUPPORT)
-    target_compile_definitions(CsoundQt PRIVATE QCS_RTMIDI) # TODO: perhaps CSQT_RTMIDI let's change naming conventions from qutecsound to CsoundQt in v7
+    target_compile_definitions(CsoundQt PRIVATE QCS_RTMIDI) # TODO: perhaps CSQT_RTMIDI? let's change naming conventions from qutecsound to CsoundQt in v7
 
     set(RTMIDI_DIR "${CMAKE_HOME_DIRECTORY}/rtmidi")
     set(HEADERS "${RTMIDI_DIR}/RtMidi.h")
@@ -143,15 +150,41 @@ else()
     set(LINUX NO)
 endif()
 
+
 #link to Csound
-if (WIN32)
-# win32-msvc:build64: DEFAULT_CSOUND_LIBS = csound64.lib
-# win32-g++:build64: DEFAULT_CSOUND_LIBS = csound64.dll
-# DEFAULT_CSOUND_API_INCLUDE_DIRS = "$$(PROGRAMFILES)\\Csound6\\include\\csound"
-# DEFAULT_CSOUND_INTERFACES_INCLUDE_DIRS = $${DEFAULT_CSOUND_API_INCLUDE_DIRS}
-# DEFAULT_CSOUND_LIBRARY_DIRS = "$$(PROGRAMFILES)\\Csound6\\bin"
-# LCSOUND = "$${CSOUND_LIBRARY_DIR}/$${CSOUND_LIB}"
-# win32-g++:csound6: LCSND = "$${CSOUND_LIBRARY_DIR}/csnd6.dll"
+if (WIN32) # or rather MSVC?
+
+    # in Csound7 PerormanceThread should be in the main Csound library
+# maby needs also linking to pthreadVC2.lib and sndfile Mega-Nerd\libsndfile\bin
+
+
+    if(DEFINED CSOUND_LIBRARY_PATH) # user define in custom.cmake
+        set(CSOUND_LIBRARY_PATHS ${CSOUND_LIBRARY_PATH})
+    else()
+        set(CSOUND_LIBRARY_PATHS
+            "c:\\Program Files\\Csound6_x64\\lib"
+        )
+    endif()
+
+
+    find_library(CSOUND_LIBRARY csound64
+      HINTS  "c:\\Program Files\\Csound6_x64\\lib"
+      PATHS ${CSOUND_LIBRARY_PATHS}
+      REQUIRED)
+
+    #set(EXTERNAL_LIBS "c:\\Program Files\\Csound6_x64\\lib\\sndfile.lib" )
+
+    if(DEFINED CSOUND_INCLUDE_PATH) # in custom.cmake
+        set(CSOUND_INCLUDE_PATHS ${CSOUND_INCLUDE_PATH})
+    else()
+        set(CSOUND_INCLUDE_PATHS
+            "C:\\Program Files\\Csound6_x64\\include\\csound"
+        )
+    endif()
+
+    target_link_libraries(CsoundQt PRIVATE ${CSOUND_LIBRARY} )
+    target_include_directories(CsoundQt PRIVATE ${CSOUND_INCLUDE_PATHS} ${RTMIDI_DIR})
+
 elseif(APPLE)
 
   #LCSOUND = -F$${HOME_DIRECTORY}/Library/Frameworks -F/Library/Frameworks -F/usr/local/opt/csound/Frameworks -F/opt/homebrew/opt/csound/Frameworks -framework $${MAC_LIB}
@@ -160,8 +193,7 @@ elseif(APPLE)
 elseif(LINUX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread") # seems necessary, see https://stackoverflow.com/questions/34143265/undefined-reference-to-symbol-pthread-createglibc-2-2-5
 
-  unset(CSOUND_LIBRARY CACHE) # necessary to avoid taking old value from cache
-  unset(CSND6_LIBRARY CACHE)
+
 
   if(DEFINED CSOUND_LIBRARY_PATH) # user define in custom.cmake
       set(CSOUND_LIBRARY_PATHS ${CSOUND_LIBRARY_PATH})
@@ -183,12 +215,6 @@ elseif(LINUX)
   find_library(CSND6_LIBRARY csnd6
     PATHS ${CSOUND_LIBRARY_PATHS}
     REQUIRED)
-
-  if(CSOUND_LIBRARY)
-    message(STATUS "Csound library found at: ${CSOUND_LIBRARY}")
-  else()
-    message(FATAL_ERROR "Csound library not found.")
-  endif()
 
 
     if(DEFINED CSOUND_INCLUDE_PATH) # in custom.cmake
@@ -224,6 +250,13 @@ else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
+
+
+if(CSOUND_LIBRARY)
+  message(STATUS "Csound library found at: ${CSOUND_LIBRARY}")
+else()
+  message(FATAL_ERROR "Csound library not found.")
+endif()
 
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
