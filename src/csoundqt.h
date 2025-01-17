@@ -50,9 +50,6 @@ class QTextEdit;
 class DockHelp;
 class WidgetPanel;
 class Inspector;
-#ifdef QCS_PYTHONQT
-class PythonConsole;
-#endif
 class DockConsole;
 class DebugPanel;
 class OpEntryParser;
@@ -218,7 +215,6 @@ private slots:
 	void redo();
 	void evaluateSection();
 	void evaluate(QString code = QString());
-	void evaluatePython(QString code = QString());
 	void evaluateString(QString evalCode);
 	void setScratchPadMode(bool csdMode);
 	void setWidgetEditMode(bool);  // This is not necessary as the action is passed and connected in the widget layout
@@ -332,8 +328,6 @@ private:
 	void fillFileMenu();
 	void fillFavoriteMenu();
 	void fillFavoriteSubMenu(QDir dir, QMenu *m, int depth);
-	void fillScriptsMenu();
-	void fillScriptsSubMenu(QDir dir, QMenu *m, int depth);
 	void fillEditScriptsSubMenu(QDir dir, QMenu *m, int depth);
 	void createToolBars();
     void createStatusBar();
@@ -384,9 +378,6 @@ private:
 #ifdef QCS_DEBUGGER
 	DebugPanel *m_debugPanel;
 	CsoundEngine *m_debugEngine;
-#endif
-#ifdef QCS_PYTHONQT
-	PythonConsole *m_pythonConsole;
 #endif
 	MidiHandler *midiHandler;
 	MidiLearnDialog *m_midiLearn;

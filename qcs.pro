@@ -15,7 +15,6 @@
 ################################################################################
 # BUILD OPTIONS:
 # CONFIG+=build32    To build floats version
-# CONFIG+=pythonqt   To build with PythonQt support
 # CONFIG+=rtmidi     To build with RtMidi support
 # CONFIG+=record_support
 # CONFIG+=debugger
@@ -137,17 +136,6 @@ TRANSLATIONS = "src/translations/csoundqt_en.ts" \
     "src/translations/csoundqt_kr.ts"
 
 
-pythonqt {
-    include ( $${PYTHONQT_SRC_DIR}/build/PythonQt.prf )
-    include ( $${PYTHONQT_SRC_DIR}/build/PythonQt_QtAll.prf )
-    # Note, this is Python, not PythonQt include dir!
-    win32:INCLUDEPATH *= $${PYTHON_INCLUDE_DIR}
-    INCLUDEPATH *= $${PYTHONQT_SRC_DIR}/src
-    INCLUDEPATH *= $${PYTHONQT_SRC_DIR}/extensions/PythonQt_QtAll
-    QT += svg sql xmlpatterns opengl multimedia multimediawidgets # This must be tested qith Qt6
-
-}
-
 
 html_webengine: {
 message("Building html support with QtWebengine")
@@ -178,7 +166,6 @@ TARGET = CsoundQt
 
 build32:TARGET = $${TARGET}-f
 build64:TARGET = $${TARGET}-d
-pythonqt:TARGET = $${TARGET}-py
 html_webkit|html_webengine:TARGET = $${TARGET}-html
 
 TARGET = $${TARGET}-cs7
@@ -224,21 +211,10 @@ unix:!macx {
     templates.files = templates
 	INSTALLS += templates
 
-    pythonqt {
-        scripts.path = $$SHARE_DIR/csoundqt/
-        scripts.files = src/Scripts
-        INSTALLS += scripts
-    }
-
 }
 
 # for OSX add Scripts and Examples to be bundle in Contents->Resources
 macx {
-    pythonqt {
-        scripts.path = Contents/Resources
-        scripts.files = src/Scripts
-        QMAKE_BUNDLE_DATA += scripts        
-    }
     examples.path = Contents/Resources/Examples
     examples.files = "src/Examples/"
     QMAKE_BUNDLE_DATA += examples
@@ -259,27 +235,9 @@ macx {
     printsupport.path =  $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/PlugIns/printsupport
     printsupport.files =  $$[QT_INSTALL_PREFIX]/plugins/printsupport/libcocoaprintersupport.dylib
 
-    pythonqt {
-        #if PythonQt 3.2, naming the libraries is different
-        #this should be set progammatically but hardcode for now.
-        pythonQtDylib = libPythonQt-Qt5-Python2.7.3.dylib# before PyhontQt3.2: libPythonQt.1.dylib
-        pythonQtAllDylib =   libPythonQt_QtAll-Qt5-Python2.7.3.dylib # # before PythonQt 3.2:  libPythonQt_QtAll.1.dylib
-        pythonqt.path = $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/Frameworks
-        pythonqt.files = $${PYTHONQT_LIB_DIR}/$$pythonQtAllDylib $${PYTHONQT_LIB_DIR}/$$pythonQtDylib #TODO: use pythonqt/lib dir
-        INSTALLS += pythonqt
-    }
-
     pythonlinks.path= $$PWD
     pythonlinks.commands = install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python Python.framework/Versions/2.7/Python $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;
-    pythonqt {
-        pythonlinks.commands += install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python Python.framework/Versions/2.7/Python $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/Frameworks/$$pythonQtDylib ;
-        pythonlinks.commands += install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python Python.framework/Versions/2.7/Python $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/Frameworks/$$pythonQtAllDylib ;
-        pythonlinks.commands += install_name_tool -change $$pythonQtDylib @rpath/$$pythonQtDylib $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;
-        pythonlinks.commands += install_name_tool -change $$pythonQtAllDylib  @rpath/$$pythonQtAllDylib  $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;
-        pythonlinks.commands += install_name_tool -change $$pythonQtDylib @rpath/$$pythonQtDylib $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/Frameworks/$$pythonQtAllDylib  ;
 
-
-    }
 
     bundle_csound {
         # Nothing special to do for that, just don't delete, leave the links to @rpath

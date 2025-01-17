@@ -52,10 +52,6 @@
 #include <ole2.h> // for OleInitialize() FLTK bug workaround
 #endif
 
-
-#ifdef QCS_PYTHONQT
-#include "pythonconsole.h"
-#endif
 #ifdef QCS_DEBUGGER
 #include "debugpanel.h"
 #endif
@@ -183,13 +179,6 @@ CsoundQt::CsoundQt(QStringList fileNames)
     m_debugEngine = NULL;
 #endif
 
-#ifdef QCS_PYTHONQT
-    m_pythonConsole = new PythonConsole(this);
-    addDockWidget(Qt::LeftDockWidgetArea, m_pythonConsole);
-    m_pythonConsole->setObjectName("Python Console");
-    m_pythonConsole->show();
-#endif
-
     m_scratchPad = new QDockWidget(this);
     addDockWidget(Qt::LeftDockWidgetArea, m_scratchPad);
     m_scratchPad->setObjectName("Interactive Code Pad");
@@ -311,7 +300,6 @@ CsoundQt::CsoundQt(QStringList fileNames)
 
     fillFileMenu();     // Must be placed after readSettings to include recent Files
     fillFavoriteMenu(); // Must be placed after readSettings to know directory
-    fillScriptsMenu();  // Must be placed after readSettings to know directory
     risset = new Risset(m_options->pythonExecutable);
     /*
 #if defined(Q_OS_LINUX)
@@ -470,9 +458,6 @@ CsoundQt::CsoundQt(QStringList fileNames)
     showConsoleAct->setChecked(!m_console->isHidden());
     showHelpAct->setChecked(!helpPanel->isHidden());
     showInspectorAct->setChecked(!m_inspector->isHidden());
-#ifdef QCS_PYTHONQT
-    showPythonConsoleAct->setChecked(!m_pythonConsole->isHidden());
-#endif
     showScratchPadAct->setChecked(!m_scratchPad->isHidden());
 
     //qDebug()<<"Max thread count: "<< QThreadPool::globalInstance()->maxThreadCount();
@@ -861,9 +846,7 @@ void CsoundQt::runScriptFromAction()
 void CsoundQt::runScript(QString fileName)
 {
     if (!fileName.isEmpty()) {
-#ifdef QCS_PYTHONQT
-        m_pythonConsole->runScript(fileName);
-#endif
+// this was for pythonconsole before probably not necessary any more
     }
 }
 
@@ -1036,15 +1019,6 @@ void CsoundQt::breakpointReached()
 #endif
 }
 
-void CsoundQt::evaluatePython(QString code)
-{
-#ifdef QCS_PYTHONQT
-    m_pythonConsole->evaluate(code);
-#else
-    (void) code;
-    showNoPythonQtWarning();
-#endif
-}
 
 void CsoundQt::evaluateString(QString evalCode)
 {
@@ -1066,8 +1040,6 @@ void CsoundQt::evaluateString(QString evalCode)
             evaluateCsound(evalCode);
             return;
         }
-    } else {
-        evaluatePython(evalCode);
     }
 }
 
@@ -1444,10 +1416,7 @@ void CsoundQt::focusToTab(int tab) {
 
     case 7:
         qDebug()<<"Raise Python Console";
-    #ifdef QCS_PYTHONQT
-        panel = m_pythonConsole;
-        action = showPythonConsoleAct;
-    #endif
+        // TODO: remove later
         break;
 
     case 8:
@@ -1983,14 +1952,7 @@ void CsoundQt::play(bool realtime, int index)
         //        documentPages[curPage]->fileName.left(documentPages[curPage]->fileName.lastIndexOf('/'));
         QDir::setCurrent(fileName.left(fileName.lastIndexOf('/')));
     }
-#ifdef QCS_PYTHONQT
-    if (fileName.endsWith(".py",Qt::CaseInsensitive)) {
-        m_pythonConsole->runScript(fileName);
-        runAct->setChecked(false);
-        curPage = documentTabs->currentIndex();
-        return;
-    }
-#endif
+
     if (fileName.endsWith(".html",Qt::CaseInsensitive)) {
         QMessageBox::warning(this,
                              tr("CsoundQt"),
@@ -3051,9 +3013,6 @@ void CsoundQt::about()
     }
     text += "<hr>";
 
-#ifdef QCS_PYTHONQT
-    text += tr("Built with PythonQt support.")+ "<br />";
-#endif
 #ifdef USE_WEBENGINE
     text += tr("Html5 support based on QtWebEngine")+"<br />";
 #endif
@@ -3212,7 +3171,6 @@ void CsoundQt::applySettings()
     }
 
     fillFavoriteMenu();
-    fillScriptsMenu();
     DocumentView *pad = static_cast<LiveCodeEditor*>(m_scratchPad->widget())->getDocumentView();
     pad->setFont(QFont(m_options->font, (int) m_options->fontPointSize));
     if (csoundGetVersion() < 5140) {
@@ -3226,9 +3184,7 @@ void CsoundQt::applySettings()
     // m_inspector->setStyleSheet(QString("QTreeWidget { background-color: %1; }").arg(bgColor));
     // m_scratchPad->setStyleSheet(QString("QTextEdit { background-color: %1; }").arg(bgColor));
     this->setToolbarIconSize(m_options->toolbarIconSize);
-#ifdef QCS_PYTHONQT
-    m_pythonConsole->setStyleSheet(QString("QTextEdit { background-color: %1; }").arg(m_options->editorBgColor.name()));
-#endif
+
     //storeSettings(); // save always when something new is changed
 
     this->helpPanel->setIconTheme(m_options->theme);
@@ -4017,12 +3973,6 @@ void CsoundQt::createActions()
     showPythonConsoleAct->setStatusTip(tr("Show Python Console"));
     showPythonConsoleAct->setIconText(tr("Python"));
     showPythonConsoleAct->setShortcutContext(Qt::ApplicationShortcut);
-#ifdef QCS_PYTHONQT
-    connect(showPythonConsoleAct, SIGNAL(triggered(bool)), m_pythonConsole, SLOT(setVisible(bool)));
-    connect(m_pythonConsole, SIGNAL(Close(bool)), showPythonConsoleAct, SLOT(setChecked(bool)));
-#else
-    connect(showPythonConsoleAct, SIGNAL(triggered()), this, SLOT(showNoPythonQtWarning()));
-#endif
 
     raisePythonConsoleAct = new QAction(this);
     raisePythonConsoleAct->setText(tr("Show/Raise Python Console"));
@@ -4565,8 +4515,8 @@ void CsoundQt::connectActions()
     //          this, SLOT(setWidgetClipboard(QString)));
     connect(doc, SIGNAL(setCurrentAudioFile(QString)),
             this, SLOT(setCurrentAudioFile(QString)));
-    connect(doc, SIGNAL(evaluatePythonSignal(QString)),
-            this, SLOT(evaluateString(QString)));
+    // connect(doc, SIGNAL(evaluatePythonSignal(QString)),
+    //         this, SLOT(evaluateString(QString)));
 
     disconnect(showWidgetsAct, 0,0,0);
     if (m_options->widgetsIndependent) {
@@ -4729,9 +4679,6 @@ void CsoundQt::createMenus()
     viewMenu->addAction(createCodeGraphAct);
     viewMenu->addAction(showInspectorAct);
     viewMenu->addAction(showLiveEventsAct);
-#ifdef QCS_PYTHONQT
-    viewMenu->addAction(showPythonConsoleAct);
-#endif
     viewMenu->addAction(showScratchPadAct);
 #if defined(QCS_QTHTML)
     viewMenu->addAction(showHtml5Act);
@@ -4764,12 +4711,7 @@ void CsoundQt::createMenus()
 
     fillExampleMenu();
 
-
     favoriteMenu = menuBar()->addMenu(tr("Favorites"));
-#ifdef QCS_PYTHONQT
-    scriptsMenu = menuBar()->addMenu(tr("Scripts"));
-    scriptsMenu->hide();
-#endif
 
     menuBar()->addSeparator();
 
@@ -4963,48 +4905,6 @@ void CsoundQt::fillFavoriteSubMenu(QDir dir, QMenu *m, int depth)
     }
 }
 
-void CsoundQt::fillScriptsMenu()
-{
-#ifdef QCS_PYTHONQT
-    scriptsMenu->clear();
-    QString dirName = m_options->pythonDir.isEmpty() ? DEFAULT_SCRIPT_DIR : m_options->pythonDir;
-    QDir dir(dirName);
-    if (dir.count() > 0) {
-        fillScriptsSubMenu(dir.absolutePath(), scriptsMenu, 0);
-        scriptsMenu->addSeparator();
-        QMenu *editMenu = scriptsMenu->addMenu("Edit");
-        fillEditScriptsSubMenu(dir.absolutePath(), editMenu, 0);
-    }
-#endif
-}
-
-void CsoundQt::fillScriptsSubMenu(QDir dir, QMenu *m, int depth)
-{
-    QStringList filters;
-    filters << "*.py";
-    dir.setNameFilters(filters);
-    QStringList files = dir.entryList(QDir::Files,QDir::Name);
-    QStringList dirs = dir.entryList(QDir::AllDirs,QDir::Name);
-    if (depth > m_options->menuDepth)
-        return;
-    for (int i = 0; i < dirs.size() && i < 64; i++) {
-        QDir newDir(dir.absolutePath() + "/" + dirs[i]);
-        newDir.setNameFilters(filters);
-        QStringList newFiles = dir.entryList(QDir::Files,QDir::Name);
-        QStringList newDirs = dir.entryList(QDir::AllDirs,QDir::Name);
-        if (newFiles.size() > 0 ||  newDirs.size() > 0) {
-            if (dirs[i] != "." && dirs[i] != "..") {
-                QMenu *menu = m->addMenu(dirs[i]);
-                fillScriptsSubMenu(newDir.absolutePath(), menu, depth + 1);
-            }
-        }
-    }
-    for (int i = 0; i < files.size() &&  i < 64; i++) {
-        QAction *newAction = m->addAction(files[i],
-                                          this, SLOT(runScriptFromAction()));
-        newAction->setData(dir.absoluteFilePath(files[i]));
-    }
-}
 
 void CsoundQt::fillEditScriptsSubMenu(QDir dir, QMenu *m, int depth)
 {
@@ -5095,9 +4995,6 @@ void CsoundQt::createToolBars()
     configureToolBar->addAction(showVirtualKeyboardAct);
     //configureToolBar->addAction(showTableEditorAct);
 
-#ifdef QCS_PYTHONQT
-    configureToolBar->addAction(showPythonConsoleAct);
-#endif
     // configureToolBar->addAction(showScratchPadAct);
     configureToolBar->addAction(showUtilitiesAct);
     configureToolBar->setFloatable(false);
@@ -5919,10 +5816,6 @@ bool CsoundQt::makeNewPage(QString fileName, QString text)
 
     // Must set before sending text to set highlighting mode
     documentPages[curPage]->setFileName(fileName);
-
-#ifdef QCS_PYTHONQT
-    documentPages[curPage]->getEngine()->setPythonConsole(m_pythonConsole);
-#endif
 
     connectActions();
     //	connect(documentPages[curPage], SIGNAL(currentTextUpdated()), this, SLOT(markInspectorUpdate()));

@@ -53,9 +53,6 @@ CsoundEngine::CsoundEngine(ConfigLists *configlists) :
     ud->midiBuffer = nullptr;
     ud->virtualMidiBuffer = nullptr;
     ud->playMutex = &m_playMutex;
-#ifdef QCS_PYTHONQT
-    ud->m_pythonCallback = "";
-#endif
     m_consoleBufferSize = 0;
     m_recording = false;
 #ifndef QCS_DESTROY_CSOUND
@@ -343,19 +340,6 @@ void CsoundEngine::csThread(void *data)
     if (!(udata->flags & QCS_NO_RT_EVENTS)) {
         udata->csEngine->processEventQueue();
     }
-#ifdef QCS_PYTHONQT
-    if (!(udata->flags & QCS_NO_PYTHON_CALLBACK)) {
-        if (!udata->m_pythonCallback.isEmpty()) {
-            if (udata->m_pythonCallbackCounter >= udata->m_pythonCallbackSkip) {
-                udata->m_pythonConsole->evaluate(udata->m_pythonCallback, false);
-                udata->m_pythonCallbackCounter = 0;
-            }
-            else {
-                udata->m_pythonCallbackCounter++;
-            }
-        }
-    }
-#endif
 }
 
 void CsoundEngine::readWidgetValues(CsoundUserData *ud)
@@ -1232,18 +1216,6 @@ CSOUND *CsoundEngine::getCsound()
     return ud->csound;
 }
 
-#ifdef QCS_PYTHONQT
-void CsoundEngine::registerProcessCallback(QString func, int skipPeriods)
-{
-    ud->m_pythonCallback = func;
-    ud->m_pythonCallbackSkip = skipPeriods;
-}
-
-void CsoundEngine::setPythonConsole(PythonConsole *pc)
-{
-    ud->m_pythonConsole = pc;
-}
-#endif
 
 #ifdef QCS_DEBUGGER
 

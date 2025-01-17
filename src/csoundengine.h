@@ -41,9 +41,6 @@
 
 #include "types.h"
 #include "csoundoptions.h"
-#ifdef QCS_PYTHONQT
-#include "pythonconsole.h"
-#endif
 
 
 class ConsoleWidget;
@@ -103,12 +100,6 @@ struct CsoundUserData {
 	void *midiBuffer; //Csound Circular Buffer
 	void *virtualMidiBuffer; //Csound Circular Buffer
 
-#ifdef QCS_PYTHONQT
-	PythonConsole *m_pythonConsole;
-	QString m_pythonCallback;
-	int m_pythonCallbackCounter;
-	int m_pythonCallbackSkip;
-#endif
 };
 
 
@@ -178,10 +169,6 @@ public:
 	CSOUND * getCsound();
     CsoundUserData *getUserData();
     void clearConsoles(void);
-#ifdef QCS_PYTHONQT
-	void registerProcessCallback(QString func, int skipPeriods);
-	void setPythonConsole(PythonConsole *pc);
-#endif
 
 #ifdef QCS_DEBUGGER
 	bool m_debugging;

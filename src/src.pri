@@ -1,6 +1,5 @@
 
 RESOURCES += "src/application.qrc" \
-    "src/pythonscripts.qrc" \
     "src/icons.qrc" \
     src/qml_resources.qrc
 
@@ -154,12 +153,7 @@ DISTFILES += "src/default.csd" \
     "src/csoundqt.rc" \
     "src/test.csd" \
     $$PWD/QML/ControlSlider.qml
-pythonqt {
-    HEADERS += "src/pythonconsole.h" \
-        "src/pyqcsobject.h"
-    SOURCES += "src/pythonconsole.cpp" \
-        "src/pyqcsobject.cpp"
-}
+
 rtmidi {
     HEADERS += "src/../$${RTMIDI_DIR}/RtMidi.h"
     SOURCES += "src/../$${RTMIDI_DIR}/RtMidi.cpp"

@@ -89,48 +89,7 @@ isEmpty(CSOUND_LIB) {
     }
     isEmpty(CSOUND_LIB):error(A valid csound library was not found.)
 }
-pythonqt {
-    DEFINES += QCS_PYTHONQT
-    win32:isEmpty(PYTHON_INCLUDE_DIR) {
-        !no_messages:message(Python directory not specified.)
-        for(dir, DEFAULT_PYTHON_INCLUDE_DIRS) {
-            !no_messages:message(... searching in $${dir})
-            exists($${dir}) {
-                !no_messages {
-                    message(PYTHON_INCLUDE_DIR set to $${dir})
-                    message()
-                }
-                PYTHON_INCLUDE_DIR = $${dir}
-                break()
-            }
-        }
-        isEmpty(PYTHON_INCLUDE_DIR):error(A valid Python directory was not found.)
-    }
-    isEmpty(PYTHONQT_SRC_DIR) {
-        !no_messages:message(PythonQt source directory not specified.)
-        for(dir, DEFAULT_PYTHONQT_SRC_DIRS) {
-            !no_messages:message(... searching in $${dir})
-            exists($${dir}) {
-                !no_messages {
-                    message(PYTHONQT_SRC_DIR set to $${dir})
-                    message(" ")
-                }
-                PYTHONQT_SRC_DIR = $${dir}
-                break()
-            }
-        }
-        isEmpty(PYTHONQT_SRC_DIR):error(A valid PythonQt source directory was not found.)
-    }
-    isEmpty(PYTHONQT_LIB_DIR) {
-        !no_messages:message(PythonQt library directory not specified. Using source directory.)
-        PYTHONQT_LIB_DIR = $${PYTHONQT_SRC_DIR}/lib
 
-
-    }
-
-
-    message(PythonQt LIB DIR: $$PYTHONQT_LIB_DIR )
-}
 rtmidi {
 # check if RTMIDI is found in system
 unix:!macx {
