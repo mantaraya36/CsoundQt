@@ -2702,7 +2702,7 @@ Default directory for sound files. Used if no full path is given for sound files
                    <string>OPCODE7DIR64</string>
                   </property>
                   <property name="checked">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
