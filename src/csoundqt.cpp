@@ -28,7 +28,7 @@
 #include "inspector.h"
 #include "opentryparser.h"
 #include "options.h"
-#include "qutecsound.h"
+#include "csoundqt.h"
 #include "widgetpanel.h"
 #include "utilitiesdialog.h"
 #include "graphicwindow.h"
@@ -197,7 +197,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
     m_scratchPad->hide();
     connect(helpPanel, SIGNAL(openManualExample(QString)), this, SLOT(openManualExample(QString)));
 
-    QSettings settings("csound", "qutecsound");
+    QSettings settings("csoundqt", "csoundqt");
     settings.beginGroup("GUI");
     m_options->theme = settings.value("theme", "breeze").toString();
     helpPanel->setIconTheme(m_options->theme);
@@ -409,7 +409,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
     // createQuickRefPdf();
 
 #ifdef Q_OS_MACOS // workaround to set resotre window size for Mac. Does not work within readSettings()
-    QSettings settings2("csound", "qutecsound");
+    QSettings settings2("csoundqt", "csoundqt");
     QSize size = settings2.value("GUI/size", QSize(800, 600)).toSize();
     resize(size);
 #endif
@@ -4612,8 +4612,8 @@ QString CsoundQt::getExamplePath(QString dir)
                   << qApp->applicationDirPath() + "/../../csoundqt/src/Examples/"
                   << qApp->applicationDirPath() + "/../../CsoundQt/src/Examples/"
                   << qApp->applicationDirPath() + "/../share/csoundqt/Examples/"
-                  <<  "/../../qutecsound/src/Examples/"
-                  << "~/.local/share/qutecsound/Examples/" << "/usr/share/qutecsound/Examples/"
+                  <<  "/../../csoundq/src/Examples/"
+                  << "~/.local/share/csoundq/Examples/" << "/usr/share/qutecsound/Examples/"
                   << "~/.local/share/csoundqt/Examples/"
                   << "/usr/share/csoundqt/Examples/";
 
@@ -4634,7 +4634,7 @@ QString CsoundQt::getExamplePath(QString dir)
 #ifdef Q_OS_SOLARIS
     examplePath = qApp->applicationDirPath() + "/Examples/" + dir;
     if (!QDir(examplePath).exists()) {
-        examplePath = "/usr/share/qutecsound/Examples/" + dir;
+        examplePath = "/usr/share/csoundq/Examples/" + dir;
     }
     if (!QDir(examplePath).exists()) {
         examplePath = qApp->applicationDirPath() + "/../src/Examples/" + dir;
@@ -4896,7 +4896,7 @@ void CsoundQt::fillFileMenu()
             templatePath = qApp->applicationDirPath() + "/../../csoundqt/templates/";
         }
         if (!QDir(templatePath).exists()) { // for out of tree builds
-            templatePath = qApp->applicationDirPath() + "/../../qutecsound/templates/";
+            templatePath = qApp->applicationDirPath() + "/../../CsoundQt/templates/";
         }
         if (!QDir(templatePath).exists()) {
             templatePath = "/usr/share/csoundqt/templates/";
@@ -5140,7 +5140,7 @@ void CsoundQt::createStatusBar()
 
 void CsoundQt::readSettings()
 {
-    QSettings settings("csound", "qutecsound");
+    QSettings settings("csoundqt", "csoundqt");
 	int settingsVersion = settings.value("settingsVersion", 4).toInt();
     // Version 1 to remove "-d" from additional command line flags
     // Version 2 to save default keyboard shortcuts (weren't saved previously)
@@ -5444,7 +5444,7 @@ void CsoundQt::storeSettings()
 
 void CsoundQt::writeSettings(QStringList openFiles, int lastIndex)
 {
-    QSettings settings("csound", "qutecsound");
+    QSettings settings("csoundqt", "csoundqt");
     QDEBUG << "writing settings to csound/qutecsound";
 
     settings.setValue("settingsVersion", 4);
@@ -5651,7 +5651,7 @@ void CsoundQt::writeSettings(QStringList openFiles, int lastIndex)
 
 void CsoundQt::clearSettings()
 {
-    QSettings settings("csound", "qutecsound");
+    QSettings settings("csoundqt", "csoundqt");
     settings.remove("");
     settings.beginGroup("GUI");
     settings.beginGroup("Shortcuts");

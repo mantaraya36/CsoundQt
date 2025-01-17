@@ -23,7 +23,7 @@
 #include "qutescope.h"
 #include <cmath>
 #include "types.h"  //necessary for the userdata struct
-#include "qutecsound.h"  //necessary for the userdata struct
+#include "csoundqt.h"  //necessary for the userdata struct
 
 
 QuteScope::QuteScope(QWidget *parent) : QuteWidget(parent)

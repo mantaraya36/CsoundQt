@@ -50,7 +50,7 @@ HEADERS = "src/about.h" \
     "src/qutecheckbox.h" \
     "src/qutecombobox.h" \
     "src/quteconsole.h" \
-    "src/qutecsound.h" \
+    "src/csoundqt.h" \
     "src/qutedummy.h" \
     "src/qutegraph.h" \
     "src/quteknob.h" \
@@ -114,7 +114,7 @@ SOURCES = "src/about.cpp" \
     "src/qutecheckbox.cpp" \
     "src/qutecombobox.cpp" \
     "src/quteconsole.cpp" \
-    "src/qutecsound.cpp" \
+    "src/csoundqt.cpp" \
     "src/qutedummy.cpp" \
     "src/qutegraph.cpp" \
     "src/quteknob.cpp" \
@@ -151,7 +151,7 @@ SOURCES = "src/about.cpp" \
 
 DISTFILES += "src/default.csd" \
     "src/opcodes.xml" \
-    "src/qutecsound.rc" \
+    "src/csoundqt.rc" \
     "src/test.csd" \
     $$PWD/QML/ControlSlider.qml
 pythonqt {

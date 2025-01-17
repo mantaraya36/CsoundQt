@@ -14,18 +14,18 @@
         <file>opcodes.xml</file>
         <file>default.csd</file>
         <file>test.csd</file>
-        <file>translations/qutecsound_en.qm</file>
-        <file>translations/qutecsound_es.qm</file>
-        <file>translations/qutecsound_de.qm</file>
-        <file>translations/qutecsound_fr.qm</file>
-        <file>translations/qutecsound_pt.qm</file>
-        <file>translations/qutecsound_it.qm</file>
-        <file>translations/qutecsound_tr.qm</file>
-        <file>translations/qutecsound_el.qm</file>
-        <file>translations/qutecsound_fi.qm</file>
-        <file>translations/qutecsound_ru.qm</file>
-        <file>translations/qutecsound_fa.qm</file>
-        <file>translations/qutecsound_kr.qm</file>
+        <file>translations/csoundqt_en.qm</file>
+        <file>translations/csoundqt_es.qm</file>
+        <file>translations/csoundqt_de.qm</file>
+        <file>translations/csoundqt_fr.qm</file>
+        <file>translations/csoundqt_pt.qm</file>
+        <file>translations/csoundqt_it.qm</file>
+        <file>translations/csoundqt_tr.qm</file>
+        <file>translations/csoundqt_el.qm</file>
+        <file>translations/csoundqt_fi.qm</file>
+        <file>translations/csoundqt_ru.qm</file>
+        <file>translations/csoundqt_fa.qm</file>
+        <file>translations/csoundqt_kr.qm</file>
         <file>../doc/QuteCsound Quick Reference (0.4).pdf</file>
         <file>../doc/QuteCsound Quick Reference (0.4)-es.pdf</file>
         <file>../doc/QuteCsound Quick Reference (0.4)-fr.pdf</file>

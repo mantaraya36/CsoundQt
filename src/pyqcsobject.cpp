@@ -21,7 +21,7 @@
 */
 
 #include "pyqcsobject.h"
-#include "qutecsound.h"
+#include "csoundqt.h"
 #include "qutesheet.h"
 #include "opentryparser.h"
 #include "csoundengine.h"

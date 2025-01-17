@@ -22,7 +22,7 @@
 
 #include <QApplication>
 #include <QSplashScreen>
-#include "qutecsound.h"
+#include "csoundqt.h"
 #include <QLocalSocket>
 
 #ifdef WIN32
@@ -140,12 +140,12 @@ int main(int argc, char *argv[])
     splash->show();
     splash->raise();
     qapp.processEvents();
-    QSettings qsettings("csound", "qutecsound");
+    QSettings qsettings("csoundqt", "csoundqt");
     qsettings.beginGroup("GUI");
     QString language = qsettings.value("language", QLocale::system().name()).toString();
     qsettings.endGroup();
     QTranslator translator;
-    bool loaded = translator.load(QString(":/translations/qutecsound_") + language);
+    bool loaded = translator.load(QString(":/translations/csoundqt_") + language);
     if (loaded) {
         qapp.installTranslator(&translator);
     } else {

@@ -40,7 +40,7 @@
 #include "qutedummy.h"
 #include "framewidget.h"
 
-#include "qutecsound.h" // For passing the actions from button reserved channels
+#include "csoundqt.h" // For passing the actions from button reserved channels
 
 
 WidgetLayout::WidgetLayout(QWidget* parent) : QWidget(parent)

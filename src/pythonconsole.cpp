@@ -33,7 +33,7 @@
 #include "pyqcsobject.h"
 #include "qutesheet.h"
 
-#include "qutecsound.h"
+#include "csoundqt.h"
 
 PythonConsole::PythonConsole(QWidget *parent)
 	: QDockWidget(parent), m_pqcs(0), m_console(0)

@@ -25,7 +25,7 @@
 #include "widgetlayout.h"
 #include "documentview.h"
 #include "csoundengine.h"
-#include "qutecsound.h"
+#include "csoundqt.h"
 #include "qutebutton.h"
 #include "console.h"
 

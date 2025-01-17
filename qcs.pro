@@ -1,7 +1,7 @@
 ################################################################################
 # The following variables can be set in the qmake argument list if they are not
 # found in the default locations.  Don't forget to use quotes.  For example ...
-# qmake qutecsound.pro "CSOUND_INCLUDE_DIR = <path to csound.h>"
+# qmake qcs.pro "CSOUND_INCLUDE_DIR = <path to csound.h>"
 # CSOUND_INCLUDE_DIR
 # CSOUND_LIBRARY_DIR
 # RTMIDI_DIR
@@ -122,19 +122,19 @@ debugger {
 
 
 include(src/src.pri)
-TRANSLATIONS = "src/translations/qutecsound_en.ts" \
-    "src/translations/qutecsound_es.ts" \
-    "src/translations/qutecsound_de.ts" \
-    "src/translations/qutecsound_pt.ts" \
-    "src/translations/qutecsound_fr.ts" \
-    "src/translations/qutecsound_it.ts" \
-    "src/translations/qutecsound_tr.ts" \
-    "src/translations/qutecsound_el.ts" \
-    "src/translations/qutecsound_uk.ts" \
-    "src/translations/qutecsound_fi.ts" \
-    "src/translations/qutecsound_ru.ts" \
-    "src/translations/qutecsound_fa.ts" \
-    "src/translations/qutecsound_kr.ts"
+TRANSLATIONS = "src/translations/csoundqt_en.ts" \
+    "src/translations/csoundqt_es.ts" \
+    "src/translations/csoundqt_de.ts" \
+    "src/translations/csoundqt_pt.ts" \
+    "src/translations/csoundqt_fr.ts" \
+    "src/translations/csoundqt_it.ts" \
+    "src/translations/csoundqt_tr.ts" \
+    "src/translations/csoundqt_el.ts" \
+    "src/translations/csoundqt_uk.ts" \
+    "src/translations/csoundqt_fi.ts" \
+    "src/translations/csoundqt_ru.ts" \
+    "src/translations/csoundqt_fa.ts" \
+    "src/translations/csoundqt_kr.ts"
 
 
 pythonqt {
@@ -217,7 +217,6 @@ unix:!macx {
 	INSTALLS += mimetypes
 
     examples.path = $$SHARE_DIR/csoundqt/
-	examples.commands = rm -rf  $(INSTALL_ROOT)/$$SHARE_DIR/qutecsound #remove the old examples
     examples.files = src/Examples
 	INSTALLS += examples
 

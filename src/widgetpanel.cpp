@@ -23,7 +23,7 @@
 #include "widgetpanel.h"
 #include "widgetlayout.h"
 
-#include "qutecsound.h"
+#include "csoundqt.h"
 
 WidgetPanel::WidgetPanel(QWidget *parent)
 	: QDockWidget(parent)

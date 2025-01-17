@@ -30,7 +30,7 @@
 #include "liveeventframe.h"
 #include "eventsheet.h"
 #include "liveeventcontrol.h"
-#include "qutecsound.h" // For playParent and renderParent functions (called from button
+#include "csoundqt.h" // For playParent and renderParent functions (called from button
                         // reserved channels) and for connecting from console to log file
 #include "opentryparser.h"
 #include "types.h"

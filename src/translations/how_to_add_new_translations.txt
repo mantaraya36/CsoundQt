@@ -3,7 +3,7 @@ How to add a new translation to CsoundQt
 
 
 1. In qcs.pro (around line 134), add a line like
-	"src/translations/qutecsound_fa.ts"
+	"src/translations/csoundqt_fa.ts"
 
 2. In QtCreator, run
 	Tools > Externals > Linguist > update translations 
@@ -15,9 +15,9 @@ How to add a new translation to CsoundQt
    This should create the .qm file related to the .ts file.
 
 4. In src/application.qrc (around line 145), insert a line like
-        <file>translations/qutecsound_fa.qm</file>
+        <file>translations/csoundqt_fa.qm</file>
 
-5. In src/qutecsound.cpp (around line 2534) add the translator, like
+5. In src/csoundqt.cpp (around line 2534) add the translator, like
 	text += tr("Persian translation: Amin Khoshsabk") + "<br />";
 
 6. In src/configlists.cpp add the language name und the language code (around line 54)

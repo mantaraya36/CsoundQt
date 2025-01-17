@@ -25,7 +25,7 @@
 //#include <QOperatingSystemVersion> // not present before Qt 5.9
 #include <QSysInfo>
 
-#include "qutecsound.h"
+#include "csoundqt.h"
 #include "configdialog.h"
 #include "options.h"
 #include "types.h"
