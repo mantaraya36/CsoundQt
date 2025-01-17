@@ -3332,8 +3332,6 @@ void CsoundQt::runUtility(QString flags)
 #ifdef Q_OS_WIN32
         script = "";
 #ifdef USE_DOUBLE
-        if (m_options->opcodedir64Active)
-            script += "set OPCODEDIR64=" + m_options->opcodedir64 + "\n";
         if (m_options->opcode7dir64Active)
             script += "set OPCODE7DIR64=" + m_options->opcode7dir64 + "\n";
 #else
