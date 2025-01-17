@@ -21,7 +21,7 @@
 */
 
 
-#include <QtConcurrent>
+#include <QtConcurrent/QtConcurrent>
 #include <QThread>
 
 #ifdef Q_OS_WIN
