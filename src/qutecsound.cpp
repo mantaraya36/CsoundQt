@@ -44,12 +44,8 @@
 #include "risset.h"
 #include <thread>
 
-<<<<<<< HEAD
-//#include <QTextCodec> // necessary for deprecated QTextDecoder
-=======
-#include <csound_compiler.h> // csound7: needed for TREE structure
 
->>>>>>> refs/heads/csound7
+#include <csound_compiler.h> // csound7: needed for TREE structure
 
 
 #ifdef Q_OS_WIN

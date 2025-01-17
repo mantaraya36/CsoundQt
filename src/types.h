@@ -30,7 +30,7 @@
 
 
 
-#define QCS_VERSION "1.1.3-qt6"
+#define QCS_VERSION "7.0.0-alpha"
 
 
 // Time in milliseconds for widget and console messages updates
