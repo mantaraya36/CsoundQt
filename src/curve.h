@@ -27,6 +27,7 @@
 //#include <QString>
 #include <QMutex>
 #include "types.h"
+#include <csound_graph_display.h>
 
 enum Polarity {
 	POLARITY_NOPOL,

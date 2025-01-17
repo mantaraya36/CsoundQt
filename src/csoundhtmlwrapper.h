@@ -46,7 +46,7 @@ public slots:
     int compileOrc(const QString &text);
     double evalCode(const QString &text);
     double get0dBFS();
-    int getApiVersion();
+    //int getApiVersion(); // not present in Csound7
     double getControlChannel(const QString &name);
     qint64 getCurrentTimeSamples();
     QString getEnv(const QString &name);
@@ -67,7 +67,7 @@ public slots:
     void reset();
     void rewindScore();
     int runUtility(const QString &command, int argc, char **argv);
-    int scoreEvent(char type, const double *pFields, long numFields);
+    int scoreEvent(char type, double *pFields, long numFields);
     void setControlChannel(const QString &name, double value);
     int setGlobalEnv(const QString &name, const QString &value);
     void setInput(const QString &name);

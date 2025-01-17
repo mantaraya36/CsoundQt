@@ -63,11 +63,11 @@ void CsoundHtmlOnlyWrapper::registerConsole(ConsoleWidget *console_){
 }
 
 int CsoundHtmlOnlyWrapper::compileCsd(const QString &filename) {
-    return csound.CompileCsd(filename.toLocal8Bit());
+    return csound.CompileCSD(filename.toLocal8Bit(), 0);
 }
 
 int CsoundHtmlOnlyWrapper::compileCsdText(const QString &text) {
-    return csound.CompileCsdText(text.toLocal8Bit());
+    return csound.CompileCSD(text.toLocal8Bit(),1);
 }
 
 int CsoundHtmlOnlyWrapper::compileOrc(const QString &text) {
@@ -83,9 +83,9 @@ double CsoundHtmlOnlyWrapper::get0dBFS() {
     return csound.Get0dBFS(); //cs->Get0dBFS();
 }
 
-int CsoundHtmlOnlyWrapper::getApiVersion() {
-    return csound.GetAPIVersion();
-}
+//int CsoundHtmlOnlyWrapper::getApiVersion() {
+//    return csound.GetAPIVersion();
+//}
 
 double CsoundHtmlOnlyWrapper::getControlChannel(const QString &name) {
     int result = 0;
@@ -106,15 +106,15 @@ int CsoundHtmlOnlyWrapper::getKsmps() {
 }
 
 int CsoundHtmlOnlyWrapper::getNchnls() {
-    return csound.GetNchnls();
+    return csound.GetChannels();
 }
 
 int CsoundHtmlOnlyWrapper::getNchnlsInput() {
-    return csound.GetNchnlsInput();
+    return csound.GetChannels(1); // csound7: needs testing, if works correctly
 }
 
 QString CsoundHtmlOnlyWrapper::getOutputName() {
-    return QString(csound.GetOutputName());
+    return QString(); // QString(csound.GetOutputName()); // gone in csound7, needs other solution
 }
 
 double CsoundHtmlOnlyWrapper::getScoreOffsetSeconds() {
@@ -140,7 +140,7 @@ int CsoundHtmlOnlyWrapper::getVersion() {
 }
 
 bool CsoundHtmlOnlyWrapper::isPlaying() {
-    return csound.IsPlaying();
+    return false; //csound.IsPlaying(); // csound7 -  needs an implementation, see csound_threaded.hpp
 }
 
 int CsoundHtmlOnlyWrapper::isScorePending() {
@@ -170,7 +170,7 @@ void CsoundHtmlOnlyWrapper::rewindScore() {
 }
 
 int CsoundHtmlOnlyWrapper::runUtility(const QString &command, int argc, char **argv) {
-    return csound.RunUtility(command.toLocal8Bit(), argc, argv); // probably does not work from JS due char **
+    return 0; //csound.RunUtility(command.toLocal8Bit(), argc, argv); // gone in Csound7 Csound class
 }
 
 int CsoundHtmlOnlyWrapper::scoreEvent(char opcode, const double *pfields, long field_count) {
@@ -183,12 +183,13 @@ void CsoundHtmlOnlyWrapper::setControlChannel(const QString &name, double value)
 }
 
 int CsoundHtmlOnlyWrapper::setGlobalEnv(const QString &name, const QString &value) {
-    return csound.SetGlobalEnv(name.toLocal8Bit(), value.toLocal8Bit());
+    return false; // csound7: csound.SetGlobalEnv(name.toLocal8Bit(), value.toLocal8Bit());
 }
 
-void CsoundHtmlOnlyWrapper::setInput(const QString &name){
-    csound.SetInput(name.toLocal8Bit());
-}
+// csound7 -  commented out
+// void CsoundHtmlOnlyWrapper::setInput(const QString &name){
+//     csound.SetInput(name.toLocal8Bit());
+// }
 
 void CsoundHtmlOnlyWrapper::setMessageCallback(QObject *callback){
     qDebug() << "CsoundHtmlOnlyWrapper::setMessageCallback: " << callback;
@@ -200,9 +201,10 @@ int CsoundHtmlOnlyWrapper::setOption(const QString &name){
     return csound.SetOption(name.toLocal8Bit().data());
 }
 
-void CsoundHtmlOnlyWrapper::setOutput(const QString &name, const QString &type, const QString &format){
-    csound.SetOutput(name.toLocal8Bit(), type.toLocal8Bit(), format.toLocal8Bit());
-}
+// csound 7
+// void CsoundHtmlOnlyWrapper::setOutput(const QString &name, const QString &type, const QString &format){
+//     csound.SetOutput(name.toLocal8Bit(), type.toLocal8Bit(), format.toLocal8Bit());
+// }
 
 void CsoundHtmlOnlyWrapper::setScoreOffsetSeconds(double value){
     csound.SetScoreOffsetSeconds(value);
@@ -244,12 +246,19 @@ int CsoundHtmlOnlyWrapper::Start() {
 void CsoundHtmlOnlyWrapper::stop(){
 	csound.Stop();
 	csound.Join();
-    csound.Cleanup();
+    //csound.Cleanup();
 	csound.Reset(); // DOES THIS PERHAPS changes options, so that jack is not any more used as audio driver
 }
 
 double CsoundHtmlOnlyWrapper::tableGet(int table_number, int index){
-    return csound.TableGet(table_number, index);
+    MYFLT *data;
+    int tableLength = csound.GetTable(&data, table_number);
+    if (tableLength>0 && index<tableLength) {
+        return data[index];
+    } else {
+        QDEBUG << "Could not read table " <<table_number;
+        return -1;
+    }
 }
 
 int CsoundHtmlOnlyWrapper::tableLength(int table_number){
@@ -257,7 +266,14 @@ int CsoundHtmlOnlyWrapper::tableLength(int table_number){
 }
 
 void CsoundHtmlOnlyWrapper::tableSet(int table_number, int index, double value){
-    csound.TableSet(table_number, index, value);
+    //csound.TableSet(table_number, index, value);
+    MYFLT *data;
+    int tableLength = csound.GetTable(&data, table_number);
+    if (tableLength>0 && index<tableLength) {
+        data[index] = value;
+    } else {
+        QDEBUG << "Could not write to table " <<table_number;
+    }
 }
 
 void CsoundHtmlOnlyWrapper::setOptions(CsoundOptions *options)

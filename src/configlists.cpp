@@ -34,6 +34,7 @@
 typedef QPair<QString, QString> QStringPair;
 
 
+
 ConfigLists::ConfigLists()
 {
     fileTypeNames      << "wav" << "aiff" << "au" << "avr"
@@ -91,21 +92,25 @@ void ConfigLists::refreshModules()
 {
     rtMidiNames.clear();
 	rtAudioNames.clear();
-    CSOUND *csound = csoundCreate(nullptr);
+    CSOUND *csound = csoundCreate(nullptr, nullptr);
 	char *name, *type;
 	int n = 0;
+
 	while(!csoundGetModule(csound, n++, &name, &type)) {
 		if (strcmp(type, "audio") == 0) {
 			rtAudioNames << name;
 		}
 	}
+
 	rtAudioNames << "null"; // add also none (-+rtaudio=null)
 	n = 0;
+
 	while(!csoundGetModule(csound, n++, &name, &type)) {
 		if (strcmp(type, "midi") == 0) {
 			rtMidiNames << name;
 		}
 	}
+
     if (rtAudioNames.contains("jack")) {
         rtMidiNames <<  "jack";
 	}
@@ -118,12 +123,13 @@ QHash<QString,QString> ConfigLists::getMidiInputDevices(QString module)
 	// based on code by Steven Yi
     QHash<QString,QString> deviceList;
 
-    CSOUND *cs = csoundCreate(nullptr);
+    CSOUND *cs = csoundCreate(nullptr, nullptr);
 	if (module=="jack") {
         csoundSetOption(cs, "-+rtaudio=jack");
         csoundSetOption(cs, "-+rtmidi=jack");
 	}
-	csoundSetMIDIModule(cs, module.toLatin1().data());
+
+    csoundSetMIDIModule(cs, module.toLatin1().data());
     int i,newn, n = csoundGetMIDIDevList(cs, nullptr, 0);
 	CS_MIDIDEVICE *devs = (CS_MIDIDEVICE *) malloc(n*sizeof(CS_MIDIDEVICE));
 	newn = csoundGetMIDIDevList(cs,devs,0);
@@ -156,12 +162,13 @@ QList<QPair<QString, QString> > ConfigLists::getMidiOutputDevices(QString module
 {
 	QList<QPair<QString, QString> > deviceList;
 
-    CSOUND *cs = csoundCreate(nullptr);
+    CSOUND *cs = csoundCreate(nullptr, nullptr);
 	if (module=="jack") {
         csoundSetOption(cs, "-+rtaudio=jack");
         csoundSetOption(cs, "-+rtmidi=jack");
 	}
-	csoundSetMIDIModule(cs, module.toLatin1().data());
+
+    csoundSetMIDIModule(cs, module.toLatin1().data());
     int i,newn, n = csoundGetMIDIDevList(cs, nullptr, 1);
 	CS_MIDIDEVICE *devs = (CS_MIDIDEVICE *) malloc(n*sizeof(CS_MIDIDEVICE));
 	newn = csoundGetMIDIDevList(cs,devs,1);
@@ -193,8 +200,9 @@ QList<QPair<QString, QString> > ConfigLists::getMidiOutputDevices(QString module
 QList<QPair<QString, QString> > ConfigLists::getAudioInputDevices(QString module)
 {
     QList<QStringPair> deviceList;
-    CSOUND *cs = csoundCreate(nullptr);
-	csoundSetRTAudioModule(cs, module.toLatin1().data());
+    CSOUND *cs = csoundCreate(nullptr, nullptr);
+
+    csoundSetRTAudioModule(cs, module.toLatin1().data());
     int i,newn, n = csoundGetAudioDevList(cs, nullptr, 0);
 	CS_AUDIODEVICE *devs = (CS_AUDIODEVICE *) malloc(n*sizeof(CS_AUDIODEVICE));
 	newn = csoundGetAudioDevList(cs,devs,0);
@@ -216,8 +224,9 @@ QList<QPair<QString, QString> > ConfigLists::getAudioOutputDevices(QString modul
 {
     QList<QPair<QString, QString> > deviceList;
 
-    CSOUND *cs = csoundCreate(nullptr);
-	csoundSetRTAudioModule(cs, module.toLatin1().data());
+    CSOUND *cs = csoundCreate(nullptr, nullptr);
+
+    csoundSetRTAudioModule(cs, module.toLatin1().data());
     int i,newn, n = csoundGetAudioDevList(cs, nullptr, 1);
 	CS_AUDIODEVICE *devs = (CS_AUDIODEVICE *) malloc(n*sizeof(CS_AUDIODEVICE));
 	newn = csoundGetAudioDevList(cs,devs,1);
@@ -237,11 +246,11 @@ QList<QPair<QString, QString> > ConfigLists::getAudioOutputDevices(QString modul
 
 QStringList ConfigLists::runCsoundInternally(QStringList flags)
 {
-#if CS_APIVERSION>=4
+//#if CS_APIVERSION>=4 // CS_APIVERSION is not any more in Csound 7 source
 	const char *argv[33];
-#else
-	char *argv[33];
-#endif
+//#else
+//	char *argv[33];
+//#endif
     int index = 1;
     Q_ASSERT(flags.size() < 32);
 	argv[0]  = (char *) calloc(7, sizeof(char));
@@ -258,20 +267,23 @@ QStringList ConfigLists::runCsoundInternally(QStringList flags)
 	menuBarHandle = GetMenuBar();
 #endif
     m_messages.clear();
-    CSOUND *csoundD = csoundCreate(&m_messages);
+    CSOUND *csoundD = csoundCreate(&m_messages, nullptr);
 
 	csoundSetMessageCallback(csoundD, msgCallback);
     int result = csoundCompile(csoundD, argc, argv);
 
 	if(!result) {
-		csoundPerform(csoundD);
+        //CS7
+        //csoundPerform(csoundD);
+        while( csoundPerformKsmps(csoundD)==0);
     } else {
         qDebug() << "Error compiling.";
         qDebug() << m_messages;
     }
 
     // FIXME This crashes on Linux for portmidi! And messes up devices on OS X
-    csoundDestroy(csoundD);
+    //csoundDestroy(csoundD);
+    csoundReset(csoundD); // CS7
 
 #ifdef MACOSX_PRE_SNOW
 	// Put menu bar back
@@ -282,7 +294,7 @@ QStringList ConfigLists::runCsoundInternally(QStringList flags)
 
 
 bool ConfigLists::isJackRunning() {
-    CSOUND *cs = csoundCreate(nullptr);
+    CSOUND *cs = csoundCreate(nullptr, nullptr);
     csoundSetRTAudioModule(cs, "jack");
     int n = csoundGetAudioDevList(cs, nullptr, 1);
     qDebug() << "isJackRunning" << n;

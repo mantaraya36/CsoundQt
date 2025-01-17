@@ -42,7 +42,7 @@ win32-msvc: INCLUDEPATH += $${PTHREAD_INCLUDE_DIR} $${DEFAULT_LIBSNDFILE_INCLUDE
 
 RC_FILE = "src/qutecsound.rc"
 LCSOUND = "$${CSOUND_LIBRARY_DIR}/$${CSOUND_LIB}"
-win32-g++:csound6: LCSND = "$${CSOUND_LIBRARY_DIR}/csnd6.dll"
+#win32-g++:csound6: LCSND = "$${CSOUND_LIBRARY_DIR}/csnd6.dll"
 
 win32-msvc:record_support: LCSND = "$${CSOUND_LIBRARY_DIR}/csnd6.lib" # needed for build on Windows 11
 

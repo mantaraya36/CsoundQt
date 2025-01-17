@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>736</height>
+    <width>720</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,8 +46,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>711</width>
-        <height>687</height>
+        <width>832</width>
+        <height>751</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_18">
@@ -72,14 +72,14 @@
           <string/>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="tab_2">
           <attribute name="title">
            <string>Run</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_10">
-           <item alignment="Qt::AlignTop">
+           <item alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox_12">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -128,10 +128,10 @@
                 <item row="3" column="7">
                  <spacer name="horizontalSpacer_16">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Minimum</enum>
+                   <enum>QSizePolicy::Policy::Minimum</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -279,10 +279,10 @@
                 <item row="2" column="3">
                  <spacer name="horizontalSpacer_8">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Minimum</enum>
+                   <enum>QSizePolicy::Policy::Minimum</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -434,7 +434,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="buttonSymbols">
-                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                   <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
                   </property>
                   <property name="showGroupSeparator" stdset="0">
                    <bool>false</bool>
@@ -488,7 +488,7 @@
              </layout>
             </widget>
            </item>
-           <item alignment="Qt::AlignTop">
+           <item alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox_15">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -500,7 +500,7 @@
               <string>Realtime MIDI</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
               <property name="leftMargin">
@@ -526,10 +526,10 @@
                 <item row="3" column="4">
                  <spacer name="horizontalSpacer_14">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -718,7 +718,7 @@
                 <item row="3" column="7">
                  <spacer name="horizontalSpacer_17">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -736,7 +736,7 @@
            <item>
             <spacer name="horizontalSpacer_6">
              <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <enum>Qt::Orientation::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -746,7 +746,7 @@
              </property>
             </spacer>
            </item>
-           <item alignment="Qt::AlignTop">
+           <item alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -758,7 +758,7 @@
               <string>Offline Rendering</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignLeading</set>
+              <set>Qt::AlignmentFlag::AlignLeading</set>
              </property>
              <property name="flat">
               <bool>false</bool>
@@ -867,10 +867,10 @@
                 <item row="0" column="3">
                  <spacer name="horizontalSpacer_4">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -903,7 +903,7 @@
                 <item row="1" column="7">
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -949,7 +949,7 @@
            <item>
             <spacer name="verticalSpacer_6">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -1157,7 +1157,7 @@
                <string>Number of threads when using multicore</string>
               </property>
               <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::UpDownArrows</enum>
+               <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
               </property>
               <property name="minimum">
                <number>1</number>
@@ -1303,7 +1303,7 @@
                 <item>
                  <spacer name="horizontalSpacer_7">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1351,7 +1351,7 @@
            <item row="10" column="0">
             <spacer name="verticalSpacer_3">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -1392,7 +1392,7 @@
                    <string>Font Color</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -1402,14 +1402,14 @@
                    <string>Background Color</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="2">
                  <spacer name="horizontalSpacer_19">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1558,10 +1558,10 @@
                 <item row="1" column="3">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Policy::Fixed</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1576,7 +1576,7 @@
               <item row="0" column="1">
                <spacer name="horizontalSpacer_18">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1608,7 +1608,7 @@
              <item>
               <widget class="QCheckBox" name="simultaneousCheckBox">
                <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
                </property>
                <property name="text">
                 <string>Allow simultaneous play (May have problems with portmidi,coreaudio, and alsa audio) </string>
@@ -1656,7 +1656,7 @@
                 <item>
                  <spacer name="horizontalSpacer_22">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -1690,7 +1690,7 @@
              <item>
               <spacer name="horizontalSpacer_12">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -1733,7 +1733,7 @@
                  <string>Icon Theme (requirest restart)</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -1766,14 +1766,14 @@
            <string>Editor</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_9">
-           <item row="5" column="0" alignment="Qt::AlignRight|Qt::AlignTop">
+           <item row="5" column="0" alignment="Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTop">
             <widget class="QLabel" name="label_44">
              <property name="text">
               <string>(*) Requires restart</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" alignment="Qt::AlignTop">
+           <item row="3" column="0" alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox_10">
              <property name="title">
               <string>Behavior</string>
@@ -1817,7 +1817,7 @@
               <item row="6" column="2">
                <spacer name="horizontalSpacer_13">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1847,7 +1847,7 @@
               <item row="0" column="4">
                <spacer name="horizontalSpacer_15">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1915,7 +1915,7 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="0" alignment="Qt::AlignTop">
+           <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox_5">
              <property name="title">
               <string>Editor</string>
@@ -1924,7 +1924,7 @@
               <item row="0" column="1">
                <layout class="QFormLayout" name="formLayout">
                 <property name="formAlignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                 </property>
                 <item row="0" column="0">
                  <widget class="QCheckBox" name="tabIndentCheckBox">
@@ -2014,10 +2014,10 @@
               <item row="0" column="0">
                <layout class="QFormLayout" name="formLayout_2">
                 <property name="labelAlignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                 </property>
                 <property name="formAlignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                 <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
                 </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label">
@@ -2174,7 +2174,7 @@
                    <string notr="true">margin-top: 2; margin-bottom: 2; padding: 2</string>
                   </property>
                   <property name="sizeAdjustPolicy">
-                   <enum>QComboBox::AdjustToContents</enum>
+                   <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
                   </property>
                   <item>
                    <property name="text">
@@ -2290,7 +2290,7 @@
            <item row="1" column="0">
             <spacer name="verticalSpacer">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -2309,7 +2309,7 @@
               <item row="1" column="0">
                <spacer name="horizontalSpacer_2">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -2420,7 +2420,7 @@
                      <string>Font scaling</string>
                     </property>
                     <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -2430,10 +2430,10 @@
                   <item>
                    <spacer name="horizontalSpacer_5">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
+                     <enum>QSizePolicy::Policy::Fixed</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -2449,7 +2449,7 @@
                      <string>Font offset</string>
                     </property>
                     <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -2459,7 +2459,7 @@
                   <item>
                    <spacer name="horizontalSpacer_21">
                     <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                     <enum>Qt::Orientation::Horizontal</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -2505,7 +2505,7 @@
                  <item>
                   <spacer name="horizontalSpacer_9">
                    <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                    <enum>Qt::Orientation::Horizontal</enum>
                    </property>
                    <property name="sizeHint" stdset="0">
                     <size>
@@ -2528,97 +2528,14 @@
            <string>Environment</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0" alignment="Qt::AlignTop">
+           <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QFrame" name="frame_3">
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <layout class="QGridLayout" name="environLayout">
+               <layout class="QGridLayout" name="environLayout" columnstretch="0,0,1,0">
                 <property name="verticalSpacing">
                  <number>4</number>
                 </property>
-                <item row="8" column="3">
-                 <widget class="QToolButton" name="sfdirToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="17" column="0">
-                 <widget class="QLabel" name="label_25">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Select the directory of the QuteApp SDK to enable building of cross platform standalone applications.</string>
-                  </property>
-                  <property name="text">
-                   <string>QuteApp SDK Dir</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="17" column="2">
-                 <widget class="QLineEdit" name="sdkLineEdit">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="11" column="0">
-                 <widget class="QLabel" name="label_28">
-                  <property name="text">
-                   <string>Favorite dir</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="10" column="3">
-                 <widget class="QToolButton" name="rawWaveToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="13" column="3">
-                 <widget class="QToolButton" name="pythonDirToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QToolButton" name="opcode6dir64ToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="14" column="0">
-                 <widget class="QLabel" name="label_29">
-                  <property name="text">
-                   <string>Python Executable</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="13" column="2">
-                 <widget class="QLineEdit" name="pythonDirLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="16" column="0">
-                 <widget class="QLabel" name="label_30">
-                  <property name="text">
-                   <string>Log file</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="16" column="3">
-                 <widget class="QToolButton" name="logFileToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_7">
                   <property name="toolTip">
@@ -2629,28 +2546,14 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="2">
-                 <widget class="QLineEdit" name="CsdocdirLineEdit">
-                  <property name="toolTip">
-                   <string>Path to the html folder with the manual</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="18" column="2">
-                 <widget class="QLineEdit" name="templateLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="11" column="3">
-                 <widget class="QToolButton" name="favoriteToolButton">
+                <item row="13" column="3">
+                 <widget class="QToolButton" name="csoundExecutableToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="0">
+                <item row="4" column="0">
                  <widget class="QCheckBox" name="SadirCheckBox">
                   <property name="enabled">
                    <bool>true</bool>
@@ -2666,41 +2569,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="3">
-                 <widget class="QToolButton" name="opcodedirToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="14" column="3">
-                 <widget class="QToolButton" name="pythonExecutableToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="2">
-                 <widget class="QLineEdit" name="SsdirLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default directory for input (source) audio and MIDI files. Used if no full path is given for sound files. May be used in conjunction with SFDIR to set separate input and output directories. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="2">
-                 <widget class="QLineEdit" name="SfdirLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Default directory for sound files. Used if no full path is given for sound files. </string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="8" column="0">
+                <item row="6" column="0">
                  <widget class="QCheckBox" name="SfdirCheckBox">
                   <property name="enabled">
                    <bool>true</bool>
@@ -2717,14 +2586,157 @@ Default directory for sound files. Used if no full path is given for sound files
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="2">
-                 <widget class="QLineEdit" name="rawWaveLineEdit">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Used by the STK opcodes to find the raw wave files. Only relevant if you are using STK wrapper opcodes like STKBowed or STKBrass. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <item row="8" column="3">
+                 <widget class="QToolButton" name="rawWaveToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="16" column="3">
+                 <widget class="QToolButton" name="templateToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="11" column="2">
+                 <widget class="QLineEdit" name="pythonDirLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="16" column="2">
+                 <widget class="QLineEdit" name="templateLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="12" column="0">
+                 <widget class="QLabel" name="label_29">
+                  <property name="text">
+                   <string>Python Executable</string>
                   </property>
                  </widget>
                 </item>
                 <item row="10" column="0">
+                 <widget class="QLabel" name="label_42">
+                  <property name="text">
+                   <string>Examples dir</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="14" column="2">
+                 <widget class="QLineEdit" name="logFileLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="12" column="2">
+                 <widget class="QLineEdit" name="pythonExecutableLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="9" column="3">
+                 <widget class="QToolButton" name="favoriteToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLineEdit" name="Opcode7dir64LineEdit">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Defines the location of csound plugins for the 64-bit precision version.&lt;/p&gt;&lt;p&gt;External plugins should be installed in this folder&lt;/p&gt;&lt;p&gt;Use the button &amp;quot;Recommend&amp;quot; to set this value to an appropriate default for your platform&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="16" column="0">
+                 <widget class="QLabel" name="label_39">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Select the directory of the QuteApp SDK to enable building of cross platform standalone applications.</string>
+                  </property>
+                  <property name="text">
+                   <string>Template directory</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="2">
+                 <widget class="QLineEdit" name="sdkLineEdit">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="9" column="0">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>Favorite dir</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="3">
+                 <widget class="QToolButton" name="sdkToolButton">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QCheckBox" name="Opcode7dir64CheckBox">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Defines the location of csound opcode plugins for the double precision (64-bit) version. &lt;span style=&quot; font-weight:600;&quot;&gt;WARNING&lt;/span&gt;: use only for the case were multiple installations of csound coexist. Otherwise csound should be able to find its own builtin plugins without this variable being set. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="text">
+                   <string>OPCODE7DIR64</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QToolButton" name="opcode7dir64ToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="15" column="0">
+                 <widget class="QLabel" name="label_25">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Select the directory of the QuteApp SDK to enable building of cross platform standalone applications.</string>
+                  </property>
+                  <property name="text">
+                   <string>QuteApp SDK Dir</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="2">
+                 <widget class="QLineEdit" name="SfdirLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Default directory for sound files. Used if no full path is given for sound files. </string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="8" column="0">
                  <widget class="QCheckBox" name="rawWaveCheckBox">
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Used by the STK opcodes to find the raw wave files. Only relevant if you are using STK wrapper opcodes like STKBowed or STKBrass. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2737,14 +2749,83 @@ Default directory for sound files. Used if no full path is given for sound files
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="3">
+                <item row="14" column="3">
+                 <widget class="QToolButton" name="logFileToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="3">
                  <widget class="QToolButton" name="ssdirToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="14" column="0">
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>Log file</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="2">
+                 <widget class="QLineEdit" name="SsdirLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default directory for input (source) audio and MIDI files. Used if no full path is given for sound files. May be used in conjunction with SFDIR to set separate input and output directories. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="13" column="0">
+                 <widget class="QLabel" name="label_36">
+                  <property name="text">
+                   <string>Csound Executable</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QToolButton" name="csdocdirToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="3">
+                 <widget class="QToolButton" name="sfdirToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QLineEdit" name="IncdirLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Include directory. Specifies the location of files used by #include statements. </string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLineEdit" name="CsdocdirLineEdit">
+                  <property name="toolTip">
+                   <string>Path to the html folder with the manual</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="11" column="0">
+                 <widget class="QLabel" name="pythonDirlabel">
+                  <property name="text">
+                   <string>Python Script Dir </string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
                  <widget class="QCheckBox" name="IncdirCheckBox">
                   <property name="enabled">
                    <bool>true</bool>
@@ -2760,21 +2841,55 @@ Default directory for sound files. Used if no full path is given for sound files
                   </property>
                  </widget>
                 </item>
-                <item row="18" column="3">
-                 <widget class="QToolButton" name="templateToolButton">
+                <item row="9" column="2">
+                 <widget class="QLineEdit" name="favoriteLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="11" column="3">
+                 <widget class="QToolButton" name="pythonDirToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="3">
+                <item row="17" column="0">
+                 <spacer name="verticalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="13" column="2">
+                 <widget class="QLineEdit" name="csoundExecutableLineEdit">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="3">
+                 <widget class="QToolButton" name="sadirToolButton">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="3">
                  <widget class="QToolButton" name="incdirToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="0">
+                <item row="5" column="0">
                  <widget class="QCheckBox" name="SsdirCheckBox">
                   <property name="enabled">
                    <bool>true</bool>
@@ -2790,189 +2905,21 @@ Default directory for sound files. Used if no full path is given for sound files
                   </property>
                  </widget>
                 </item>
-                <item row="12" column="0">
-                 <widget class="QLabel" name="label_42">
-                  <property name="text">
-                   <string>Examples dir</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QCheckBox" name="Opcodedir64CheckBox">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Select the location of the csound opcode plugin  directory (usually set by the installer)</string>
-                  </property>
-                  <property name="text">
-                   <string>OPCODEDIR64</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QToolButton" name="csdocdirToolButton">
+                <item row="10" column="3">
+                 <widget class="QToolButton" name="examplePathToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="3">
-                 <widget class="QToolButton" name="sadirToolButton">
+                <item row="12" column="3">
+                 <widget class="QToolButton" name="pythonExecutableToolButton">
                   <property name="text">
                    <string>...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="2">
-                 <widget class="QLineEdit" name="Opcode6dir64LineEdit">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Defines the location of csound plugins for the 64-bit precision version.&lt;/p&gt;&lt;p&gt;External plugins should be installed in this folder&lt;/p&gt;&lt;p&gt;Use the button &amp;quot;Recommend&amp;quot; to set this value to an appropriate default for your platform&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="3">
-                 <widget class="QToolButton" name="opcodedir64ToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="17" column="3">
-                 <widget class="QToolButton" name="sdkToolButton">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="2">
-                 <widget class="QLineEdit" name="IncdirLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Include directory. Specifies the location of files used by #include statements. </string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="19" column="0">
-                 <spacer name="verticalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>40</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="13" column="0">
-                 <widget class="QLabel" name="pythonDirlabel">
-                  <property name="text">
-                   <string>Python Script Dir </string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QCheckBox" name="Opcode6dir64CheckBox">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Defines the location of csound opcode plugins for the double precision (64-bit) version. &lt;span style=&quot; font-weight:600;&quot;&gt;WARNING&lt;/span&gt;: use only for the case were multiple installations of csound coexist. Otherwise csound should be able to find its own builtin plugins without this variable being set. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="text">
-                   <string>OPCODE6DIR64</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QCheckBox" name="OpcodedirCheckBox">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Select the location of the csound opcode plugin  directory (usually set by the installer)</string>
-                  </property>
-                  <property name="text">
-                   <string>OPCODEDIR</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="18" column="0">
-                 <widget class="QLabel" name="label_39">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="toolTip">
-                   <string>Select the directory of the QuteApp SDK to enable building of cross platform standalone applications.</string>
-                  </property>
-                  <property name="text">
-                   <string>Template directory</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="14" column="2">
-                 <widget class="QLineEdit" name="pythonExecutableLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="15" column="0">
-                 <widget class="QLabel" name="label_36">
-                  <property name="text">
-                   <string>Csound Executable</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="2">
-                 <widget class="QLineEdit" name="Opcodedir64LineEdit">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="15" column="2">
-                 <widget class="QLineEdit" name="csoundExecutableLineEdit">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="15" column="3">
-                 <widget class="QToolButton" name="csoundExecutableToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="16" column="2">
-                 <widget class="QLineEdit" name="logFileLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="11" column="2">
-                 <widget class="QLineEdit" name="favoriteLineEdit">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="6" column="2">
+                <item row="4" column="2">
                  <widget class="QLineEdit" name="SadirLineEdit">
                   <property name="enabled">
                    <bool>true</bool>
@@ -2982,22 +2929,15 @@ Default directory for sound files. Used if no full path is given for sound files
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="2">
-                 <widget class="QLineEdit" name="OpcodedirLineEdit">
-                  <property name="enabled">
-                   <bool>false</bool>
+                <item row="8" column="2">
+                 <widget class="QLineEdit" name="rawWaveLineEdit">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Used by the STK opcodes to find the raw wave files. Only relevant if you are using STK wrapper opcodes like STKBowed or STKBrass. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
-                <item row="12" column="2">
+                <item row="10" column="2">
                  <widget class="QLineEdit" name="examplePathlineEdit"/>
-                </item>
-                <item row="12" column="3">
-                 <widget class="QToolButton" name="examplePathToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
                 </item>
                </layout>
               </item>
@@ -3011,7 +2951,7 @@ Default directory for sound files. Used if no full path is given for sound files
            <string>External</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_11">
-           <item row="0" column="0" alignment="Qt::AlignTop">
+           <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignTop">
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
               <string>External programs</string>
@@ -3176,7 +3116,7 @@ Default directory for sound files. Used if no full path is given for sound files
                 <item>
                  <spacer name="horizontalSpacer_11">
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
@@ -3221,7 +3161,7 @@ Default directory for sound files. Used if no full path is given for sound files
      <item>
       <spacer name="buttonSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

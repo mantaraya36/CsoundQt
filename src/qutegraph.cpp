@@ -472,7 +472,7 @@ void QuteGraph::setValue(QString text)
         m_getPeakChannel = parts[1].toString();
         qDebug() << "@getPeak channel: " << m_getPeakChannel;
         MYFLT *ptr;
-        csoundGetChannelPtr(m_ud->csound, &ptr,
+        csoundGetChannelPtr(m_ud->csound, (void **) &ptr,
                             m_getPeakChannel.toLocal8Bit().constData(),
                             CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL);
         m_peakChannelPtr = ptr;
@@ -1667,10 +1667,23 @@ void QuteTableWidget::updatePath() {
         return;
     }
 
-    MYFLT *data;
-    int tabsize = csoundGetTable(m_ud->csound, &data, m_tabnum);
-    if(tabsize == 0 || data == nullptr) {
-        QDEBUG << "Table not found" << m_tabnum;
+
+    //CS7 changes
+
+    int tabsize = csoundTableLength(m_ud->csound, m_tabnum);
+    MYFLT *data = nullptr;
+    if (tabsize>0) {
+
+        data = new double[tabsize]();
+        // old: csoundTableCopyOut(m_ud->csound, m_tabnum, data, 0);
+        int result = csoundGetTable(m_ud->csound, &data, m_tabnum);
+        if (result<=0) {
+            QDEBUG << "Table could not be read: " << m_tabnum;
+            return;
+        }
+
+    } else {
+        QDEBUG << "Table not found: " << m_tabnum;
         return;
     }
 
@@ -1726,6 +1739,7 @@ void QuteTableWidget::updatePath() {
         poly.append(QPointF(x2, y2));
     }
     m_path.addPolygon(poly);
+    delete[] data;
 }
 
 void QuteTableWidget::updateData(int tabnum) {

@@ -106,6 +106,14 @@ endin
 i 1 0 1; plays the whole soundfile
 </CsScore>
 </CsoundSynthesizer>
+
+
+
+
+
+
+
+
 <bsbPanel>
  <label>Widgets</label>
  <objectName/>
@@ -621,6 +629,37 @@ i 1 0 1; plays the whole soundfile
   </bgcolor>
   <bordermode>noborder</bordermode>
   <borderradius>1</borderradius>
+  <borderwidth>0</borderwidth>
+ </bsbObject>
+ <bsbObject version="2" type="BSBDisplay">
+  <objectName>wdmix</objectName>
+  <x>270</x>
+  <y>215</y>
+  <width>80</width>
+  <height>30</height>
+  <uuid>{d552107d-32e3-468a-9354-b1d5a85ef9d4}</uuid>
+  <visible>true</visible>
+  <midichan>0</midichan>
+  <midicc>-3</midicc>
+  <description/>
+  <label>0.58</label>
+  <alignment>left</alignment>
+  <valignment>top</valignment>
+  <font>Liberation Sans</font>
+  <fontsize>14</fontsize>
+  <precision>2</precision>
+  <color>
+   <r>0</r>
+   <g>0</g>
+   <b>0</b>
+  </color>
+  <bgcolor mode="nobackground">
+   <r>255</r>
+   <g>255</g>
+   <b>255</b>
+  </bgcolor>
+  <bordermode>false</bordermode>
+  <borderradius>0</borderradius>
   <borderwidth>0</borderwidth>
  </bsbObject>
 </bsbPanel>

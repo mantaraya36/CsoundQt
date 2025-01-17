@@ -352,7 +352,7 @@ Aborting.</translation>
     <message>
         <location filename="../configdialog.cpp" line="45"/>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation>Keine Echtzeit-Audio-Module gefunden
 Wurde OPCODEDIR64 richtig gesetzt?</translation>
     </message>
@@ -1194,8 +1194,8 @@ Wurde OPCODEDIR64 richtig gesetzt?</translation>
     </message>
     <message>
         <location filename="../configdialog.ui" line="1556"/>
-        <source>OPCODE6DIR64</source>
-        <translation>OPCODE6DIR64</translation>
+        <source>OPCODE7DIR64</source>
+        <translation>OPCODE7DIR64</translation>
     </message>
     <message>
         <location filename="../configdialog.ui" line="1573"/>

@@ -31,6 +31,9 @@
 #include <csound.hpp>
 #include <csPerfThread.hpp>
 #include <cwindow.h> // Necessary for WINDAT struct
+#include <csound_circular_buffer.h> // necessary for csoundCreateCircularBuffer and similar
+#include <csound_graph_display.h> // necessary for WINDAT declaration
+
 
 #ifdef QCS_DEBUGGER
 #include "csdebug.h"
@@ -54,6 +57,7 @@ class QuteWidget;
 
 // Csound 5.10 needs to be destroyed for opcodes like ficlose to flush the output
 // This still necessary for 5.12 and Csound6
+
 #define QCS_DESTROY_CSOUND
 
 typedef enum {

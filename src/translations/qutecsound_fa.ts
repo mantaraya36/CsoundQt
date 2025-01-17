@@ -961,7 +961,7 @@ Aborting.</source>
     </message>
     <message>
         <location filename="../configdialog.ui" line="1556"/>
-        <source>OPCODE6DIR64</source>
+        <source>OPCODE7DIR64</source>
         <translation></translation>
     </message>
     <message>
@@ -1069,9 +1069,9 @@ Aborting.</source>
     <message>
         <location filename="../configdialog.cpp" line="45"/>
         <source>No real-time audio modules were found.
-Make sure OPCODE6DIR64 is set properly in your system or the configuration dialog.</source>
+Make sure OPCODE7DIR64 is set properly in your system or the configuration dialog.</source>
         <translation>هیچ ماژولِ صوتیِ بهنگام یافت نشد.
-از اینکه OPCODE6DIR64 در سیستم شما یا در پیکربندی، درست تنظیم شده است، اطمینان حاصل کنید.</translation>
+از اینکه OPCODE7DIR64 در سیستم شما یا در پیکربندی، درست تنظیم شده است، اطمینان حاصل کنید.</translation>
     </message>
     <message>
         <location filename="../configdialog.cpp" line="107"/>

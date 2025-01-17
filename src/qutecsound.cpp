@@ -44,7 +44,12 @@
 #include "risset.h"
 #include <thread>
 
+<<<<<<< HEAD
 //#include <QTextCodec> // necessary for deprecated QTextDecoder
+=======
+#include <csound_compiler.h> // csound7: needed for TREE structure
+
+>>>>>>> refs/heads/csound7
 
 
 #ifdef Q_OS_WIN
@@ -1324,18 +1329,12 @@ void CsoundQt::setupEnvironment()
 #endif
     // csoundGetEnv must be called after Compile or Precompile,
     // But I need to set OPCODEDIR before compile.... So I can't know keep the old OPCODEDIR
-    if (m_options->opcodedirActive) {
-        csoundSetGlobalEnv("OPCODEDIR", m_options->opcodedir.toLatin1().constData());
-    }
-    if (m_options->opcodedir64Active) {
-        csoundSetGlobalEnv("OPCODEDIR64", m_options->opcodedir64.toLatin1().constData());
-    }
-    if (m_options->opcode6dir64Active) {
-        csoundSetGlobalEnv("OPCODE6DIR64", m_options->opcode6dir64.toLatin1().constData());
+    if (m_options->opcode7dir64Active) {
+        csoundSetGlobalEnv("OPCODE7DIR64", m_options->opcode7dir64.toLatin1().constData());
     }
 #ifdef Q_OS_WIN32
-	// if opcodes are in the same directory or in ./plugins64, then set OPCODE6DIR64 to the bundled plugins
-	// no need to support 32-opcodes any more, set only OPCODE6DIR64
+	// if opcodes are in the same directory or in ./plugins64, then set OPCODE7DIR64 to the bundled plugins
+	// no need to support 32-opcodes any more, set only OPCODE7DIR64
 	QString opcodedir;
 	if (QFile::exists(initialDir+"/rtpa.dll" )) {
 		opcodedir = initialDir;
@@ -1345,23 +1344,15 @@ void CsoundQt::setupEnvironment()
 		opcodedir = QString();
 	}
 	if (!opcodedir.isEmpty()) {
-		qDebug() << "Setting OPCODE6DIR64 to: " << opcodedir;
-		csoundSetGlobalEnv("OPCODE6DIR64", opcodedir.toLocal8Bit().constData());
+        qDebug() << "Setting OPCODE7DIR64 to: " << opcodedir;
+        csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
 	}
 #endif
 #ifdef Q_OS_MACOS
     // Use bundled opcodes if available
-#ifdef USE_DOUBLE
     QString opcodedir = initialDir + "/../Frameworks/CsoundLib64.framework/Resources/Opcodes64";
-#else
-    QString opcodedir = initialDir + "/../Frameworks/CsoundLib.framework/Resources/Opcodes";
-#endif
     if (QFile::exists(opcodedir)) {
-#ifdef USE_DOUBLE
-        csoundSetGlobalEnv("OPCODE6DIR64", opcodedir.toLocal8Bit().constData());
-#else
-        csoundSetGlobalEnv("OPCODE6DIR", opcodedir.toLocal8Bit().constData());
-#endif
+        csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
     }
 #endif
 }
@@ -1535,9 +1526,9 @@ void CsoundQt::createApp()
         }
     }
 
-    if (m_options->opcodedirActive) {
+    if (m_options->opcode7dir64Active) {
         // FIXME allow for OPCODEDIR64 if built for doubles
-        opcodeDir = m_options->opcodedir.toLocal8Bit();
+        opcodeDir = m_options->opcode7dir64.toLocal8Bit();
     }
     else {
 #ifdef USE_DOUBLE
@@ -1560,12 +1551,8 @@ void CsoundQt::createApp()
 #ifdef Q_OS_WIN32
 #endif
 #ifdef Q_OS_MACOS
-#ifdef USE_DOUBLE
-        opcodeDir = "/Library/Frameworks/CsoundLib.framework/Resources/Opcodes";
-#else
-        opcodeDir = "/Library/Frameworks/CsoundLib64.framework/Resources/Opcodes";
-#endif
-        //    opcodeDir = initialDir + "/CsoundQt.app/Contents/Frameworks/CsoundLib.framework/Resources/Opcodes";
+    opcodeDir = "/Library/Frameworks/CsoundLib64.framework/Resources/Opcodes";
+    //    opcodeDir = initialDir + "/CsoundQt.app/Contents/Frameworks/CsoundLib.framework/Resources/Opcodes";
 #endif
 
 
@@ -2970,7 +2957,7 @@ void CsoundQt::openPdfFile(QString name)
 
 void CsoundQt::openFLOSSManual()
 {
-    openExternalBrowser(QUrl("http://en.flossmanuals.net/csound/"));
+    openExternalBrowser(QUrl("https://flossmanual.csound.com/"));
 }
 
 void CsoundQt::openQuickRef()
@@ -3330,7 +3317,7 @@ void CsoundQt::runUtility(QString flags)
         strcpy(argv[index++],files[2].toLocal8Bit());
         int argc = index;
         CSOUND *csoundU;
-        csoundU=csoundCreate(0);
+        csoundU=csoundCreate(nullptr, nullptr);
         csoundSetHostData(csoundU, (void *) m_console);
         csoundSetMessageCallback(csoundU, &CsoundQt::utilitiesMessageCallback);
         // Utilities always run in the same thread as CsoundQt
@@ -3349,10 +3336,8 @@ void CsoundQt::runUtility(QString flags)
 #ifdef Q_OS_WIN32
         script = "";
 #ifdef USE_DOUBLE
-        if (m_options->opcodedir64Active)
-            script += "set OPCODEDIR64=" + m_options->opcodedir64 + "\n";
-        if (m_options->opcode6dir64Active)
-            script += "set OPCODE6DIR64=" + m_options->opcode6dir64 + "\n";
+        if (m_options->opcode7dir64Active)
+            script += "set OPCODE7DIR64=" + m_options->opcode7dir64 + "\n";
 #else
         if (m_options->opcodedirActive)
             script += "set OPCODEDIR=" + m_options->opcodedir + "\n";
@@ -3363,15 +3348,10 @@ void CsoundQt::runUtility(QString flags)
         script += "csound " + flags + "\n";
 #else
         script = "#!/bin/sh\n";
-#ifdef USE_DOUBLE
-        if (m_options->opcodedir64Active)
-            script += "set OPCODEDIR64=" + m_options->opcodedir64 + "\n";
-        if (m_options->opcode6dir64Active)
-            script += "set OPCODE6DIR64=" + m_options->opcode6dir64 + "\n";
-#else
-        if (m_options->opcodedirActive)
-            script += "export OPCODEDIR=" + m_options->opcodedir + "\n";
-#endif
+
+        if (m_options->opcode7dir64Active)
+            script += "set OPCODE7DIR64=" + m_options->opcode7dir64 + "\n";
+
         // Only OPCODEDIR left here as it must be present before csound initializes
 
         script += "cd " + QFileInfo(documentPages[curPage]->getFileName()).absolutePath() + "\n";
@@ -5381,12 +5361,8 @@ void CsoundQt::readSettings()
 #else
     m_options->csdocdir = settings.value("csdocdir", "").toString();
 #endif
-    m_options->opcodedir = settings.value("opcodedir","").toString();
-    m_options->opcodedirActive = settings.value("opcodedirActive",false).toBool();
-    m_options->opcodedir64 = settings.value("opcodedir64","").toString();
-    m_options->opcodedir64Active = settings.value("opcodedir64Active",false).toBool();
-    m_options->opcode6dir64 = settings.value("opcode6dir64","").toString();
-    m_options->opcode6dir64Active = settings.value("opcode6dir64Active",false).toBool();
+    m_options->opcode7dir64 = settings.value("opcode7dir64","").toString();
+    m_options->opcode7dir64Active = settings.value("opcode7dir64Active",false).toBool();
     m_options->sadir = settings.value("sadir","").toString();
     m_options->sadirActive = settings.value("sadirActive","").toBool();
     m_options->ssdir = settings.value("ssdir","").toString();
@@ -5630,12 +5606,8 @@ void CsoundQt::writeSettings(QStringList openFiles, int lastIndex)
 
         settings.beginGroup("Environment");
         settings.setValue("csdocdir", m_options->csdocdir);
-        settings.setValue("opcodedir",m_options->opcodedir);
-        settings.setValue("opcodedirActive",m_options->opcodedirActive);
-        settings.setValue("opcodedir64",m_options->opcodedir64);
-        settings.setValue("opcodedir64Active",m_options->opcodedir64Active);
-        settings.setValue("opcode6dir64",m_options->opcode6dir64);
-        settings.setValue("opcode6dir64Active",m_options->opcode6dir64Active);
+        settings.setValue("opcode7dir64",m_options->opcode7dir64);
+        settings.setValue("opcode7dir64Active",m_options->opcode7dir64Active);
         settings.setValue("sadir",m_options->sadir);
         settings.setValue("sadirActive",m_options->sadirActive);
         settings.setValue("ssdir",m_options->ssdir);
@@ -6102,15 +6074,9 @@ QString CsoundQt::generateScript(bool realtime, QString tempFileName, QString ex
     QString cmdLine = "";
     // Only OPCODEDIR left here as it must be present before csound initializes
     // The problem is that it can't be passed when using the API...
-#ifdef USE_DOUBLE
-    if (m_options->opcodedir64Active)
-        script += "export OPCODEDIR64=" + m_options->opcodedir64 + "\n";
-    if (m_options->opcode6dir64Active)
-        script += "export OPCODE6DIR64=" + m_options->opcode6dir64 + "\n";
-#else
-    if (m_options->opcodedirActive)
-        script += "export OPCODEDIR=" + m_options->opcodedir + "\n";
-#endif
+
+    if (m_options->opcode7dir64Active)
+        script += "export OPCODE7DIR64=" + m_options->opcode7dir64 + "\n";
 
 #ifndef Q_OS_WIN32
     script += "cd " + QFileInfo(documentPages[curPage]->getFileName()).absolutePath() + "\n";

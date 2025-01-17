@@ -82,25 +82,26 @@ int CsoundHtmlWrapper::compileCsd(const QString &filename) {
     if (!m_csoundEngine) {
         return -1;
     }
-#if CS_APIVERSION>=4
-    return csoundCompileCsd(getCsound(), filename.toLocal8Bit());
-#else
-    return csoundCompileCsd(getCsound(), filename.toLocal8Bit().data());
-#endif
+//#if CS_APIVERSION>=4
+    csoundCompileCSD(getCsound(), filename.toLocal8Bit(), 0);
+    return 0;
+//#else
+//    return csoundCompileCSD(getCsound(), filename.toLocal8Bit().data(),0);
+//#endif
 }
 
 int CsoundHtmlWrapper::compileCsdText(const QString &text) {
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundCompileCsdText(getCsound(), text.toLocal8Bit());
+    return csoundCompileCSD(getCsound(), text.toLocal8Bit(),1);
 }
 
 int CsoundHtmlWrapper::compileOrc(const QString &text) {
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundCompileOrc(getCsound(), text.toLocal8Bit());
+    return csoundCompileOrc(getCsound(), text.toLocal8Bit(),0);
 }
 
 double CsoundHtmlWrapper::evalCode(const QString &text) {
@@ -117,12 +118,12 @@ double CsoundHtmlWrapper::get0dBFS() {
     return csoundGet0dBFS(getCsound());
 }
 
-int CsoundHtmlWrapper::getApiVersion() {
-    if (!m_csoundEngine) {
-        return -1;
-    }
-    return csoundGetAPIVersion();
-}
+//int CsoundHtmlWrapper::getApiVersion() {
+//    if (!m_csoundEngine) {
+//        return -1;
+//    }
+//    return csoundGetAPIVersion();
+//}
 
 double CsoundHtmlWrapper::getControlChannel(const QString &name) {
     if (!m_csoundEngine) {
@@ -158,21 +159,21 @@ int CsoundHtmlWrapper::getNchnls() {
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundGetNchnls(getCsound());
+    return csoundGetChannels(getCsound(),0);
 }
 
 int CsoundHtmlWrapper::getNchnlsInput() {
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundGetNchnlsInput(getCsound());
+    return csoundGetChannels(getCsound(), 1);
 }
 
 QString CsoundHtmlWrapper::getOutputName() {
     if (!m_csoundEngine) {
         return QString();
     }
-    return QString(csoundGetOutputName(getCsound()));
+    return QString(); // csound7 comment out QString(csoundGetOutputName(getCsound()));
 }
 
 double CsoundHtmlWrapper::getScoreOffsetSeconds() {
@@ -257,7 +258,8 @@ int CsoundHtmlWrapper::readScore(const QString &text) {
         return -1;
     }
     if (isPlaying()) {
-        return csoundReadScore(getCsound(), text.toLocal8Bit());
+        csoundEventString(getCsound(), text.toLocal8Bit(),0);
+        return 0;
     }
     return -1;
 }
@@ -283,11 +285,12 @@ int CsoundHtmlWrapper::runUtility(const QString &command, int argc, char **argv)
     return csoundRunUtility(getCsound(), command.toLocal8Bit(), argc, argv); // probably does not work from JS due char **
 }
 
-int CsoundHtmlWrapper::scoreEvent(char type, const double *pFields, long numFields) {
+int CsoundHtmlWrapper::scoreEvent(char type, double *pFields, long numFields) {
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundScoreEvent(getCsound(),type, pFields, numFields);
+    csoundEvent(getCsound(),type, pFields, numFields, 0);
+    return 0;
 }
 
 void CsoundHtmlWrapper::setControlChannel(const QString &name, double value) {
@@ -308,11 +311,11 @@ void CsoundHtmlWrapper::setInput(const QString &name){
     if (!m_csoundEngine) {
         return;
     }
-#if CS_APIVERSION>=4
-    csoundSetInput(getCsound(), name.toLocal8Bit());
-#else
-    csoundSetInput(getCsound(), name.toLocal8Bit().data());
-#endif
+//#if CS_APIVERSION>=4
+    //csound7 comment out: csoundSetInput(getCsound(), name.toLocal8Bit());
+//#else
+//    csoundSetInput(getCsound(), name.toLocal8Bit().data());
+//#endif
 }
 
 void CsoundHtmlWrapper::setMessageCallback(QObject *callback){
@@ -324,22 +327,22 @@ int CsoundHtmlWrapper::setOption(const QString &name){
     if (!m_csoundEngine) {
         return -1;
     }
-#if CS_APIVERSION>=4
+//#if CS_APIVERSION>=4
     return csoundSetOption(getCsound(), name.toLocal8Bit());
-#else
-    return csoundSetOption(getCsound(), name.toLocal8Bit().data());
-#endif
+//#else
+//    return csoundSetOption(getCsound(), name.toLocal8Bit().data());
+//#endif
 }
 
 void CsoundHtmlWrapper::setOutput(const QString &name, const QString &type, const QString &format){
     if (!m_csoundEngine) {
         return;
     }
-#if CS_APIVERSION>=4
-    csoundSetOutput(getCsound(), name.toLocal8Bit(), type.toLocal8Bit(), format.toLocal8Bit());
-#else
-    csoundSetOutput(getCsound(), name.toLocal8Bit().data(), type.toLocal8Bit().data(), format.toLocal8Bit().data());
-#endif
+//#if CS_APIVERSION>=4
+    //csound7 comment out// csoundSetOutput(getCsound(), name.toLocal8Bit(), type.toLocal8Bit(), format.toLocal8Bit());
+//#else
+//    csoundSetOutput(getCsound(), name.toLocal8Bit().data(), type.toLocal8Bit().data(), format.toLocal8Bit().data());
+//#endif
 }
 
 void CsoundHtmlWrapper::setScoreOffsetSeconds(double value){
@@ -374,14 +377,21 @@ void CsoundHtmlWrapper::stop(){
     if (!m_csoundEngine) {
         return;
     }
-    csoundStop(getCsound());
+    csoundReset(getCsound());
 }
 
 double CsoundHtmlWrapper::tableGet(int table_number, int index){
     if (!m_csoundEngine) {
         return -1;
     }
-    return csoundTableGet(getCsound(), table_number, index);
+    MYFLT *data;
+    int tableLength = csoundGetTable(getCsound(), &data, table_number);
+    if (tableLength>0 && index<tableLength) {
+        return data[index];
+    } else {
+        QDEBUG << "Could not read table " <<table_number;
+        return -1;
+    }
 }
 
 int CsoundHtmlWrapper::tableLength(int table_number){
@@ -395,7 +405,13 @@ void CsoundHtmlWrapper::tableSet(int table_number, int index, double value){
     if (!m_csoundEngine) {
         return;
     }
-    csoundTableSet(getCsound(), table_number, index, value);
+    MYFLT *data;
+    int tableLength = csoundGetTable(getCsound(), &data, table_number);
+    if (tableLength>0 && index<tableLength) {
+        data[index] = value;
+    } else {
+        QDEBUG << "Could not write to table " <<table_number;
+    }
 }
 
 

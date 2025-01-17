@@ -88,12 +88,8 @@ CsoundOptions::CsoundOptions(ConfigLists *configlists) :
     checkSyntaxBeforeRun = false;
 
 	csdocdir = "";
-	opcodedir = "";
-	opcodedirActive = false;
-	opcodedir64 = "";
-	opcodedir64Active = false;
-	opcode6dir64 = "";
-	opcode6dir64Active = false;
+    opcode7dir64 = "";
+    opcode7dir64Active = false;
 	sadir = "";
 	sadirActive = false;
 	ssdir = "";

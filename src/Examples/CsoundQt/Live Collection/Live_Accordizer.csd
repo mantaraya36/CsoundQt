@@ -214,7 +214,7 @@ e
   <midichan>0</midichan>
   <midicc>0</midicc>
   <description/>
-  <label>Note that the latency depends on the ksmps value in the orchestra header, the software (csound flag -b) and the hardware (-B) buffer size. See, for instance http://en.flossmanuals.net/csound/ch013_d-live-audio/ for further explanations.
+  <label>Note that the latency depends on the ksmps value in the orchestra header, the software (csound flag -b) and the hardware (-B) buffer size.
 </label>
   <alignment>left</alignment>
   <valignment>top</valignment>

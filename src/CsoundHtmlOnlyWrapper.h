@@ -23,9 +23,15 @@
 #ifndef CsoundHtmlOnlyWrapper_H
 #define CsoundHtmlOnlyWrapper_H
 
+// csound7 : this class need to be rewritten to use Csound class in QThread or csoundPerformanceThread
+// to get rid of csound_threaded.hpp that is not ported to csound7
+
 #include <QObject>
 #include <QDebug>
-#include <csound_threaded.hpp>
+#include "csound_threaded_csqt.hpp"
+//#include <csound.h>
+//#include <csound.hpp> // temporaray substitution
+//#include <csPerfThread.h>
 #include "csoundengine.h"
 
 class CsoundHtmlView;
@@ -51,7 +57,7 @@ public slots:
     double EvalCode(const QString &text) { return evalCode(text); }
     double get0dBFS();
 	double Get0dBFS() {return get0dBFS();}
-    int getApiVersion();
+    //int getApiVersion(); // not present in Csound7 any more
     double getControlChannel(const QString &name);
 	//double RequestChannel(const QString &name) { return getControlChannel(const QString &name)  } // NB! this works differently, better do not provide this alias!
     qint64 getCurrentTimeSamples();
@@ -81,11 +87,12 @@ public slots:
     void setControlChannel(const QString &name, double value);
 	void SetChannel(const QString &name, double value) {setControlChannel(name, value);}
     int setGlobalEnv(const QString &name, const QString &value);
-    void setInput(const QString &name);
+
+    //csound 7 comment out// void setInput(const QString &name);
     // Dummy for now.
     void setMessageCallback(QObject *callback);
     int setOption(const QString &name);
-    void setOutput(const QString &name, const QString &type, const QString &format);
+    //csound7 // void setOutput(const QString &name, const QString &type, const QString &format);
     void setScoreOffsetSeconds(double value);
     void setScorePending(bool value);
     void setStringChannel(const QString &name, const QString &value);
@@ -115,6 +122,7 @@ private:
     QObject *message_callback;
     ConsoleWidget *console;
     CsoundThreaded csound;
+    //Csound csound;
     CsoundHtmlView *csoundHtmlView;
 private:
     CsoundOptions *m_options;

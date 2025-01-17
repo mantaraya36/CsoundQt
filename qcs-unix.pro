@@ -38,7 +38,9 @@ DEFAULT_PORTMIDI_DIR +=  /usr/local/include
 include(config.pri)
 
 # Use results from config step
-LIBS *= -L$${CSOUND_LIBRARY_DIR}
+#LIBS *= -L$${CSOUND_LIBRARY_DIR}
+
+
 rtmidi {
 DEFINES += __LINUX_ALSASEQ__
 DEFINES += __LINUX_ALSA__
@@ -65,9 +67,10 @@ quteapp_d {
 message(Bundling QuteApp_d)
 RESOURCES += "src/quteapp_d.qrc"
 }
-build32:LCSOUND = -lcsound
-build64:LCSOUND = -lcsound64
+build32:LCSOUND = -L$${CSOUND_LIBRARY_DIR} -lcsound
+build64:LCSOUND = -L$${CSOUND_LIBRARY_DIR} -lcsound64
 
-csound6: LCSND = -lcsnd6
-else: LCSND = -lcsnd
+#  libcsnd7 is integrated to libcsound64 in CS7
+#csound6: LCSND = -lcsnd6
+#else: LCSND =  -lcsnd
 

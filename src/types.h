@@ -182,7 +182,7 @@ public:
 		mutex.unlock();
 	}
 
-    void putManyScaled(MYFLT *data, long dataSize, MYFLT scaleFactor) {
+    void putManyScaled(const MYFLT *data, long dataSize, MYFLT scaleFactor) { // csound7 added const
         long space = availableWriteSpace();
         if(dataSize >= space) {
             // qDebug("RingBuffer: Buffer overflow, only writing %ld elements!", space);

@@ -28,7 +28,7 @@
 #include <ole2.h> // for OleInitialize() FLTK bug workaround
 #endif
 
-#include "csound_standard_types.h"
+#include <csound_type_system.h>
 
 #include "csoundengine.h"
 #include "widgetlayout.h"
@@ -59,7 +59,7 @@ CsoundEngine::CsoundEngine(ConfigLists *configlists) :
     m_consoleBufferSize = 0;
     m_recording = false;
 #ifndef QCS_DESTROY_CSOUND
-    ud->csound=csoundCreate( (void *) ud);
+    ud->csound=csoundCreate( (void *) ud, nullptr);
     ud->midiBuffer = csoundCreateCircularBuffer(ud->csound, 1024, sizeof(unsigned char));
     Q_ASSERT(ud->midiBuffer);
 #endif
@@ -83,7 +83,7 @@ CsoundEngine::~CsoundEngine()
     m_msgUpdateThread.waitForFinished(); // Join the message thread
     stop();
 #ifndef QCS_DESTROY_CSOUND
-    csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer);
+    //csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer); // CS7 circular buffer destroyed in csoundDestroy
     csoundDestroy(ud->csound);
 #endif
     delete ud;
@@ -97,11 +97,15 @@ void CsoundEngine::outputValueCallback (CSOUND *csound,
 {
     // Called by the csound running engine when 'outvalue' opcode is used
     // To pass data from Csound to CsoundQt
+    CS_TYPE const *csChannelType = (CS_TYPE *) channelType;
+    QString channelTypeName = QString(csChannelType->varTypeName).toLower();
+    // OR: use new function in Csound API:  PUBLIC const char *csoundGetChannelVarType(CSOUND *csound, const char *name);
+
     CsoundUserData *ud = (CsoundUserData *) csoundGetHostData(csound);
-    if (channelType == &CS_VAR_TYPE_S) {
+    if (channelTypeName == "s") {
         ud->csEngine->passOutString(channelName, (const char *) channelValuePtr);
     }
-    else if (channelType == &CS_VAR_TYPE_K){
+    else if (channelTypeName == "k"){
         ud->csEngine->passOutValue(channelName, *((MYFLT *)channelValuePtr));
     } else {
         QDEBUG << "Unsupported type";
@@ -115,8 +119,11 @@ void CsoundEngine::inputValueCallback (CSOUND *csound,
 {
     // Called by the csound running engine when 'invalue' opcode is used
     // To pass data from CsoundQt to Csound
+
+    CS_TYPE const *csChannelType = (CS_TYPE *) channelType;
+    QString channelTypeName = QString(csChannelType->varTypeName).toLower();
     CsoundUserData *ud = (CsoundUserData *) csoundGetHostData(csound);
-    if (channelType == &CS_VAR_TYPE_S) { // channel is a string channel
+    if (channelTypeName == "s") { // channel is a string channel
         char *string = (char *) channelValuePtr;
         QString newValue = ud->wl->getStringForChannel(channelName);
         int maxlen = csoundGetChannelDatasize(csound, channelName);
@@ -127,7 +134,7 @@ void CsoundEngine::inputValueCallback (CSOUND *csound,
             string[0] = '\0';
         }
     }
-    else if (channelType == &CS_VAR_TYPE_K) {  // Not a string channel
+    else if (channelTypeName == "k") {  // Not a string channel
         //FIXME check if mouse tracking is active, and move this from here
         MYFLT *value = (MYFLT *) channelValuePtr;
         if(!strcmp(channelName, "_Mouse")) {
@@ -316,7 +323,7 @@ void CsoundEngine::csThread(void *data)
 {
     CsoundUserData* udata = (CsoundUserData*)data;
     if (!(udata->flags & QCS_NO_COPY_BUFFER)) {
-        MYFLT *outputBuffer = csoundGetSpout(udata->csound);
+        MYFLT const *outputBuffer = csoundGetSpout(udata->csound);
         // outputBufferSize == ksmps
         long numSamples = udata->outputBufferSize * udata->numChnls;
         udata->audioOutputBuffer.putManyScaled(outputBuffer, numSamples,
@@ -359,7 +366,7 @@ void CsoundEngine::readWidgetValues(CsoundUserData *ud)
         QHash<QString, double>::const_iterator i;
         QHash<QString, double>::const_iterator end = ud->wl->newValues.constEnd();
         for (i = ud->wl->newValues.constBegin(); i != end; ++i) {
-            if(csoundGetChannelPtr(ud->csound, &pvalue, i.key().toLocal8Bit().constData(),
+            if(csoundGetChannelPtr(ud->csound, (void **)&pvalue, i.key().toLocal8Bit().constData(),
                                    CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) == 0) {
                 // 0 == success
                 *pvalue = (MYFLT) i.value();
@@ -385,7 +392,7 @@ void CsoundEngine::writeWidgetValues(CsoundUserData *ud)
     MYFLT* pvalue;
     for (int i = 0; i < ud->outputChannelNames.size(); i++) {
         if (ud->outputChannelNames[i] != ""
-                && csoundGetChannelPtr(ud->csound, &pvalue,
+                && csoundGetChannelPtr(ud->csound, (void **) &pvalue,
                                        ud->outputChannelNames[i].toLocal8Bit().constData(),
                                        CSOUND_OUTPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) == 0) {
             if(ud->previousOutputValues[i] != *pvalue) {
@@ -396,7 +403,7 @@ void CsoundEngine::writeWidgetValues(CsoundUserData *ud)
     }
     for (int i = 0; i < ud->outputStringChannelNames.size(); i++) {
         if (ud->outputStringChannelNames[i] != ""
-                && csoundGetChannelPtr(ud->csound, &pvalue,
+                && csoundGetChannelPtr(ud->csound, (void **) &pvalue,
                                        ud->outputStringChannelNames[i].toLocal8Bit().constData(),
                                        CSOUND_OUTPUT_CHANNEL | CSOUND_STRING_CHANNEL) == 0) {
             char chanString[2048]; // large enough for long strings in displays
@@ -533,7 +540,7 @@ void CsoundEngine::evaluate(QString code)
 {
     CSOUND *csound = getCsound();
     if (csound) {
-        csoundCompileOrc(csound, code.toLatin1());
+        csoundCompileOrc(csound, code.toLatin1(), 0); // or should the last parameter be 1 fo async?
         queueMessage(tr("Csound code evaluated.\n"));
     } else {
         queueMessage(tr("Csound is not running. Code not evaluated."));
@@ -715,7 +722,7 @@ int CsoundEngine::checkSyntax() {
     CsoundOptions options(m_options);
     options.checkSyntaxOnly = true;
 
-    ud->csound = csoundCreate((void *) ud);
+    ud->csound = csoundCreate((void *) ud, nullptr);
     QDEBUG << "$$$ checkSyntax 2";
 
     eventQueueSize = 0;
@@ -781,12 +788,12 @@ int CsoundEngine::runCsound()
         consoles[i]->reset();
     }
 #ifdef QCS_DESTROY_CSOUND
-    ud->csound=csoundCreate((void *) ud);
+    ud->csound=csoundCreate((void *) ud, nullptr);
     ud->midiBuffer = csoundCreateCircularBuffer(ud->csound, 1024, sizeof(unsigned char));
     Q_ASSERT(ud->midiBuffer);
     ud->virtualMidiBuffer = csoundCreateCircularBuffer(ud->csound, 1024, sizeof(unsigned char));
     Q_ASSERT(ud->virtualMidiBuffer);
-    // csoundFlushCircularBuffer(ud->csound, ud->midiBuffer);
+    csoundFlushCircularBuffer(ud->csound, ud->midiBuffer);
 #endif
 #ifdef QCS_DEBUGGER
     if(m_debugging) {
@@ -807,7 +814,10 @@ int CsoundEngine::runCsound()
     }
 #endif
     if(!m_options.useCsoundMidi) {
-        csoundSetHostImplementedMIDIIO(ud->csound, 1);
+        // CS7
+        // csoundSetHostImplementedMIDIIO(ud->csound, 1);
+        csoundSetHostMIDIIO(ud->csound);
+
         csoundSetExternalMidiInOpenCallback(ud->csound, &midiInOpenCb);
         csoundSetExternalMidiReadCallback(ud->csound, &midiReadCb);
         csoundSetExternalMidiInCloseCallback(ud->csound, &midiInCloseCb);
@@ -818,9 +828,12 @@ int CsoundEngine::runCsound()
     }
     csoundCreateMessageBuffer(ud->csound, 0);
 
+    // CS7 - maybe better ditch FLTK support
+    /*
     if (m_options.enableFLTK) {
         // Disable FLTK graphs, but allow FLTK widgets.
         int *var = (int*) csoundQueryGlobalVariable(ud->csound, "FLTK_Flags");
+        // use Qt equivalent
         if (var) {
             *var = 4;
         } else {
@@ -845,6 +858,8 @@ int CsoundEngine::runCsound()
             qDebug() << "Error reading the FTLK_Flags variable";
         }
     }
+    */
+
     csoundRegisterKeyboardCallback(ud->csound,
                                    &CsoundEngine::keyEventCallback,
                                    (void *) ud, CSOUND_CALLBACK_KBD_EVENT | CSOUND_CALLBACK_KBD_TEXT);
@@ -865,13 +880,13 @@ int CsoundEngine::runCsound()
     csoundSetKillGraphCallback(ud->csound, &CsoundEngine::killGraphCallback);
     csoundSetExitGraphCallback(ud->csound, &CsoundEngine::exitGraphCallback);
     if (!m_options.fileName1.endsWith(".html", Qt::CaseInsensitive)) {
-#if CS_APIVERSION>=4
+//#if CS_APIVERSION>=4
         char const **argv;// since there was change in Csound API
         argv = (const char **) calloc(33, sizeof(char*));
-#else
-        char **argv;
-        argv = (char **) calloc(33, sizeof(char*));
-#endif
+//#else
+//        char **argv;
+//        argv = (char **) calloc(33, sizeof(char*));
+//#endif
 
         int argc = m_options.generateCmdLine((char **)argv);
 
@@ -882,8 +897,10 @@ int CsoundEngine::runCsound()
             free((char *) argv[i]);
         }
         free(argv);
-        if (ud->result != CSOUND_SUCCESS) {
-            qDebug()  << "Csound compile failed! "  << ud->result;
+        int startResult = csoundStart(ud->csound); // must be called in Csound7
+
+        if (ud->result != CSOUND_SUCCESS ||  startResult != CSOUND_SUCCESS)  {
+            qDebug()  << "Csound compile / csoundStart failed! "  << ud->result << startResult;
             // Commenting out flushQues fixes the crash.
             // Investigate closer, if it must be here
             // seems that messages are outputted into console anyway...
@@ -897,7 +914,7 @@ int CsoundEngine::runCsound()
 
     ud->zerodBFS = csoundGet0dBFS(ud->csound);
     ud->sampleRate = csoundGetSr(ud->csound);
-    ud->numChnls = csoundGetNchnls(ud->csound);
+    ud->numChnls = csoundGetChannels(ud->csound, 0);
     ud->outputBufferSize = csoundGetKsmps(ud->csound);
     if (ud->enableWidgets) {
         setupChannels();
@@ -1014,14 +1031,15 @@ void CsoundEngine::cleanupCsound()
     }
 #endif
 
-    csoundCleanup(ud->csound);
+    //csoundCleanup(ud->csound);
+    csoundReset(ud->csound); // CS7  replacement  csoundCleanup?
     flushQueues();
     csoundDestroyMessageBuffer(ud->csound);
 
 #ifdef QCS_DESTROY_CSOUND
-    csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer);
+    //csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer); // Cs7 destroyed in csoundDestroy
     ud->midiBuffer = nullptr;
-    csoundDestroyCircularBuffer(ud->csound, ud->virtualMidiBuffer);
+    //csoundDestroyCircularBuffer(ud->csound, ud->virtualMidiBuffer); // Cs7 destroyed in csoundDestroy
     ud->virtualMidiBuffer = nullptr;
     csoundDestroy(ud->csound);
     ud->csound = nullptr;
@@ -1052,7 +1070,7 @@ void CsoundEngine::setupChannels()
         //                                                      name        type
         // if type is 0, no new channel is created if it does not exist,
         // the returned value is the channel type
-        int chanType = csoundGetChannelPtr(ud->csound, &pvalue, entry->name, 0);
+        int chanType = csoundGetChannelPtr(ud->csound, (void **) &pvalue, entry->name, 0);
         if (chanType & CSOUND_INPUT_CHANNEL) {
             if ((chanType & CSOUND_CHANNEL_TYPE_MASK) == CSOUND_CONTROL_CHANNEL) {
                 ud->wl->valueMutex.lock();
@@ -1107,7 +1125,7 @@ void CsoundEngine::setupChannels()
     // Force creation of string channels for _Browse widgets
     foreach (QuteWidget *w, widgets) {
         if (w->getChannelName().startsWith("_Browse")) {
-            csoundGetChannelPtr(ud->csound, &pvalue, w->getChannelName().toLocal8Bit(),
+            csoundGetChannelPtr(ud->csound, (void **) &pvalue, w->getChannelName().toLocal8Bit(),
                                 CSOUND_INPUT_CHANNEL | CSOUND_OUTPUT_CHANNEL | CSOUND_STRING_CHANNEL);
             ud->wl->newStringValues.insert(w->getChannelName(), w->getStringValue());
         }

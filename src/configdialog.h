@@ -57,9 +57,7 @@ private slots:
 	void browseInputFilename();
 	void browseOutputFilename();
 	void browseCsdocdir();
-	void browseOpcodedir();
-	void browseOpcodedir64();
-	void browseOpcode6dir64();
+    void browseOpcode7dir64();
 	void browseSadir();
 	void browseSsdir();
 	void browseSfdir();
