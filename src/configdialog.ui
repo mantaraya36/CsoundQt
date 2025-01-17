@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
-    <height>809</height>
+    <width>720</width>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,8 +46,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>854</width>
-        <height>758</height>
+        <width>832</width>
+        <height>751</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_18">
@@ -2532,7 +2532,7 @@
             <widget class="QFrame" name="frame_3">
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <layout class="QGridLayout" name="environLayout">
+               <layout class="QGridLayout" name="environLayout" columnstretch="0,0,1,0">
                 <property name="verticalSpacing">
                  <number>4</number>
                 </property>
