@@ -27,9 +27,6 @@
 #include "documentpage.h"
 #include "documentview.h"
 #include "csoundengine.h"
-#include "liveeventframe.h"
-#include "eventsheet.h"
-#include "liveeventcontrol.h"
 #include "csoundqt.h" // For playParent and renderParent functions (called from button
                         // reserved channels) and for connecting from console to log file
 #include "opentryparser.h"
@@ -102,7 +99,6 @@ void DocumentPage::toggleParameterMode()
 int DocumentPage::setTextString(QString &text)
 {
 	int ret = 0;
-	deleteAllLiveEvents();
 	if (!fileName.endsWith(".csd") && !fileName.isEmpty()) {
         // Put all text since not a csd file (and not default file which has no name)
         m_view->setFullText(text, true);
@@ -114,119 +110,7 @@ int DocumentPage::setTextString(QString &text)
     auto t1 = std::chrono::high_resolution_clock::now();
     auto diff = std::chrono::duration<double, std::milli>(t1-t0).count();
     QDEBUG << "parseAndRemoveWidgetText:" << diff << "ms";
-    /*
-    if (text.contains("<MacOptions>") && text.contains("</MacOptions>")) {
-		QString options = text.right(text.size()-text.indexOf("<MacOptions>"));
-		options.resize(options.indexOf("</MacOptions>") + 13);
-		//     qDebug("<MacOptions> present. \n%s", options.toStdString().c_str());
-        if (text.indexOf("</MacOptions>") + 13 < text.size()
-                && text[text.indexOf("</MacOptions>") + 13] == '\n')
-			text.remove(text.indexOf("</MacOptions>") + 13, 1); //remove final line break
-        if (text.indexOf("<MacOptions>") > 0 && text[text.indexOf("<MacOptions>") - 1] == '\n')
-			text.remove(text.indexOf("<MacOptions>") - 1, 1); //remove initial line break
-		text.remove(text.indexOf("<MacOptions>"), options.size());
-		//     qDebug("<MacOptions> present. %s", getMacOptions("WindowBounds").toStdString().c_str());
-		m_macOptions = options.split('\n');
-	}
-    if (text.contains("<MacPresets>") && text.contains("</MacPresets>")) {
-		m_macPresets = text.right(text.size()-text.indexOf("<MacPresets>"));
-		m_macPresets.resize(m_macPresets.indexOf("</MacPresets>") + 12);
-        if (text.indexOf("</MacPresets>") + 12 < text.size() && text[text.indexOf("</MacPresets>") + 12] == '\n')
-			text.remove(text.indexOf("</MacPresets>") + 12, 1); //remove final line break
-        if (text.indexOf("<MacPresets>") > 0 && text[text.indexOf("<MacPresets>") - 1] == '\n')
-			text.remove(text.indexOf("<MacPresets>") - 1, 1); //remove initial line break
-		text.remove(text.indexOf("<MacPresets>"), m_macPresets.size());
-		//    qDebug("<MacPresets> present.");
-	}
-	else {
-		m_macPresets = "";
-	}
-    if (text.contains("<MacGUI>") && text.contains("</MacGUI>")) {
-		QString m_macGUI = text.right(text.size()-text.indexOf("<MacGUI>"));
-		m_macGUI.resize(m_macGUI.indexOf("</MacGUI>") + 9);
-        if (text.indexOf("</MacGUI>") + 9 < text.size() && text[text.indexOf("</MacGUI>") + 9] == '\n')
-			text.remove(text.indexOf("</MacGUI>") + 9, 1); //remove final line break
-        if (text.indexOf("<MacGUI>") > 0 && text[text.indexOf("<MacGUI>") - 1] == '\n')
-			text.remove(text.indexOf("<MacGUI>") - 1, 1); //remove initial line break
-		text.remove(m_macGUI);
-		if (baseRet < 1) {
-			//FIXME allow multiple
-			m_widgetLayouts[0]->loadMacWidgets(m_macGUI);
-			qDebug("<MacGUI> loaded.");
-		}
-	}
-	else {
-		m_macGUI = "";
-	}
-    if (baseRet != 1) {  // Use the old options only if the new ones are not present
-        // This here is for compatibility with MacCsound (copy output filename from
-        // <MacOptions> to <CsOptions>)
-		QString optionsText = getMacOptions("Options:");
-		if (optionsText.contains(" -o")) {
-			QString outFile = optionsText.mid(optionsText.indexOf(" -o") + 1);
-			int index = outFile.indexOf(" -");
-			if (index > 0) {
-				outFile = outFile.left(index);
-			}
-			optionsText.remove(outFile);
-			setMacOption("Options:", optionsText);
-			index = text.indexOf("<CsOptions>");
-			int endindex = text.indexOf("</CsOptions>");
-            if (index >= 0 && endindex > index) {
-				text.remove(index, endindex - index);
-				text.insert(index, "<CsOptions>\n" + outFile);
-			}
-			else {
-				index = text.indexOf("<CsInstruments>");
-				text.insert(index, "<CsOptions>\n" + outFile + "\n</CsOptions>\n");
-			}
-		}
-		ret = 1;
-	}
-    */
-	// Load Live Event Panels ------------------------
-    while (text.indexOf("<EventPanel") != -1
-           && text.indexOf("<EventPanel") < text.indexOf("</EventPanel>")) {
-		QString liveEventsText = text.mid(text.indexOf("<EventPanel "),
-										  text.indexOf("</EventPanel>") - text.indexOf("<EventPanel ") + 13
-										  + (text[text.indexOf("</EventPanel>") + 14] == '\n' ? 1:0));
-		QDomDocument doc("doc");
-		doc.setContent(liveEventsText);
-		QDomElement panelElement = doc.firstChildElement("EventPanel");
-		QString liveText = panelElement.text();
-		//    qDebug() << liveText;
-		QString panelName = panelElement.attribute("name","");
-		double tempo = panelElement.attribute("tempo","60.0").toDouble();
-		double loop = panelElement.attribute("loop","8.0").toDouble();
-		int posx = panelElement.attribute("x","-1").toDouble();
-		int posy = panelElement.attribute("y","-1").toDouble();
-		int width = panelElement.attribute("width","-1").toDouble();
-		int height = panelElement.attribute("height","-1").toDouble();
-		// TODO recall live event panel visibility
-        //int visibleEnabled = panelElement.attribute("visible","true") == "true";
-		int loopStart = panelElement.attribute("loopStart","0.0").toDouble();
-		int loopEnd = panelElement.attribute("loopEnd","0.0").toDouble();
 
-		LiveEventFrame *panel = createLiveEventPanel();
-		panel->setFromText(liveText);
-		panel->setName(panelName);
-		panel->setTempo(tempo);
-		panel->setLoopLength(loop);
-		panel->setLoopRange(loopStart, loopEnd);
-		m_liveEventControl->appendPanel(panel);
-		if (posx > 5 && posy > 5) {
-			panel->move(posx, posy);
-		}
-		if (width > 100 && height > 80) {
-			panel->resize(width, height);
-		}
-		panel->hide();
-		text.remove(liveEventsText);
-	}
-	//  if (m_liveFrames.size() == 0) {
-	//    LiveEventFrame *e = createLiveEventPanel();
-	//    e->setFromText(QString()); // Must set blank for undo history point
-    //  }
     // This must be last as some of the text has been removed along the way
     m_view->setFullText(text,true);
     m_view->setModified(false);
@@ -310,7 +194,8 @@ QString DocumentPage::getFullText()
 			fullText += macPresets + "\n";  // Put old format for backward compatibility
 		}
 	}
-	QString liveEventsText = "";
+/*
+    QString liveEventsText = "";
 	if (saveLiveEvents) { // Only add live events sections if file is a csd file
 		for (int i = 0; i < m_liveFrames.size(); i++) {
 			liveEventsText += m_liveFrames[i]->getPlainText();
@@ -318,6 +203,7 @@ QString DocumentPage::getFullText()
 		}
 		fullText += liveEventsText;
 	}
+*/
 	if (m_lineEnding == 1) { // Windows line ending mode
 		fullText.replace("\n", "\r\n");
         fullText.replace("\r\r\n", "\r\n");
@@ -408,14 +294,6 @@ int DocumentPage::getViewMode()
 	return m_view->getViewMode();
 }
 
-QString DocumentPage::getLiveEventsText()
-{
-	QString text;
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		text += m_liveFrames[i]->getPlainText();
-	}
-	return text;
-}
 
 QString DocumentPage::wordUnderCursor()
 {
@@ -589,24 +467,6 @@ QString DocumentPage::createNewScope(int x, int y, QString channel)
 	return m_widgetLayouts[0]->createNewScope(x, y, channel);
 }
 
-
-EventSheet* DocumentPage::getSheet(int sheetIndex)
-{
-	if (sheetIndex == -1) {
-		sheetIndex = 0; //FIXME find sheet
-	}
-	if (sheetIndex < m_liveFrames.size() && sheetIndex >= 0) {
-		return m_liveFrames[sheetIndex]->getSheet();
-	}
-    return nullptr;
-}
-
-EventSheet* DocumentPage::getSheet(QString sheetName)
-{
-    (void) sheetName;
-    return nullptr;
-}
-
 int DocumentPage::lineCount(bool countExtras)
 {
 	QString text;
@@ -664,17 +524,6 @@ QString DocumentPage::getFilePath()
 	return fileName.left(fileName.lastIndexOf("/"));
 }
 
-QStringList DocumentPage::getScheduledEvents(unsigned long ksmps)
-{
-	QStringList events;
-	// Called once after every Csound control pass
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		m_liveFrames[i]->getEvents(ksmps, &events);
-	}
-	//  m_ksmpscount = ksmpscount;
-	return events;
-}
-
 void DocumentPage::setModified(bool mod)
 {
 	// This slot is triggered by the document children whenever they are modified
@@ -689,9 +538,6 @@ void DocumentPage::setModified(bool mod)
 		m_view->setModified(false);
 		foreach (WidgetLayout  *wl, m_widgetLayouts) {
 			wl->setModified(false);
-		}
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			m_liveFrames[i]->setModified(false);
 		}
 	}
 }
@@ -708,11 +554,6 @@ bool DocumentPage::isModified()
     }
 	foreach (WidgetLayout *wl, m_widgetLayouts) {
         if (wl->isModified()) {
-            return true;
-        }
-	}
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-        if (m_liveFrames[i]->isModified()) {
             return true;
         }
 	}
@@ -797,22 +638,15 @@ void DocumentPage::setLineEnding(int lineEndingMode)
 
 void DocumentPage::copy()
 {
-	qDebug() << m_widgetLayouts[0]->hasFocus();
-	bool liveeventfocus = false;
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		if (m_liveFrames[i]->getSheet()->hasFocus()) {
-			m_liveFrames[i]->getSheet()->copy();
-			liveeventfocus = true;
-		}
-	}
-	if (!liveeventfocus) {
-		if (m_view->childHasFocus()) {
-			m_view->copy();
-		}
-		else  { // FIXME allow multiple layouts
-			m_widgetLayouts[0]->copy();
-		}
-	}
+    qDebug() << m_widgetLayouts[0]->hasFocus();
+
+    if (m_view->childHasFocus()) {
+        m_view->copy();
+    }
+    else  { // FIXME allow multiple layouts
+        m_widgetLayouts[0]->copy();
+    }
+
 }
 
 void DocumentPage::cut()
@@ -825,13 +659,7 @@ void DocumentPage::cut()
 	}
 	if (m_view->childHasFocus()) {
 		m_view->cut();
-	}
-	else {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			if (m_liveFrames[i]->getSheet()->hasFocus())
-				m_liveFrames[i]->getSheet()->cut();
-		}
-	}
+    }
 }
 
 void DocumentPage::paste()
@@ -844,12 +672,6 @@ void DocumentPage::paste()
 	}
 	if (m_view->childHasFocus()) {
 		m_view->paste();
-	}
-	else {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			if (m_liveFrames[i]->getSheet()->hasFocus())
-				m_liveFrames[i]->getSheet()->paste();
-		}
 	}
 }
 
@@ -865,13 +687,7 @@ void DocumentPage::undo()
 	}
 	if (m_view->childHasFocus()) {
 		m_view->undo();
-	}
-	else {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			if (m_liveFrames[i]->getSheet()->hasFocus())
-				m_liveFrames[i]->getSheet()->undo();
-		}
-	}
+    }
 }
 
 void DocumentPage::redo()
@@ -885,12 +701,6 @@ void DocumentPage::redo()
 	}
 	if (m_view->childHasFocus())
 		m_view->redo();
-	else {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			if (m_liveFrames[i]->getSheet()->hasFocus())
-				m_liveFrames[i]->getSheet()->redo();
-		}
-	}
 }
 
 void DocumentPage::gotoNextRow()
@@ -1043,20 +853,6 @@ void DocumentPage::setEditorColors(QColor text, QColor bg) {
     m_view->setColors(text, bg);
 }
 
-void DocumentPage::setScriptDirectory(QString dir)
-{
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		m_liveFrames[i]->getSheet()->setScriptDirectory(dir);
-	}
-}
-
-void DocumentPage::setDebugLiveEvents(bool debug)
-{
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		m_liveFrames[i]->getSheet()->setDebug(debug);
-	}
-}
-
 void DocumentPage::setConsoleBufferSize(int size)
 {
 	m_csEngine->setConsoleBufferSize(size);
@@ -1079,112 +875,6 @@ void DocumentPage::setPythonExecutable(QString pythonExec)
 {
 	m_pythonExecutable = pythonExec;
 }
-
-
-void DocumentPage::showLiveEventPanels()
-{
-	if (fileName.endsWith(".csd")) {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			//   qDebug() << "DocumentPage::showLiveEventPanels  " << visible << (int) this;
-			if (m_liveFrames[i]->isVisible())
-				m_liveFrames[i]->raise();
-			else {
-				if (m_liveFrames[i]->getVisibleEnabled()) {
-					m_liveFrames[i]->setWindowFlags(Qt::Window);
-					m_liveFrames[i]->show();
-					m_liveFrames[i]->raise();
-				}
-			}
-		}
-	}
-
-}
-
-void DocumentPage::hideLiveEventPanels() {
-	if (fileName.endsWith(".csd")) {
-		for (int i = 0; i < m_liveFrames.size(); i++) {
-			m_liveFrames[i]->setWindowFlags(Qt::Widget); // don't hide
-			m_liveFrames[i]->hide();
-		}
-	}
-}
-
-void DocumentPage::showLiveEventControl(bool visible) {
-	if (fileName.endsWith(".csd")) {
-		m_liveEventControl->setVisible(visible);
-		if (visible) {
-			showLiveEventPanels();
-		}
-	}
-}
-
-void DocumentPage::stopAllSlot()
-{
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		m_liveFrames[i]->getSheet()->stopAllEvents();
-	}
-}
-
-void DocumentPage::newPanelSlot()
-{
-	newLiveEventPanel();
-}
-
-void DocumentPage::playPanelSlot(int index)
-{
-	m_liveFrames[index]->getSheet()->sendAllEvents();
-}
-
-void DocumentPage::loopPanelSlot(int index, bool loop)
-{
-	m_liveFrames[index]->loopPanel(loop);
-}
-
-void DocumentPage::stopPanelSlot(int index)
-{
-    (void) index;
-	qDebug() << "Not implemented.";
-}
-
-void DocumentPage::setPanelVisibleSlot(int index, bool visible)
-{
-	if (visible) {
-		m_liveFrames[index]->setWindowFlags(Qt::Window);
-	}
-	else {
-		m_liveFrames[index]->setWindowFlags(Qt::Widget);
-	}
-	m_liveFrames[index]->setVisible(visible);
-	m_liveFrames[index]->setVisibleEnabled(visible);
-}
-
-void DocumentPage::setPanelSyncSlot(int index, int mode)
-{
-    (void) index;
-    (void) mode;
-	qDebug() << "Not implemented.";
-}
-
-void DocumentPage::setPanelNameSlot(int index, QString name)
-{
-	m_liveFrames[index]->setName(name);
-}
-
-void DocumentPage::setPanelTempoSlot(int index, double tempo)
-{
-	m_liveFrames[index]->setTempo(tempo);
-}
-
-void DocumentPage::setPanelLoopLengthSlot(int index, double length)
-{
-	m_liveFrames[index]->setLoopLength(length);
-}
-
-void DocumentPage::setPanelLoopRangeSlot(int index, double start, double end)
-{
-	m_liveFrames[index]->setLoopRange(start,end);
-}
-
 
 void DocumentPage::registerButton(QuteButton *b)
 {
@@ -1232,37 +922,14 @@ void DocumentPage::init(QWidget *parent, OpEntryParser *opcodeTree)
 
 	//connect(m_view, SIGNAL(evaluate(QString)), this, SLOT(evaluate(QString)));
 	connect(m_view,SIGNAL(setHelp()), this, SLOT(setHelp()));
-	connect(m_view, SIGNAL(closeExtraPanels()), this, SLOT(closeExtraPanels()));
 
 	// For logging of Csound output to file
 	connect(m_console, SIGNAL(logMessage(QString)),
 			static_cast<CsoundQt *>(parent), SLOT(logMessage(QString)));
 
-	//  m_widgetLayout->show();
-	m_liveEventControl = new LiveEventControl(parent);
-	m_liveEventControl->hide();
-	connect(m_liveEventControl, SIGNAL(closed()), this, SLOT(liveEventControlClosed()));
-	connect(m_liveEventControl, SIGNAL(stopAll()), this, SLOT(stopAllSlot()));
-	connect(m_liveEventControl, SIGNAL(newPanel()), this, SLOT(newPanelSlot()));
-	connect(m_liveEventControl, SIGNAL(playPanel(int)), this, SLOT(playPanelSlot(int)));
-	connect(m_liveEventControl, SIGNAL(loopPanel(int,bool)), this, SLOT(loopPanelSlot(int,bool)));
-	connect(m_liveEventControl, SIGNAL(stopPanel(int)), this, SLOT(stopPanelSlot(int)));
-    connect(m_liveEventControl, SIGNAL(setPanelVisible(int,bool)),
-            this, SLOT(setPanelVisibleSlot(int,bool)));
-	connect(m_liveEventControl, SIGNAL(setPanelSync(int,int)), this, SLOT(setPanelSyncSlot(int,int)));
-    connect(m_liveEventControl, SIGNAL(setPanelNameSignal(int,QString)),
-            this, SLOT(setPanelNameSlot(int,QString)));
-    connect(m_liveEventControl, SIGNAL(setPanelTempoSignal(int,double)),
-            this, SLOT(setPanelTempoSlot(int,double)));
-    connect(m_liveEventControl, SIGNAL(setPanelLoopLengthSignal(int,double)),
-            this, SLOT(setPanelLoopLengthSlot(int,double)));
-    connect(m_liveEventControl, SIGNAL(setPanelLoopRangeSignal(int,double,double)),
-            this, SLOT(setPanelLoopRangeSlot(int,double,double)));
-	connect(m_liveEventControl, SIGNAL(hidePanels()), this, SLOT(hideLiveEventPanels())  );
 
 	// Connect for clearing marked lines and letting inspector know text has changed
 	connect(m_view, SIGNAL(contentsChanged()), this, SLOT(textChanged()));
-
 
 	connect(m_csEngine, SIGNAL(errorLines(QList<QPair<int, QString> >)),
 			m_view, SLOT(markErrorLines(QList<QPair<int, QString> >)));
@@ -1272,13 +939,6 @@ void DocumentPage::init(QWidget *parent, OpEntryParser *opcodeTree)
 	//  detachWidgets();
 	saveOldFormat = false; // don't save Mac widgets by default
 	m_pythonRunning = false;
-}
-
-void DocumentPage::deleteAllLiveEvents()
-{
-	for (int i = 0; i < m_liveFrames.size(); i++) {
-		deleteLiveEventPanel(m_liveFrames[i]);
-	}
 }
 
 WidgetLayout* DocumentPage::newWidgetLayout()
@@ -1377,10 +1037,6 @@ int DocumentPage::runPython()
 	return p.exitCode();
 }
 
-void DocumentPage::closeExtraPanels()
-{
-	emit closeExtraPanelsSignal();
-}
 
 void DocumentPage::showWidgets(bool show)
 {
@@ -1573,65 +1229,6 @@ void DocumentPage::showWidgetEdit(bool show)
 	m_view->showWidgetEdit(show);
 }
 
-void DocumentPage::newLiveEventPanel(QString text)
-{
-	LiveEventFrame *e = createLiveEventPanel(text);
-	m_liveEventControl->appendPanel(e);
-	e->setWindowFlags(Qt::Window);
-	e->markLoop(0,0);
-	//  e->setVisible(false);
-	e->show();  //Assume that since slot was called must be visible
-}
-
-LiveEventFrame * DocumentPage::createLiveEventPanel(QString text)
-{
-	//  qDebug()";
-	LiveEventFrame *e = new LiveEventFrame("Live Event", m_liveEventControl, Qt::Window);
-	//  e->setVisible(false);
-	//  e->setAttribute(Qt::WA_DeleteOnClose, false);
-	e->getSheet()->setRowCount(1);
-	e->getSheet()->setColumnCount(6);
-
-	if (!text.isEmpty()) {
-		e->setFromText(text);
-	}
-	m_liveFrames.append(e);
-	//  connect(e, SIGNAL(closed()), this, SLOT(liveEventFrameClosed()));
-	connect(e, SIGNAL(newFrameSignal(QString)), this, SLOT(newLiveEventPanel(QString)));
-	connect(e, SIGNAL(deleteFrameSignal(LiveEventFrame *)), this, SLOT(deleteLiveEventPanel(LiveEventFrame *)));
-    connect(e, SIGNAL(renamePanel(LiveEventFrame *, QString)),
-            this, SLOT(renamePanel(LiveEventFrame *,QString)));
-	connect(e, SIGNAL(setLoopRangeFromPanel(LiveEventFrame *, double, double)),
-			this, SLOT(setPanelLoopRange(LiveEventFrame *,double, double)));
-	connect(e, SIGNAL(setTempoFromPanel(LiveEventFrame *, double)),
-			this, SLOT(setPanelTempo(LiveEventFrame *,double)));
-	connect(e, SIGNAL(setLoopEnabledFromPanel(LiveEventFrame *, bool)),
-			this, SLOT(setPanelLoopEnabled(LiveEventFrame *,bool)));
-	connect(e, SIGNAL(setLoopLengthFromPanel(LiveEventFrame *, double)),
-			this, SLOT(setPanelLoopLength(LiveEventFrame *,double)));
-	connect(e->getSheet(), SIGNAL(sendEvent(QString)),this,SLOT(queueEvent(QString)));
-	connect(e->getSheet(), SIGNAL(modified()),this,SLOT(setModified()));
-	return e;
-}
-
-void DocumentPage::deleteLiveEventPanel(LiveEventFrame *frame)
-{
-	//  qDebug() << "deleteLiveEventPanel(LiveEventFrame *frame)";
-	int index = m_liveFrames.indexOf(frame);
-	if (index >= 0) {  // Frames should already have been deleted by parent document view widget
-		if (frame != 0) {
-			disconnect(frame, 0,0,0);
-			disconnect(frame->getSheet(), 0,0,0);
-			m_liveFrames.removeAt(index);
-			m_liveEventControl->removePanel(index);
-			frame->close();
-		}
-	}
-	else {
-		qDebug() << "DocumentPage::deleteLiveEventPanel frame not found";
-	}
-}
-
 
 void DocumentPage::textChanged()
 {
@@ -1641,73 +1238,6 @@ void DocumentPage::textChanged()
 	emit currentTextUpdated();
 }
 
-//void DocumentPage::liveEventFrameClosed()
-//{
-////  qDebug() << "DocumentPage::liveEventFrameClosed()";
-//  LiveEventFrame *e = dynamic_cast<LiveEventFrame *>(QObject::sender());
-////  if (e != 0) { // This shouldn't really be necessary but just in case
-//  bool shown = false;
-//  for (int i = 0; i < m_liveFrames.size(); i++) {
-//    if (m_liveFrames[i]->isVisible()
-//      && m_liveFrames[i] != e)  // frame that called has not been called yet
-//      shown = true;
-//  }
-//  emit liveEventsVisible(shown);
-////  }
-//}
-
-void DocumentPage::liveEventControlClosed()
-{
-	qDebug()<< "DocumentPage::liveEventControlClosed()";
-	showLiveEventControl(false);
-}
-
-void DocumentPage::renamePanel(LiveEventFrame *panel,QString newName)
-{
-	int index = m_liveFrames.indexOf(panel);
-	if (index >= 0) {
-		m_liveEventControl->renamePanel(index, newName);
-		panel->setName(newName);
-	}
-}
-
-void DocumentPage::setPanelLoopRange(LiveEventFrame *panel, double start, double end)
-{
-	int index = m_liveFrames.indexOf(panel);
-	if (index >= 0) {
-		m_liveEventControl->setPanelLoopRange(index, start, end);
-	}
-}
-
-void DocumentPage::setPanelLoopLength(LiveEventFrame *panel, double length)
-{
-	int index = m_liveFrames.indexOf(panel);
-	if (index >= 0) {
-		m_liveEventControl->setPanelLoopLength(index, length);
-	}
-}
-
-void DocumentPage::setPanelTempo(LiveEventFrame *panel, double tempo)
-{
-	int index = m_liveFrames.indexOf(panel);
-	if (index >= 0) {
-		m_liveEventControl->setPanelTempo(index, tempo);
-	}
-}
-
-void DocumentPage::evaluatePython(QString code)
-{
-	emit evaluatePythonSignal(code);
-}
-
-
-void DocumentPage::setPanelLoopEnabled(LiveEventFrame *panel, bool enabled)
-{
-	int index = m_liveFrames.indexOf(panel);
-	if (index >= 0) {
-		m_liveEventControl->setPanelLoopEnabled(index, enabled);
-	}
-}
 
 void DocumentPage::setHighlightingTheme(QString theme) {
     if(m_view == nullptr)

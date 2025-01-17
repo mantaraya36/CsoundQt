@@ -33,9 +33,7 @@
 #include "utilitiesdialog.h"
 #include "graphicwindow.h"
 #include "keyboardshortcuts.h"
-#include "liveeventframe.h"
 #include "about.h"
-#include "eventsheet.h"
 #include "appwizard.h"
 #include "midihandler.h"
 #include "midilearndialog.h"
@@ -286,7 +284,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
             mapper->setMapping(shortcut, i); // tab 0 -> Alt+1, tab 1 -> Alt + 2 etc tab 9 -> Alt + 0
         }
         // Wire the signal mapper to the tab widget index change slot
-        connect(mapper, SIGNAL(mapped(int)), documentTabs, SLOT(setCurrentIndex(int)));
+        connect(mapper, SIGNAL(mappedInt(int)), documentTabs, SLOT(setCurrentIndex(int)));
 #ifdef Q_OS_MACOS
         QShortcut *tabLeft = new QShortcut(QKeySequence(Qt::META | Qt::Key_Left), this);
         QShortcut *tabRight = new QShortcut(QKeySequence(Qt::META | Qt::Key_Right), this);
@@ -333,6 +331,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
     }
 
     m_opcodeTree->setUdos(m_inspector->getUdosMap());
+
     LiveCodeEditor *liveeditor = new LiveCodeEditor(m_scratchPad, m_opcodeTree);
     liveeditor->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     connect(liveeditor, SIGNAL(evaluate(QString)), this, SLOT(evaluate(QString)));
@@ -548,11 +547,8 @@ void CsoundQt::changePage(int index)
             stop(); // TODO How to better handle this rather than forcing stop?
         }
 #endif
-        disconnect(showLiveEventsAct, 0,0,0);
         disconnect(documentPages[curPage], SIGNAL(stopSignal()),0,0);
         auto page = documentPages[curPage];
-        page->hideLiveEventPanels();
-        page->showLiveEventControl(false);
         page->hideWidgets();
         if (!m_options->widgetsIndependent) {
             QRect panelGeometry = widgetPanel->geometry();
@@ -570,7 +566,6 @@ void CsoundQt::changePage(int index)
         auto page = documentPages[curPage];
         setCurrentFile(page->getFileName());
         connectActions();
-        page->showLiveEventControl(showLiveEventsAct->isChecked());
         //    documentPages[curPage]->passWidgetClipboard(m_widgetClipboard);
         if (!m_options->widgetsIndependent) {
             WidgetLayout *w = page->getWidgetLayout();
@@ -729,7 +724,6 @@ void CsoundQt::closeEvent(QCloseEvent *event)
     // These two give faster shutdown times as the panels don't have to be
     // called up as the tabs close
     showWidgetsAct->setChecked(false);
-    showLiveEventsAct->setChecked(false);
     // Using this block this causes HTML5 performance to leave a zombie,
     // not using it causes a crash on exit.
     while (!documentPages.isEmpty()) {
@@ -1185,11 +1179,8 @@ void CsoundQt::deleteTab(int index)
     if (index == -1) {
         index = curPage;
     }
-    disconnect(showLiveEventsAct, 0,0,0);
     DocumentPage *d = documentPages[index];
     d->stop();
-    d->showLiveEventControl(false);
-    d->hideLiveEventPanels();
     midiHandler->removeListener(d);
     if (!m_options->widgetsIndependent) {
         QRect panelGeometry = widgetPanel->geometry();
@@ -2079,7 +2070,6 @@ void CsoundQt::play(bool realtime, int index)
                     showWidgetsAct->setChecked(true);
                 }
                 widgetPanel->setFocus(Qt::OtherFocusReason);
-                page->showLiveEventControl(showLiveEventsAct->isChecked());
                 page->focusWidgets();
             }
         }
@@ -3205,7 +3195,6 @@ void CsoundQt::setCurrentOptionsForPage(DocumentPage *p)
     p->setFontOffset(m_options->fontOffset);
     p->setFontScaling(m_options->fontScaling);
     p->setGraphUpdateRate(m_options->graphUpdateRate);
-    p->setDebugLiveEvents(m_options->debugLiveEvents);
     p->setTextFont(QFont(m_options->font,
                          (int) m_options->fontPointSize));
     p->setLineEnding(m_options->lineEnding);
@@ -3213,7 +3202,6 @@ void CsoundQt::setCurrentOptionsForPage(DocumentPage *p)
                             (int) m_options->consoleFontPointSize));
 	p->setConsoleColors(m_options->consoleFontColor,
 	                    m_options->consoleBgColor);
-    p->setScriptDirectory(m_options->pythonDir);
     p->setPythonExecutable(m_options->pythonExecutable);
     p->useOldFormat(m_options->oldFormat);
     p->setConsoleBufferSize(m_options->consoleBufferSize);
@@ -3454,7 +3442,6 @@ void CsoundQt::setDefaultKeyboardShortcuts()
     midiLearnAct->setShortcut(tr("Ctrl+Shift+M"));
     createCodeGraphAct->setShortcut(tr("")); // was Ctr +4 save it for html view
     raiseInspectorAct->setShortcut(tr("Ctrl+5"));
-    showLiveEventsAct->setShortcut(tr("Ctrl+6"));
 
 #ifdef QCS_QTHTML
     raiseHtml5Act->setShortcut(tr("Ctrl+4")); // Alt-4 was before for Code graph
@@ -3476,7 +3463,6 @@ void CsoundQt::setDefaultKeyboardShortcuts()
     evaluateAct->setShortcut(tr("Shift+Ctrl+E"));
     evaluateSectionAct->setShortcut(tr("Shift+Ctrl+W"));
     scratchPadCsdModeAct->setShortcut(tr("Shift+Alt+S"));
-    raisePythonConsoleAct->setShortcut(tr("Ctrl+7"));
     raiseScratchPadAct->setShortcut(tr("Ctrl+8"));
     killLineAct->setShortcut(tr("Ctrl+K"));
     killToEndAct->setShortcut(tr("Shift+Alt+K"));
@@ -3960,27 +3946,6 @@ void CsoundQt::createActions()
     connect(focusMapper, SIGNAL(mapped(int)), this, SLOT(focusToTab(int)));
     this->addAction(raiseHelpAct);
 
-    showLiveEventsAct = new QAction(QIcon(prefix + "note.png"), tr("Live Events"), this);
-    showLiveEventsAct->setCheckable(true);
-    //  showLiveEventsAct->setChecked(true);  // Unnecessary because it is set by options
-    showLiveEventsAct->setStatusTip(tr("Show Live Events Panels"));
-    showLiveEventsAct->setIconText(tr("Live Events"));
-    showLiveEventsAct->setShortcutContext(Qt::ApplicationShortcut);
-
-    showPythonConsoleAct = new QAction(QIcon(prefix + "pyroom.png"), tr("Python Console"), this);
-    showPythonConsoleAct->setCheckable(true);
-    //  showPythonConsoleAct->setChecked(true);  // Unnecessary because it is set by options
-    showPythonConsoleAct->setStatusTip(tr("Show Python Console"));
-    showPythonConsoleAct->setIconText(tr("Python"));
-    showPythonConsoleAct->setShortcutContext(Qt::ApplicationShortcut);
-
-    raisePythonConsoleAct = new QAction(this);
-    raisePythonConsoleAct->setText(tr("Show/Raise Python Console"));
-    raisePythonConsoleAct->setShortcutContext(Qt::ApplicationShortcut);
-    connect(raisePythonConsoleAct, SIGNAL(triggered()), focusMapper, SLOT(map()));
-    focusMapper->setMapping(raisePythonConsoleAct, 7);
-    this->addAction(raisePythonConsoleAct);
-
     showScratchPadAct = new QAction(QIcon(prefix + "scratchpad.png"), tr("CodePad"), this);
     showScratchPadAct->setCheckable(true);
     //  showPythonConsoleAct->setChecked(true);  // Unnecessary because it is set by options
@@ -4398,8 +4363,6 @@ void CsoundQt::setKeyboardShortcutsList()
     m_keyActions.append(showOverviewAct);
     m_keyActions.append(raiseConsoleAct);
     m_keyActions.append(raiseInspectorAct);
-    m_keyActions.append(showLiveEventsAct);
-    m_keyActions.append(raisePythonConsoleAct);
     m_keyActions.append(raiseScratchPadAct);
     m_keyActions.append(showUtilitiesAct);
     m_keyActions.append(showVirtualKeyboardAct);
@@ -4496,13 +4459,9 @@ void CsoundQt::connectActions()
             doc, SLOT(jumpToLine(int)));
     connect(m_inspector, SIGNAL(Close(bool)), showInspectorAct, SLOT(setChecked(bool)));
 
-    disconnect(showLiveEventsAct, 0,0,0);
-    connect(showLiveEventsAct, SIGNAL(toggled(bool)), doc, SLOT(showLiveEventControl(bool)));
     disconnect(doc, 0,0,0);
-    connect(doc, SIGNAL(liveEventsVisible(bool)), showLiveEventsAct, SLOT(setChecked(bool)));
     connect(doc, SIGNAL(stopSignal()), this, SLOT(markStopped()));
     connect(doc, SIGNAL(setHelpSignal()), this, SLOT(setHelpEntry()));
-    connect(doc, SIGNAL(closeExtraPanelsSignal()), this, SLOT(closeExtraPanels()));
     connect(doc, SIGNAL(currentTextUpdated()), this, SLOT(markInspectorUpdate()));
 
     connect(doc->getView(), SIGNAL(opcodeSyntaxSignal(QString)),
@@ -4678,7 +4637,6 @@ void CsoundQt::createMenus()
     viewMenu->addAction(showUtilitiesAct);
     viewMenu->addAction(createCodeGraphAct);
     viewMenu->addAction(showInspectorAct);
-    viewMenu->addAction(showLiveEventsAct);
     viewMenu->addAction(showScratchPadAct);
 #if defined(QCS_QTHTML)
     viewMenu->addAction(showHtml5Act);
@@ -5811,7 +5769,6 @@ bool CsoundQt::makeNewPage(QString fileName, QString text)
     }
     documentPages.insert(insertPoint, newPage);
     //  documentPages[curPage]->setOpcodeNameList(m_opcodeTree->opcodeNameList());
-    documentPages[curPage]->showLiveEventControl(false);
     setCurrentOptionsForPage(documentPages[curPage]);
 
     // Must set before sending text to set highlighting mode
@@ -6647,18 +6604,6 @@ bool CsoundQt::destroyWidget(QString widgetid,int index)
     return false;
 }
 
-EventSheet* CsoundQt::getSheet(int index, int sheetIndex)
-{
-    if (index == -1) {
-        index = curPage;
-    }
-    if (index < documentTabs->count() && index >= 0) {
-        return documentPages[index]->getSheet(sheetIndex);
-    }
-    else {
-        return NULL;
-    }
-}
 
 CsoundEngine *CsoundQt::getEngine(int index)
 {
@@ -6692,18 +6637,6 @@ void CsoundQt::updateHtmlView()
 }
 #endif
 
-EventSheet* CsoundQt::getSheet(int index, QString sheetName)
-{
-    if (index == -1) {
-        index = curPage;
-    }
-    if (index < documentTabs->count() && index >= 0) {
-        return documentPages[index]->getSheet(sheetName);
-    }
-    else {
-        return NULL;
-    }
-}
 
 void CsoundQt::loadPreset(int preSetIndex, int index) {
     if (index == -1) {

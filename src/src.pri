@@ -8,8 +8,6 @@ FORMS = "src/about.ui" \
     "src/findreplace.ui" \
     "src/keyboardshortcuts.ui" \
     "src/keyselector.ui" \
-    "src/liveeventcontrol.ui" \
-    "src/liveeventframe.ui" \
     "src/utilitiesdialog.ui" \
     "src/appdetailspage.ui" \
     "src/pluginspage.ui" \
@@ -40,8 +38,6 @@ HEADERS = "src/about.h" \
     "src/highlighter.h" \
     "src/inspector.h" \
     "src/keyboardshortcuts.h" \
-    "src/liveeventcontrol.h" \
-    "src/liveeventframe.h" \
     "src/node.h" \
     "src/opentryparser.h" \
     "src/options.h" \
@@ -103,8 +99,6 @@ SOURCES = "src/about.cpp" \
     "src/highlighter.cpp" \
     "src/inspector.cpp" \
     "src/keyboardshortcuts.cpp" \
-    "src/liveeventcontrol.cpp" \
-    "src/liveeventframe.cpp" \
     "src/main.cpp" \
     "src/node.cpp" \
     "src/opentryparser.cpp" \

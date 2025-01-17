@@ -78,7 +78,6 @@ public:
 	QString getMacOptions(QString option);
 	QString getHtmlText();
 	int getViewMode();
-	QString getLiveEventsText();
 	QString wordUnderCursor();
     QString lineUnderCursor();
 	QRect getWidgetLayoutOuterGeometry();
@@ -108,8 +107,6 @@ public:
 	QString createNewConsole(int x = -1, int y = -1, QString channel = QString());
 	QString createNewGraph(int x = -1, int y = -1, QString channel = QString());
 	QString createNewScope(int x = -1, int y = -1, QString channel = QString());
-	EventSheet* getSheet(int sheetIndex);
-	EventSheet* getSheet(QString sheetName);
 	int lineCount(bool countExtras = false);
 	int characterCount(bool countExtras = false);
 	int instrumentCount();
@@ -117,8 +114,7 @@ public:
 	int widgetCount();
 	QString embeddedFiles();
 	QString getFilePath();
-	QStringList getScheduledEvents(unsigned long ksmpscount);
-	bool isModified();
+    bool isModified();
 	bool isRunning();
 	bool isRecording();
 	bool usesFltk();
@@ -166,9 +162,6 @@ public:
 	void setConsoleColors(QColor fontColor, QColor bgColor);
     void setEditorColors(QColor text, QColor background);
 
-	// Event Sheet Properties
-	void setScriptDirectory(QString dir);
-	void setDebugLiveEvents(bool debug);
 	// Internal Options setters
 	void setConsoleBufferSize(int size);
 	void setWidgetEnabled(bool enabled);
@@ -197,7 +190,6 @@ public slots:
 	void perfEnded();
 	void setHelp();
 	int runPython();  // Called when file is a python file
-	void closeExtraPanels();
 	void showWidgets(bool show = true);
 	void hideWidgets();
 	void passSelectedWidget(QuteWidget* widget);
@@ -227,31 +219,11 @@ public slots:
 	void showOther(bool);
 	void showOtherCsd(bool);
 	void showWidgetEdit(bool);
-	// Slots for live events
-	void newLiveEventPanel(QString text = QString());
-	LiveEventFrame * createLiveEventPanel(QString text = QString());
-	void deleteLiveEventPanel(LiveEventFrame *frame);
-	void showLiveEventControl(bool visible);
-	void showLiveEventPanels();
-	void hideLiveEventPanels();
-
-	void stopAllSlot();
-	void newPanelSlot();
-	void playPanelSlot(int index);
-	void loopPanelSlot(int index, bool loop);
-	void stopPanelSlot(int index);
-	void setPanelVisibleSlot(int index, bool visible);
-	void setPanelSyncSlot(int index, int mode);
-	void setPanelNameSlot(int index, QString name);
-	void setPanelTempoSlot(int index, double tempo);
-	void setPanelLoopLengthSlot(int index, double length);
-	void setPanelLoopRangeSlot(int index, double start, double end);
 
 
 private:
 	virtual void init(QWidget *parent,OpEntryParser *opcodeTree);
 	CsoundOptions getParentOptions();
-	void deleteAllLiveEvents();
 	virtual WidgetLayout* newWidgetLayout();
 	QString companionFile;
 	QStringList m_macOptions;
@@ -259,8 +231,6 @@ private:
 	QString m_macGUI;
 	bool m_pythonRunning;
 	QString m_pythonExecutable;
-	QList<LiveEventFrame *> m_liveFrames;
-	LiveEventControl *m_liveEventControl;
 	MidiLearnDialog *m_midiLearn;
 	//    DocumentView *m_view;
 	// Options
@@ -274,25 +244,16 @@ private:
 
 private slots:
 	void textChanged();
-	void liveEventControlClosed();
-	void renamePanel(LiveEventFrame *panel,QString newName);
-	void setPanelLoopRange(LiveEventFrame *panel, double start, double end);
-	void setPanelLoopLength(LiveEventFrame *panel, double length);
-	void setPanelTempo(LiveEventFrame *panel, double tempo);
-	void setPanelLoopEnabled(LiveEventFrame *panel, bool enabled);
-	void evaluatePython(QString code);
 
 signals:
 	void currentTextUpdated();  // To let inspector know it must update
 	void setCurrentAudioFile(QString name);
-	void liveEventsVisible(bool);  // To change the action in the main window
+    //void liveEventsVisible(bool);  // To change the action in the main window
 	void modified();  // Triggered whenever the children change
     void unmodified();
     void stopSignal(); // To tell main application that running has stopped
 	void setHelpSignal(); // Propagated from view
 	void setWidgetClipboardSignal(QString text);
-	void evaluatePythonSignal(QString code);
-	void closeExtraPanelsSignal();
 };
 
 #endif

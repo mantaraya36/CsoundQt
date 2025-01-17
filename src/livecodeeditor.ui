@@ -36,11 +36,6 @@
        <string>Csound Mode</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>Python Mode</string>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>

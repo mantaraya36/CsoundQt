@@ -135,9 +135,7 @@ public:
 	QStringList listWidgetProperties(QString widgetid, int index = -1); // widgetid can be eihter uuid (prefered) or channel
 	bool destroyWidget(QString widgetid, int  index = -1);
 	void loadPreset(int preSetIndex, int index);
-	//Live Event Sheets
-	EventSheet* getSheet(int index = -1, int sheetIndex = -1);
-	EventSheet* getSheet(int index = -1, QString sheetName = QString());
+
 	// Engine
 	CsoundEngine *getEngine(int index = -1);
 	OpEntryParser *m_opcodeTree;
@@ -487,9 +485,6 @@ private:
 
 	QAction *showInspectorAct;
     QAction *raiseInspectorAct;
-	QAction *showLiveEventsAct;
-	QAction *showPythonConsoleAct;
-    QAction *raisePythonConsoleAct;
 	QAction *showScratchPadAct;
     QAction *raiseScratchPadAct;
 	QAction *commentAct;
