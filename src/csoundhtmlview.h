@@ -8,20 +8,9 @@
 #include <QDockWidget>
 #include "csoundhtmlwrapper.h"
 #include "CsoundHtmlOnlyWrapper.h"
-
-#ifdef USE_WEBKIT
-	#include <QtWebKit>
-	#include <QWebView>
-	#include <QWebFrame>
-	#include <QWebInspector>
-#endif
-#ifdef USE_WEBENGINE
-	#include <QtWebEngineWidgets>
-	#include <QtWebChannel/QtWebChannel>
-	#include <QWebEngineView>
-#endif
-
-
+#include <QtWebEngineWidgets>
+#include <QtWebChannel/QtWebChannel>
+#include <QWebEngineView>
 #include <QTemporaryFile>
 
 
@@ -43,21 +32,12 @@ public:
     void setCsoundEngine(CsoundEngine *csEngine);
 	void clear();
     void setOptions(CsoundOptions * options);
-#ifdef USE_WEBKIT
-	QWebView *webView;
-#endif
-#ifdef USE_WEBENGINE
 	QWebChannel channel ;            // Channel for C++ to Javascript communications
     QWebEngineView *webView;	
-#endif
+
 
 public slots:
-#ifdef USE_WEBKIT
-	void addJSObject();
-#endif
-#ifdef USE_WEBENGINE
 	void showDebugWindow();
-#endif
     void removeTemporaryHtmlFile(bool ok);
 
 
@@ -73,9 +53,8 @@ private:
     //QTemporaryFile tempHtml;
     QFile htmlFile;
     CsoundOptions * m_options;
-#ifdef USE_WEBENGINE
 	QString m_debugPort;
-#endif
+
 };
 
 #endif

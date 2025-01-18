@@ -28,6 +28,9 @@
     file might be covered by the GNU Lesser General Public License.
 */
 
+
+// TODO: it is better to rewrite CsoundHtmlOnlyWrapper to use CsoundEngine and not this file.
+
 #ifndef __CSOUND_THREADED_HPP__
 #define __CSOUND_THREADED_HPP__
 
@@ -52,6 +55,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <string>
 
 /**
  * A thread-safe queue, or first-in first-out (FIFO) queue, implemented using
@@ -73,7 +77,7 @@ public:
         lock.unlock();
         condition_variable_.notify_one();
     }
-    bool empty() const
+    bool empty() // const
     {
         std::unique_lock<std::mutex> lock(mutex_);
         return queue_.empty();
@@ -131,6 +135,7 @@ struct CsoundScoreEvent : public CsoundEvent
       int op = 0;
       if (opcode == 'f') op = 1;
       csoundEvent(csound_, op, pfields.data(), pfields.size(), 0); // csound7: no return type here any more, was return csdounEvent
+      return 0;
     }
 };
 
@@ -146,7 +151,8 @@ struct CsoundTextEvent : public CsoundEvent
         events = text;
     }
     virtual int operator ()(CSOUND *csound_) {
-       csoundEventString(csound_, events.data(), 0); // csound7: no return type here any more, was return csdounEventString
+        csoundEventString(csound_, events.data(), 0); // csound7: no return type here any more, was return csdounEventString
+        return 0;
     }
 };
 

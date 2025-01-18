@@ -20,9 +20,7 @@
 # CONFIG+=debugger
 # To support HTML5 via the <html> element in the csd using the Qt WebEngine
 # (preferably use Qt 5.8 or later):
-# CONFIG+=html_webengine
-# If you want to build HTML5 support using QtWebkit framework (Qt 5.5 or earlier):
-# CONFIG+=html_webkit
+# CONFIG+=html_support # NB! before there were options of html_webengine or html_webkit. webkit dropped in v 7.0.0
 # OS X only OPTIONS:
 # CONFIG+=universal  #  To build i386/ppc version. Default is x86_64
 # CONFIG+=i386  #  To build i386 version. Default is x86_64
@@ -37,16 +35,7 @@
 #To prepare for Qt6 build
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 
-
-
-#temporary compatibility layer for Qt5->Qt6 (needed for QRegExp, QStringRef, QTextDecoder -  replace them later!)
-#QT += core5compat
-
-#Support for Qt4 and Qt5 dropped
-
 lessThan(QT_MAJOR_VERSION,6): error("Qt6 is required for this build.")
-
-csound5: error("Building for Csound5 nont supported.")
 
 DEFINES += NOMINMAX
 # DEFINES += USE_WIDGET_MUTEX
@@ -59,37 +48,15 @@ CONFIG += c++11
 #for csound7 (was csound6 before). Will not have no meaning in CsoundQt7
 DEFINES += CSOUND7
 CONFIG += csound7
+message("Building for Csound 7.")
+
 debugger {
     DEFINES += CSQT_DEBUGGER
     message("Building debugger.")
 }
-message("Building for Csound 7.")
-
 
 QT += concurrent network widgets printsupport quickwidgets
-#DEFINES += USE_QT5
-#CONFIG += CSQT_QT5
 
-#greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 2) {
-#    QT += quickwidgets
-#    DEFINES += USE_QT_GT_53
-#    CONFIG += CSQT_QT53
-#}
-
-#greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 3) {
-#    DEFINES += USE_QT_GT_54
-#    CONFIG += CSQT_QT54
-#}
-
-#greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 5) {
-#	DEFINES += USE_QT_GT_55
-#	CONFIG += CSQT_QT55
-#}
-
-#greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 7) {
-#        DEFINES += USE_QT_GT_58
-#        CONFIG += CSQT_QT58
-#}
 
 buildDoubles: message("Doubles is now built by default, no need to specify buildDoubles option")
 
@@ -137,24 +104,17 @@ TRANSLATIONS = "src/translations/csoundqt_en.ts" \
 
 
 
-html_webengine: {
+html_support: {
 message("Building html support with QtWebengine")
-DEFINES += CSQT_QTHTML USE_WEBENGINE
+DEFINES += CSQT_QTHTML
 QT += network webenginewidgets webchannel
 CONFIG += c++11
 }
 
-html_webkit: {
-message("Building html support with QtWebkit")
-DEFINES += CSQT_QTHTML USE_WEBKIT
-QT += network webkit webkitwidgets
-CONFIG += c++11
-}
 
 INCLUDEPATH *= $${CSOUND_API_INCLUDE_DIR}
 INCLUDEPATH *= $${CSOUND_INTERFACES_INCLUDE_DIR}
 
-#INCLUDEPATH += $$PWD/csound/include
 
 #DESTDIR = $${_PRO_FILE_PWD_}/bin
 DESTDIR = bin

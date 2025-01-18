@@ -19,34 +19,19 @@ CsoundHtmlView::CsoundHtmlView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-#ifdef USE_WEBKIT
-	webView = new QWebView(this);
-	ui->inspectRow->hide(); // inspector included in QtWebKit, no need for that
-#else
-	webView = new QWebEngineView(this);
+    webView = new QWebEngineView(this);
     //webView->page()->profile()->clearHttpCache();
     QObject::connect(webView, &QWebEngineView::loadFinished, this, &CsoundHtmlView::removeTemporaryHtmlFile );
-#endif
     csoundHtmlWrapper.setCsoundHtmlView(this);
     csoundHtmlOnlyWrapper.setCsoundHtmlView(this);
 	ui->mainLayout->addWidget(webView); // mainLayout is vertical layout box
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-#ifdef USE_WEBKIT
-	QObject::connect(webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
-						this, SLOT(addJSObject()));  // to enable adding the object after reload
-	// add javascript inspector -  open with right click on htmlview
-	webView->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-	QWebInspector inspector;
-	inspector.setPage(webView->page());
-	inspector.setVisible(true);
-#else
     // Enable dev tools by default for the test browser
 	connect(ui->inspectButton, SIGNAL(clicked()),this, SLOT(showDebugWindow()));
     webView->page()->setWebChannel(&channel);
     //qDebug() << "Setting JavaScript object on init.";
     channel.registerObject("csound", &csoundHtmlWrapper);
-#endif
 }
 
 CsoundHtmlView::~CsoundHtmlView()
@@ -75,7 +60,6 @@ void CsoundHtmlView::load(DocumentPage *documentPage_)
     csdfile.close();
     auto html = getElement(text, "html");
     if (html.size() > 0) {
-#ifdef USE_WEBENGINE
         // Inject necessary code to load qtwebchannel/qwebchannel.js.
         QString injection = R"(
 <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
@@ -115,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             injection_index = html.indexOf(">", injection_index) + 1;
         }
         html = html.insert(injection_index, injection);
-#endif
+
         QString htmlFilename; // maybe use also tempHtml herer
 
         QFileInfo fileInfo(QFileInfo(filename).path());
@@ -133,7 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
         htmlFile.close();
         loadFromUrl(QUrl::fromLocalFile(htmlFilename));
 
-#ifdef USE_WEBENGINE
         webView->page()->setWebChannel(&channel);
         if (filename.endsWith(".html", Qt::CaseInsensitive)) {
             // Register CsoundHtmlOnlyWrapper when performing HTML files.
@@ -146,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
             qDebug()  << "Setting CsoundWrapper JavaScript object on load.";
             channel.registerObject("csound", &csoundHtmlWrapper);
         }
-#endif
     }
     repaint();
 }
@@ -213,7 +195,6 @@ void CsoundHtmlView::setOptions(CsoundOptions *options)
 	m_options = options;
 }
 
-#ifdef USE_WEBENGINE
 void CsoundHtmlView::showDebugWindow()
 {
 	qDebug();
@@ -243,5 +224,4 @@ void CsoundHtmlView::removeTemporaryHtmlFile(bool ok)
     }
 }
 
-#endif
 #endif

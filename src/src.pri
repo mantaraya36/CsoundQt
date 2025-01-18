@@ -160,7 +160,7 @@ perfThread_build {
     message("Including csPerfThread files for perfThread_build.")
 }
 
-html_webkit|html_webengine: {
+html_support: {
 	HEADERS += src/csoundhtmlview.h
 	HEADERS += src/csoundhtmlwrapper.h
     HEADERS += src/CsoundHtmlOnlyWrapper.h

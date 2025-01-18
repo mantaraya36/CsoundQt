@@ -205,7 +205,6 @@ CsoundQt::CsoundQt(QStringList fileNames)
     connect(m_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 
 #if defined(CSQT_QTHTML)
-#ifdef USE_WEBENGINE	// set the remote debugging port for chromium based web browser here
     //TODO: change it when user changes
     if (m_options->debugPort) {
         qDebug()<<"Set port "<< m_options->debugPort << " for remote html debugging";
@@ -213,7 +212,6 @@ CsoundQt::CsoundQt(QStringList fileNames)
                 QString::number(m_options->debugPort).toLocal8Bit().data() );
     }
 
-#endif
     csoundHtmlView = new CsoundHtmlView(this);
     csoundHtmlView->setFocusPolicy(Qt::NoFocus);
     csoundHtmlView->setAllowedAreas(Qt::RightDockWidgetArea |
@@ -3003,12 +3001,10 @@ void CsoundQt::about()
     }
     text += "<hr>";
 
-#ifdef USE_WEBENGINE
-    text += tr("Html5 support based on QtWebEngine")+"<br />";
+#ifdef CSQT_QHTML
+    text += tr("Html support based on QtWebEngine")+"<br />";
 #endif
-#ifdef USE_WEBKIT
-    text += tr("Html5 support based on QtWebkit")+"<br />";
-#endif
+
     text += "<br />";
     text += tr("Spanish translation: Andrés Cabrera and Guillermo Senna") + "<br />";
     text += tr("French translation: Fran&ccedil;ois Pinot") + "<br />";
