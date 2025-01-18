@@ -72,7 +72,7 @@ void Inspector::parseText(const QString &text)
     udosMap.clear();
     inspectorMutex.lock();
 
-    auto t1 = std::chrono::high_resolution_clock::now();
+    // auto t1 = std::chrono::high_resolution_clock::now();
 
     bool treeItem1Expanded = true;
     bool treeItem2Expanded = true;
@@ -250,8 +250,8 @@ void Inspector::parseText(const QString &text)
             instr->setExpanded(instrumentExpanded[instr->text(0)]);
         }
     }
-    std::chrono::duration<double, std::milli> ms_double = std::chrono::high_resolution_clock::now() - t1;
-    qDebug() << "Inspector::parseText: "<< ms_double.count() << "ms\n";
+    // std::chrono::duration<double, std::milli> ms_double = std::chrono::high_resolution_clock::now() - t1;
+    // qDebug() << "Inspector::parseText: "<< ms_double.count() << "ms\n";
     inspectorMutex.unlock();
 
 }

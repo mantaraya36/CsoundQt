@@ -231,7 +231,7 @@ public:
 	}
 
     void resize(int newsize) {
-        qDebug("Resizing scope: %lld to %d", buffer.size(), newsize);
+        // qDebug("Resizing scope: %lld to %d", buffer.size(), newsize);
         mutex.lock();
 		buffer.clear();
         for (int i = 0; i< newsize; i++) {

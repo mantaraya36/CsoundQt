@@ -63,7 +63,7 @@ Curve::Curve(MYFLT *data, size_t size, const QString& caption,
         m_curveType = CURVE_AUDIOSIGNAL;
     }
 	mutex.unlock();
-    qDebug() << "Curve " << m_curveType;
+    // qDebug() << "Curve " << m_curveType;
 
 }
 

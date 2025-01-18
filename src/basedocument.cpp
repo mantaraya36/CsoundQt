@@ -300,20 +300,20 @@ void BaseDocument::stop()
         QDEBUG << "Asked to stop, but we are already starting";
         return;
     }
-    QDEBUG << "getting lock";
+    // QDEBUG << "getting lock";
     mutex.lock();
-    QDEBUG << "locked, stopping engine";
+    // QDEBUG << "locked, stopping engine";
     m_status = PlayStopStatus::Stopping;
 
     m_csEngine->stop();
-    QDEBUG << "Engine stopped, signaling widgets...";
+    // QDEBUG << "Engine stopped, signaling widgets...";
     foreach (WidgetLayout *wl, m_widgetLayouts) {
         // TODO only needed to flush graph buffer, but this should be moved to this class
         wl->engineStopped();
     }
     m_status = PlayStopStatus::Ok;
     mutex.unlock();
-    QDEBUG << "Stopped OK";
+    // QDEBUG << "Stopped OK";
 }
 
 int BaseDocument::record(int format)

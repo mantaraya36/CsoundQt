@@ -21,7 +21,6 @@
 */
 
 #include "eventsheet.h"
-#include "liveeventframe.h"
 
 #include <QMenu>
 #include <QDir>

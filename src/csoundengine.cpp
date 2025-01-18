@@ -487,7 +487,7 @@ QList <int> CsoundEngine::getAnsiKeySequence(int key)  // convert sepcial keys (
 		case Qt::Key_Insert: keyArray << 27 << 91 << 50 << 126; break;
 		case Qt::Key_Delete: keyArray << 27 << 91 << 51 << 126; break;
 
-        default: qDebug()<<"Key " << key << " ignored."; //keyArray << key;
+        default: ; //qDebug()<<"Key " << key << " ignored."; //keyArray << key;
 	}
 	return keyArray;
 }
@@ -941,7 +941,7 @@ void CsoundEngine::stopCsound()
             break;
         }
         if(status == 0) {
-            QDEBUG << "Csound still playing, trying again in " << waitTime << "msecs";
+            // QDEBUG << "Csound still playing, trying again in " << waitTime << "msecs";
             QThread::msleep(waitTime);
             // pt->Stop();
         }
@@ -955,10 +955,10 @@ void CsoundEngine::stopCsound()
         csoundMutex.lock();
         pt->SetProcessCallback(nullptr, nullptr);
         QThread::msleep(200);
-        QDEBUG << "Destroying csound...";
+        // QDEBUG << "Destroying csound...";
         // delete pt;
         csoundDestroy(ud->csound);
-        QDEBUG << "Destroyed ok";
+        // QDEBUG << "Destroyed ok";
         ud->perfThread = nullptr;
         csoundMutex.unlock();
         emit stopSignal();
@@ -966,18 +966,18 @@ void CsoundEngine::stopCsound()
         return;
     }
 
-    QDEBUG  << "Joining...";
+    // QDEBUG  << "Joining...";
     pt->Join();
-    QDEBUG  << "Joined.";
+    // QDEBUG  << "Joined.";
 
     ud->perfThread = NULL;
     delete pt;
 
-    QDEBUG << "Cleaning up csound...";
+    // QDEBUG << "Cleaning up csound...";
 
     this->cleanupCsound();
 
-    QDEBUG << "Clean up OK";
+    // QDEBUG << "Clean up OK";
 
 
 #ifdef QCS_DEBUGGER
@@ -988,12 +988,12 @@ void CsoundEngine::stopCsound()
     // Put menu bar back
     SetMenuBar(menuBarHandle);
 #endif
-    QDEBUG << "emitting stopSignal...";
+    // QDEBUG << "emitting stopSignal...";
 
     locker.unlock();
     emit stopSignal();
 
-    QDEBUG << "Exiting stopCsound";
+    // QDEBUG << "Exiting stopCsound";
 }
 
 void CsoundEngine::cleanupCsound()

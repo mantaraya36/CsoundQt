@@ -24,7 +24,6 @@
 #include "console.h"
 #include "dockhelp.h"
 #include "documentpage.h"
-#include "highlighter.h"
 #include "inspector.h"
 #include "opentryparser.h"
 #include "options.h"
@@ -38,10 +37,16 @@
 #include "midihandler.h"
 #include "midilearndialog.h"
 #include "livecodeeditor.h"
-#include "csoundhtmlview.h"
-#include "risset.h"
-#include <thread>
 
+#include "risset.h"
+
+#ifdef QCS_QTHTML
+#include "csoundhtmlview.h"
+#endif
+
+#ifdef Q_OS_WIN32
+#include <thread>
+#endif
 
 #include <csound_compiler.h> // csound7: needed for TREE structure
 
@@ -531,7 +536,7 @@ void CsoundQt::changePage(int index)
     // Remember this is called when opening, closing or switching tabs (including loading).
     // First thing to do is blank the HTML page to prevent misfired API calls.
     if (index < 0) { // No tabs left
-        qDebug() << "CsoundQt::changePage index < 0";
+        // qDebug() << "CsoundQt::changePage index < 0";
         return;
     }
     if (documentPages.size() > curPage
@@ -3938,7 +3943,7 @@ void CsoundQt::createActions()
     raiseHelpAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(raiseHelpAct, SIGNAL(triggered()), focusMapper, SLOT(map()));
     focusMapper->setMapping(raiseHelpAct, 2);
-    connect(focusMapper, SIGNAL(mapped(int)), this, SLOT(focusToTab(int)));
+    connect(focusMapper, SIGNAL(mappedInt(int)), this, SLOT(focusToTab(int)));
     this->addAction(raiseHelpAct);
 
     showScratchPadAct = new QAction(QIcon(prefix + "scratchpad.png"), tr("CodePad"), this);
@@ -5277,7 +5282,6 @@ void CsoundQt::readSettings()
 
 void CsoundQt::storeSettings()
 {
-    qDebug();
     QStringList files;
     if (m_options->rememberFile) {
         for (int i = 0; i < documentPages.size(); i++ ) {
@@ -5287,9 +5291,9 @@ void CsoundQt::storeSettings()
     // sometimes settings are stored in startup when there is no pages open
     if (documentPages.size() > 0) {
         writeSettings(files, documentTabs->currentIndex());
-    } else {
+    } /*else {
         qDebug() << "No files open. Will not store settings (for any case - testing)";
-    }
+    }*/
 }
 
 void CsoundQt::writeSettings(QStringList openFiles, int lastIndex)
@@ -5754,7 +5758,7 @@ bool CsoundQt::makeNewPage(QString fileName, QString text)
                              tr("Please close a document before opening another."));
         return false;
     }
-    auto t0 = std::chrono::high_resolution_clock::now();
+    // auto t0 = std::chrono::high_resolution_clock::now();
     DocumentPage *newPage = new DocumentPage(this, m_opcodeTree, &m_configlists, m_midiLearn);
     int insertPoint = curPage + 1;
     curPage += 1;
@@ -5803,9 +5807,9 @@ bool CsoundQt::makeNewPage(QString fileName, QString text)
     page->getEngine()->setMidiHandler(midiHandler);
 
     setCurrentOptionsForPage(page); // Redundant but does the trick of setting the font properly now that stylesheets are being used...
-    auto t1 = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration<double, std::milli>(t1-t0).count();
-    QDEBUG << "makeNewPage finished in (ms)" << elapsed;
+    // auto t1 = std::chrono::high_resolution_clock::now();
+    // auto elapsed = std::chrono::duration<double, std::milli>(t1-t0).count();
+    // QDEBUG << "makeNewPage finished in (ms)" << elapsed;
     return true;
 }
 

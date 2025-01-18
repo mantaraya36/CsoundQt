@@ -1355,7 +1355,7 @@ void WidgetLayout::killCurve(WINDAT *windat)
 
 void WidgetLayout::newCurve(Curve* curve)
 {
-    qDebug() << "WidgetPanel::newCurve" << curve << curve->get_caption();
+    // qDebug() << "WidgetPanel::newCurve" << curve << curve->get_caption();
     //  FIXME check if curve is a new curve for a old ftable
     //  for (int i = 0; i < curves.size(); i++) {
     //    if (curves[i]->get_caption() == curve->get_caption()) {

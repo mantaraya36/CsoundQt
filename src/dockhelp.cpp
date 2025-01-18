@@ -201,7 +201,7 @@ void DockHelp::loadFile(QString fileName, QString anchor) {
         if(!anchor.isEmpty()) {
             url.setUrl(url.toString() + "#" + anchor);
         }
-        qDebug() << "url:" << url << url.toString();
+        // qDebug() << "url:" << url << url.toString();
         ui->text->setSource(url);
     }
 

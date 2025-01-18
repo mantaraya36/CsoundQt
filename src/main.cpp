@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
         csoundQt->play();
 
     filterObj.setMainWindow(csoundQt);
-    QDEBUG << "Starting qapp exec";
+    // QDEBUG << "Starting qapp exec";
     result = qapp.exec();
     return result;
 }

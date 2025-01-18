@@ -105,11 +105,11 @@ int DocumentPage::setTextString(QString &text)
 		m_view->setModified(false);
 		return ret;
 	}
-    auto t0 = std::chrono::high_resolution_clock::now();
+    // auto t0 = std::chrono::high_resolution_clock::now();
     parseAndRemoveWidgetText(text);
-    auto t1 = std::chrono::high_resolution_clock::now();
-    auto diff = std::chrono::duration<double, std::milli>(t1-t0).count();
-    QDEBUG << "parseAndRemoveWidgetText:" << diff << "ms";
+    // auto t1 = std::chrono::high_resolution_clock::now();
+    // auto diff = std::chrono::duration<double, std::milli>(t1-t0).count();
+    // QDEBUG << "parseAndRemoveWidgetText:" << diff << "ms";
 
     // This must be last as some of the text has been removed along the way
     m_view->setFullText(text,true);
@@ -117,9 +117,9 @@ int DocumentPage::setTextString(QString &text)
     // This ensures that modifications triggered later by the maineditor
     // do not set the modified status of the page when a file is first
     // loaded
-    auto t2 = std::chrono::high_resolution_clock::now();
-    QDEBUG << "finished parsing in (ms)" <<
-              std::chrono::duration<double, std::milli>(t2-t1).count();
+    // auto t2 = std::chrono::high_resolution_clock::now();
+    // QDEBUG << "finished parsing in (ms)" <<
+    //          std::chrono::duration<double, std::milli>(t2-t1).count();
     // QTimer::singleShot(1000, this, [this](){this->setModified(false);});
 	return ret;
 }

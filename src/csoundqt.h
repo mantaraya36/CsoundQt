@@ -41,7 +41,7 @@
 #include <Carbon/Carbon.h>
 #endif
 
-#define QCS_USE_NEW_ICON
+//#define QCS_USE_NEW_ICON
 
 class QAction;
 class QMenu;
