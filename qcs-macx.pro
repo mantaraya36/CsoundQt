@@ -94,4 +94,4 @@ exists (/opt/homebrew/opt/csound/lib/libcsnd6.6.0.dylib) {
 
 
 QMAKE_INFO_PLIST = $${PWD}/src/MyInfo.plist
-ICON = $${PWD}/images/qtcs.icns
+ICON = $${PWD}/images/csoundqt.icns

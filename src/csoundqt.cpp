@@ -86,12 +86,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
     setWindowTitle("CsoundQt[*]");
     // resize(780,550);
 	m_fullScreenComponent = QString();
-#ifdef QCS_USE_NEW_ICON
-    // setWindowIcon(QIcon(":/images/qtcs-alt.svg"));
-    setWindowIcon(QIcon(":/images/qtcs-alt.png"));
-#else
-    setWindowIcon(QIcon(":/images/qtcs.png"));
-#endif
+    setWindowIcon(QIcon(":/images/csoundqt.png"));
     //Does this take care of the decimal separator for different locales?
     QLocale::setDefault(QLocale::system());
     curPage = -1;
@@ -258,7 +253,7 @@ CsoundQt::CsoundQt(QStringList fileNames)
     connect(documentTabs, SIGNAL(tabCloseRequested(int)),
             documentTabs, SLOT(setCurrentIndex(int)));
     connect(documentTabs, SIGNAL(tabCloseRequested(int)), closeTabAct, SLOT(trigger()));
-    connect(documentTabs->tabBar(), SIGNAL(tabMoved(int, int)), this, SLOT(tabMoved(int, int)));
+    connect(documentTabs->tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(tabMoved(int,int)));
 
     setCentralWidget(documentTabs);
     documentTabs->setDocumentMode(true);

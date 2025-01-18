@@ -123,10 +123,10 @@
     </rect>
    </property>
    <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+    <enum>Qt::Orientation::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::StandardButton::Ok</set>
    </property>
    <property name="centerButtons">
     <bool>true</bool>
@@ -319,7 +319,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#2f2f2f;&quot;&gt;CsoundQt&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -341,13 +341,13 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="application.qrc">:/images/qtcs-alt.png</pixmap>
+    <pixmap resource="application.qrc">:/images/csoundqt.svg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignmentFlag::AlignCenter</set>
    </property>
   </widget>
  </widget>

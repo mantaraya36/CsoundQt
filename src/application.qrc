@@ -4,9 +4,8 @@
         <file>../images/splashscreen-alt.png</file>
         <file>../images/modIcon.png</file>
         <file>../images/modIcon2.png</file>
-        <file>../images/qtcs.png</file>
-        <file>../images/qtcs-alt.png</file>
-        <file>../images/qtcs-alt.svg</file>
+        <file>../images/csoundqt.png</file>
+        <file>../images/csoundqt.svg</file>
         <file>../images/br_next.png</file>
         <file>../images/br_prev.png</file>
         <file>../images/go-home-16.png</file>
@@ -37,5 +36,6 @@
         <file>../images/html5.png</file>
         <file>../images/tools-wizard.svg</file>
         <file alias="AudioMidiTest.csd">Examples/CsoundQt/Useful/AudioMidiTest.csd</file>
+        <file>csoundqt.png</file>
     </qresource>
 </RCC>

@@ -16,7 +16,7 @@
 		  <string>udo</string>
         </array>
         <key>CFBundleTypeIconFile</key>
-        <string>qtcs.icns</string>
+        <string>csoundqt.icns</string>
         <key>CFBundleTypeOSTypes</key>
         <array>
           <string>TEXT</string>
@@ -34,7 +34,7 @@
     <key>CFBundleGetInfoString</key>
     <string>Created by Qt/QMake</string>
     <key>CFBundleIconFile</key>
-    <string>qtcs.icns</string>
+    <string>csoundqt.icns</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>
