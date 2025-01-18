@@ -25,8 +25,8 @@
 
 #include <QtGui>
 
-#define QCS_MAX_EVENTS 4096
-#define QCS_CURVE_BUFFER_MAX 4096
+#define CSQT_MAX_EVENTS 4096
+#define CSQT_CURVE_BUFFER_MAX 4096
 
 #include "qutewidget.h"
 #include "curve.h"

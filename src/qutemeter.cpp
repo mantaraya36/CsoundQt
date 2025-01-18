@@ -38,26 +38,26 @@ QuteMeter::QuteMeter(QWidget *parent) : QuteWidget(parent)
     //  connect(static_cast<MeterWidget *>(m_widget), SIGNAL(popUpMenu(QPoint)), this, SLOT(popUpMenu(QPoint)));
     //  connect(static_cast<MeterWidget *>(m_widget), SIGNAL(newValues(double, double)), this, SLOT(setValuesFromWidget(double,double)));
 
-    setProperty("QCS_xMin", 0.0);
-    setProperty("QCS_xMax", 1.0);
-    setProperty("QCS_yMin", 0.0);
-    setProperty("QCS_yMax", 1.0);
+    setProperty("CSQT_xMin", 0.0);
+    setProperty("CSQT_xMax", 1.0);
+    setProperty("CSQT_yMin", 0.0);
+    setProperty("CSQT_yMax", 1.0);
 
-    setProperty("QCS_type", "fill");
-    setProperty("QCS_pointsize", 1);
-    setProperty("QCS_fadeSpeed", 1.0);
-    setProperty("QCS_mouseControl", "jump");
-    setProperty("QCS_mouseControlAct", "press");
+    setProperty("CSQT_type", "fill");
+    setProperty("CSQT_pointsize", 1);
+    setProperty("CSQT_fadeSpeed", 1.0);
+    setProperty("CSQT_mouseControl", "jump");
+    setProperty("CSQT_mouseControlAct", "press");
 
-    setProperty("QCS_color", QColor(Qt::green));
-    setProperty("QCS_bgcolor", QColor(30, 30, 30));
-    setProperty("QCS_bgcolormode", true);
-    setProperty("QCS_randomizable", false);
-    setProperty("QCS_randomizableGroup", 0);
-    setProperty("QCS_randomizableMode", "both");
+    setProperty("CSQT_color", QColor(Qt::green));
+    setProperty("CSQT_bgcolor", QColor(30, 30, 30));
+    setProperty("CSQT_bgcolormode", true);
+    setProperty("CSQT_randomizable", false);
+    setProperty("CSQT_randomizableGroup", 0);
+    setProperty("CSQT_randomizableMode", "both");
 
-    setProperty("QCS_bordermode", "noborder");
-    setProperty("QCS_borderColor", "#00FF00");
+    setProperty("CSQT_bordermode", "noborder");
+    setProperty("CSQT_borderColor", "#00FF00");
 
     connect(static_cast<MeterWidget *>(m_widget), SIGNAL(newValue1(double)),
             this, SLOT(valueChanged(double)));
@@ -83,12 +83,12 @@ void QuteMeter::setMidiValue(int value)
         vertical = true;
     }
     if (vertical) {
-        max = property("QCS_yMax").toDouble();
-        min = property("QCS_yMin").toDouble();
+        max = property("CSQT_yMax").toDouble();
+        min = property("CSQT_yMin").toDouble();
     }
     else {
-        max = property("QCS_xMax").toDouble();
-        min = property("QCS_xMin").toDouble();
+        max = property("CSQT_xMax").toDouble();
+        min = property("CSQT_xMin").toDouble();
     }
     double newval = min + ((value / 127.0)* (max - min));
     setValue(newval);
@@ -103,15 +103,15 @@ QString QuteMeter::getWidgetLine()
 #endif
     QString line = "ioMeter {" + QString::number(x()) + ", " + QString::number(y()) + "} ";
     line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
-    QColor color = property("QCS_color").value<QColor>();
+    QColor color = property("CSQT_color").value<QColor>();
     line += "{" + QString::number(color.red() * 256)
             + ", " + QString::number(color.green() * 256)
             + ", " + QString::number(color.blue() * 256) + "} ";
     line += "\"" + m_channel + "\" " + QString::number(m_value, 'f', 6) + " ";
     line += "\"" + m_channel2 + "\" " + QString::number(m_value2, 'f', 6) + " ";
-    line += property("QCS_type").toString() + " ";
-    line += QString::number(property("QCS_pointsize").toInt()) + " ";
-    line += QString::number(property("QCS_fadeSpeed").toInt()) + " ";
+    line += property("CSQT_type").toString() + " ";
+    line += QString::number(property("CSQT_pointsize").toInt()) + " ";
+    line += QString::number(property("CSQT_fadeSpeed").toInt()) + " ";
     line += "mouse";
     //   qDebug("QuteMeter::getWidgetLine() %s", line.toStdString().c_str());
 #ifdef  USE_WIDGET_MUTEX
@@ -130,44 +130,44 @@ QString QuteMeter::getWidgetXmlText()
     widgetLock.lockForRead();
 #endif
     s.writeTextElement("objectName2", m_channel2);
-    s.writeTextElement("xMin", QString::number(property("QCS_xMin").toDouble(), 'f', 8));
-    s.writeTextElement("xMax", QString::number(property("QCS_xMax").toDouble(), 'f', 8));
-    s.writeTextElement("yMin", QString::number(property("QCS_yMin").toDouble(), 'f', 8));
-    s.writeTextElement("yMax", QString::number(property("QCS_yMax").toDouble(), 'f', 8));
+    s.writeTextElement("xMin", QString::number(property("CSQT_xMin").toDouble(), 'f', 8));
+    s.writeTextElement("xMax", QString::number(property("CSQT_xMax").toDouble(), 'f', 8));
+    s.writeTextElement("yMin", QString::number(property("CSQT_yMin").toDouble(), 'f', 8));
+    s.writeTextElement("yMax", QString::number(property("CSQT_yMax").toDouble(), 'f', 8));
     s.writeTextElement("xValue", QString::number(m_value, 'f', 8));
     s.writeTextElement("yValue", QString::number(m_value2, 'f', 8));
 
-    s.writeTextElement("type", property("QCS_type").toString());
-    s.writeTextElement("pointsize", QString::number(property("QCS_pointsize").toInt()));
-    s.writeTextElement("fadeSpeed",QString::number(property("QCS_fadeSpeed").toDouble(),'f',8));
+    s.writeTextElement("type", property("CSQT_type").toString());
+    s.writeTextElement("pointsize", QString::number(property("CSQT_pointsize").toInt()));
+    s.writeTextElement("fadeSpeed",QString::number(property("CSQT_fadeSpeed").toDouble(),'f',8));
     s.writeStartElement("mouseControl");
-    s.writeAttribute("act", property("QCS_mouseControlAct").toString());
-    s.writeCharacters(property("QCS_mouseControl").toString());
+    s.writeAttribute("act", property("CSQT_mouseControlAct").toString());
+    s.writeCharacters(property("CSQT_mouseControl").toString());
     s.writeEndElement();
 
-    s.writeTextElement("bordermode", property("QCS_bordermode").toString());
-    s.writeTextElement("borderColor", property("QCS_borderColor").toString());
+    s.writeTextElement("bordermode", property("CSQT_bordermode").toString());
+    s.writeTextElement("borderColor", property("CSQT_borderColor").toString());
 
-    QColor color = property("QCS_color").value<QColor>();
+    QColor color = property("CSQT_color").value<QColor>();
     s.writeStartElement("color");
     s.writeTextElement("r", QString::number(color.red()));
     s.writeTextElement("g", QString::number(color.green()));
     s.writeTextElement("b", QString::number(color.blue()));
     s.writeEndElement();
     s.writeStartElement("randomizable");
-    s.writeAttribute("mode", property("QCS_randomizableMode").toString());
-    s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-    s.writeCharacters(property("QCS_randomizable").toBool() ? "true":"false");
+    s.writeAttribute("mode", property("CSQT_randomizableMode").toString());
+    s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+    s.writeCharacters(property("CSQT_randomizable").toBool() ? "true":"false");
     s.writeEndElement();
 
-    QColor bgcolor = property("QCS_bgcolor").value<QColor>();
+    QColor bgcolor = property("CSQT_bgcolor").value<QColor>();
     s.writeStartElement("bgcolor");
     s.writeTextElement("r", QString::number(bgcolor.red()));
     s.writeTextElement("g", QString::number(bgcolor.green()));
     s.writeTextElement("b", QString::number(bgcolor.blue()));
     s.writeEndElement();
 
-    s.writeTextElement("bgcolormode", property("QCS_bgcolormode").toBool()?"true":"false");
+    s.writeTextElement("bgcolormode", property("CSQT_bgcolormode").toBool()?"true":"false");
 
     s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
@@ -204,13 +204,13 @@ QString QuteMeter::getCabbageLine()
     QString line = "xypad ";
     line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
     line += QString("channel(\"%1\",\"%2\"), ").arg(m_channel).arg(m_channel2);
-    line += QString("rangex(%1, %2, %3), ").arg(property("QCS_xMin").toDouble()).arg(property("QCS_xMax").toDouble()).arg(m_value);
-    line += QString("rangey(%1, %2, %3)").arg(property("QCS_yMin").toDouble()).arg(property("QCS_yMax").toDouble()).arg(m_value2);
+    line += QString("rangex(%1, %2, %3), ").arg(property("CSQT_xMin").toDouble()).arg(property("CSQT_xMax").toDouble()).arg(m_value);
+    line += QString("rangey(%1, %2, %3)").arg(property("CSQT_yMin").toDouble()).arg(property("CSQT_yMax").toDouble()).arg(m_value2);
 
     //NB! meter does not have midi2 yet!
-    if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-        line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-        line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+    if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+        line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+        line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
     }
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.unlock();
@@ -221,7 +221,7 @@ QString QuteMeter::getCabbageLine()
 QString QuteMeter::getQml()
 {
     QString qml = QString();
-    QString type = property("QCS_type").toString();
+    QString type = property("CSQT_type").toString();
     if ( type != "fill") {
         qDebug() << "Currently exporting only meter controllers (type \"fill\") is supported";
         return qml;
@@ -240,14 +240,14 @@ QString QuteMeter::getQml()
     double max, min, value;
     QString channel;
     if (vertical) {
-        max = property("QCS_yMax").toDouble();
-        min = property("QCS_yMin").toDouble();
+        max = property("CSQT_yMax").toDouble();
+        min = property("CSQT_yMin").toDouble();
         channel = m_channel2;
         value = m_value2;
     }
     else {
-        max = property("QCS_xMax").toDouble();
-        min = property("QCS_xMin").toDouble();
+        max = property("CSQT_xMax").toDouble();
+        min = property("CSQT_xMin").toDouble();
         channel = m_channel;
         value = m_value;
     }
@@ -303,7 +303,7 @@ QString QuteMeter::getQml()
                     }
                 }
                 )").arg(x()).arg(y()).arg(width()).arg(height()).arg(min).arg(max).arg(value).
-            arg(channel).arg(property("QCS_color").toString());
+            arg(channel).arg(property("CSQT_color").toString());
 
 
 #ifdef  USE_WIDGET_MUTEX
@@ -352,7 +352,7 @@ void QuteMeter::createPropertiesDialog()
     layout->addWidget(colorButton, 5,1, Qt::AlignLeft|Qt::AlignVCenter);
 
     bgColorCheckBox = new QCheckBox("Background", dialog);
-    bgColorCheckBox->setChecked(property("QCS_bgcolormode").toBool());
+    bgColorCheckBox->setChecked(property("CSQT_bgcolormode").toBool());
     layout->addWidget(bgColorCheckBox, 5, 2, Qt::AlignVCenter);
 
     bgColorButton = new SelectColorButton(dialog);
@@ -363,11 +363,11 @@ void QuteMeter::createPropertiesDialog()
 
     borderCheckBox = new QCheckBox(tr("Border"), dialog);
     borderCheckBox->setCheckState(
-        property("QCS_bordermode").toString()=="border" ? Qt::Checked : Qt::Unchecked);
+        property("CSQT_bordermode").toString()=="border" ? Qt::Checked : Qt::Unchecked);
     layout->addWidget(borderCheckBox, 5, 4, Qt::AlignLeft|Qt::AlignVCenter);
 
     borderColorButton = new SelectColorButton(dialog);
-    borderColorButton->setColor(QColor(property("QCS_borderColor").toString()));
+    borderColorButton->setColor(QColor(property("CSQT_borderColor").toString()));
     layout->addWidget(borderColorButton, 5, 5, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel(dialog);
@@ -410,7 +410,7 @@ void QuteMeter::createPropertiesDialog()
     layout->addWidget(label, 7, 2, Qt::AlignRight|Qt::AlignVCenter);
     fadeSpeedSpinBox = new QSpinBox(dialog);
     fadeSpeedSpinBox->unsetLocale();
-    fadeSpeedSpinBox->setValue(property("QCS_fadeSpeed").toDouble());
+    fadeSpeedSpinBox->setValue(property("CSQT_fadeSpeed").toDouble());
     fadeSpeedSpinBox->setRange(0, 1000);
     layout->addWidget(fadeSpeedSpinBox, 7,3, Qt::AlignLeft|Qt::AlignVCenter);
     label->setEnabled(false);
@@ -427,7 +427,7 @@ void QuteMeter::createPropertiesDialog()
     behaviorComboBox->addItem("relative");
     behaviorComboBox->addItem("none");
     behaviorComboBox->setCurrentIndex(
-                behaviorComboBox->findText(property("QCS_mouseControl").toString()));
+                behaviorComboBox->findText(property("CSQT_mouseControl").toString()));
     behaviorComboBox->setEnabled(false);
     layout->addWidget(behaviorComboBox,8, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
@@ -437,7 +437,7 @@ void QuteMeter::createPropertiesDialog()
 
     m_xMinBox = new QDoubleSpinBox(dialog);
     m_xMinBox->setRange(-999999999.0, 999999999.0);
-    m_xMinBox->setValue(property("QCS_xMin").toDouble());
+    m_xMinBox->setValue(property("CSQT_xMin").toDouble());
     layout->addWidget(m_xMinBox, 9,1, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel(dialog);
@@ -446,7 +446,7 @@ void QuteMeter::createPropertiesDialog()
 
     m_xMaxBox = new QDoubleSpinBox(dialog);
     m_xMaxBox->setRange(-999999999.0, 999999999.0);
-    m_xMaxBox->setValue(property("QCS_xMax").toDouble());
+    m_xMaxBox->setValue(property("CSQT_xMax").toDouble());
     layout->addWidget(m_xMaxBox, 9,3, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel(dialog);
@@ -455,7 +455,7 @@ void QuteMeter::createPropertiesDialog()
 
     m_yMinBox = new QDoubleSpinBox(dialog);
     m_yMinBox->setRange(-999999999.0, 999999999.0);
-    m_yMinBox->setValue(property("QCS_yMin").toDouble());
+    m_yMinBox->setValue(property("CSQT_yMin").toDouble());
     layout->addWidget(m_yMinBox, 10, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel(dialog);
@@ -464,11 +464,11 @@ void QuteMeter::createPropertiesDialog()
 
     m_yMaxBox = new QDoubleSpinBox(dialog);
     m_yMaxBox->setRange(-999999999.0, 999999999.0);
-    m_yMaxBox->setValue(property("QCS_yMax").toDouble());
+    m_yMaxBox->setValue(property("CSQT_yMax").toDouble());
     layout->addWidget(m_yMaxBox, 10,3, Qt::AlignLeft|Qt::AlignVCenter);
 
-    setProperty("QCS_xValue", m_value);
-    setProperty("QCS_yValue", m_value2);
+    setProperty("CSQT_xValue", m_value);
+    setProperty("CSQT_yValue", m_value2);
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.unlock();
 #endif
@@ -492,11 +492,11 @@ void QuteMeter::refreshWidget()
 #endif
     double val1 = m_value;
     double val2 = m_value2;
-    if (val1 < property("QCS_xMin").toDouble()) { // Must check this in case number is -inf
-        val1 =  property("QCS_xMin").toDouble();
+    if (val1 < property("CSQT_xMin").toDouble()) { // Must check this in case number is -inf
+        val1 =  property("CSQT_xMin").toDouble();
     }
-    if (val2 < property("QCS_yMin").toDouble()) {
-        val2 =  property("QCS_yMin").toDouble();
+    if (val2 < property("CSQT_yMin").toDouble()) {
+        val2 =  property("CSQT_yMin").toDouble();
     }
     m_widget->blockSignals(true);
     static_cast<MeterWidget *>(m_widget)->setValues(val1, val2);
@@ -510,27 +510,27 @@ void QuteMeter::refreshWidget()
 
 void QuteMeter::applyProperties()
 {
-    //  setProperty("QCS_objectName", nameLineEdit->text());
+    //  setProperty("CSQT_objectName", nameLineEdit->text());
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.lockForRead();
 #endif
     // Only properties should be changed here as applyInternalProperties takes care of the rest
-    setProperty("QCS_objectName2", name2LineEdit->text());
-    // setProperty("QCS_color", colorButton->palette().color(QPalette::Window));
-    setProperty("QCS_color", colorButton->getColor());
-    // setProperty("QCS_bgcolor", bgColorButton->palette().color(QPalette::Window));
-    setProperty("QCS_bgcolor", bgColorButton->getColor());
-    setProperty("QCS_bgcolormode", bgColorCheckBox->isChecked());
-    setProperty("QCS_type", typeComboBox->currentText());
-    setProperty("QCS_pointsize", pointSizeSpinBox->value());
-    setProperty("QCS_fadeSpeed", fadeSpeedSpinBox->value());
-    setProperty("QCS_mouseControl", behaviorComboBox->currentText());
-    setProperty("QCS_xMin", m_xMinBox->value());
-    setProperty("QCS_xMax", m_xMaxBox->value());
-    setProperty("QCS_yMin", m_yMinBox->value());
-    setProperty("QCS_yMax", m_yMaxBox->value());
-    setProperty("QCS_bordermode", borderCheckBox->checkState()?"border":"noborder");
-    setProperty("QCS_borderColor", borderColorButton->getColor().name());
+    setProperty("CSQT_objectName2", name2LineEdit->text());
+    // setProperty("CSQT_color", colorButton->palette().color(QPalette::Window));
+    setProperty("CSQT_color", colorButton->getColor());
+    // setProperty("CSQT_bgcolor", bgColorButton->palette().color(QPalette::Window));
+    setProperty("CSQT_bgcolor", bgColorButton->getColor());
+    setProperty("CSQT_bgcolormode", bgColorCheckBox->isChecked());
+    setProperty("CSQT_type", typeComboBox->currentText());
+    setProperty("CSQT_pointsize", pointSizeSpinBox->value());
+    setProperty("CSQT_fadeSpeed", fadeSpeedSpinBox->value());
+    setProperty("CSQT_mouseControl", behaviorComboBox->currentText());
+    setProperty("CSQT_xMin", m_xMinBox->value());
+    setProperty("CSQT_xMax", m_xMaxBox->value());
+    setProperty("CSQT_yMin", m_yMinBox->value());
+    setProperty("CSQT_yMax", m_yMaxBox->value());
+    setProperty("CSQT_bordermode", borderCheckBox->checkState()?"border":"noborder");
+    setProperty("CSQT_borderColor", borderColorButton->getColor().name());
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.unlock();
 #endif
@@ -551,20 +551,20 @@ void QuteMeter::applyInternalProperties()
 {
     QuteWidget::applyInternalProperties();
     auto meter = static_cast<MeterWidget *>(m_widget);
-    meter->setColor(property("QCS_color").value<QColor>());
-    meter->setBgColor(property("QCS_bgcolor").value<QColor>());
-    meter->showBackground(property("QCS_bgcolormode").toBool());
-    meter->setType(property("QCS_type").toString());
-    meter->setPointSize(property("QCS_pointsize").toInt());
-    meter->setRanges(property("QCS_xMin").toDouble(),
-                     property("QCS_xMax").toDouble(),
-                     property("QCS_yMin").toDouble(),
-                     property("QCS_yMax").toDouble());
-    meter->showBorder(property("QCS_bordermode").toString()=="border");
-    meter->setBorderColor(QColor(property("QCS_borderColor").toString()));
+    meter->setColor(property("CSQT_color").value<QColor>());
+    meter->setBgColor(property("CSQT_bgcolor").value<QColor>());
+    meter->showBackground(property("CSQT_bgcolormode").toBool());
+    meter->setType(property("CSQT_type").toString());
+    meter->setPointSize(property("CSQT_pointsize").toInt());
+    meter->setRanges(property("CSQT_xMin").toDouble(),
+                     property("CSQT_xMax").toDouble(),
+                     property("CSQT_yMin").toDouble(),
+                     property("CSQT_yMax").toDouble());
+    meter->showBorder(property("CSQT_bordermode").toString()=="border");
+    meter->setBorderColor(QColor(property("CSQT_borderColor").toString()));
 
-    m_value = property("QCS_xValue").toDouble();
-    m_value2 = property("QCS_yValue").toDouble();
+    m_value = property("CSQT_xValue").toDouble();
+    m_value2 = property("CSQT_yValue").toDouble();
     //  if (m_value2 == m_value) {
     //    qDebug() << "Warning! Controller Widget can't have the same name for both channels!";
     //    m_value2 = "";
@@ -576,7 +576,7 @@ void QuteMeter::applyInternalProperties()
 
 void QuteMeter::valueChanged(double value1)
 {
-    //  QString type = property("QCS_type").toString();
+    //  QString type = property("CSQT_type").toString();
     //  qDebug() << "QuteMeter::valueChanged " << value1;
 
 #ifdef  USE_WIDGET_MUTEX
@@ -593,7 +593,7 @@ void QuteMeter::valueChanged(double value1)
 
 void QuteMeter::value2Changed(double value2)
 {
-    //  QString type = property("QCS_type").toString();
+    //  QString type = property("CSQT_type").toString();
     //  qDebug() << "QuteMeter::value2Changed "<< value2;
 
 #ifdef  USE_WIDGET_MUTEX

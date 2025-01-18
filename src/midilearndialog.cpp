@@ -22,8 +22,8 @@ void MidiLearnDialog::setCurrentWidget(QuteWidget *widget)
     m_widget = widget;
     if (widget) {
         if (widget->acceptsMidi()) {
-            int cc = m_widget->property("QCS_midicc").toInt();
-            int channel = m_widget->property("QCS_midichan").toInt();
+            int cc = m_widget->property("CSQT_midicc").toInt();
+            int channel = m_widget->property("CSQT_midichan").toInt();
             if (channel <= 0) {
                 ui->channelLabel->setText(QString::number(channel));
                 ui->ccLabel->setText(QString::number(cc));
@@ -62,8 +62,8 @@ void MidiLearnDialog::on_setButton_clicked()
 		return;
 	}
 	if (m_widget && m_widget->acceptsMidi()) {
-		m_widget->setProperty("QCS_midicc", m_cc);
-		m_widget->setProperty("QCS_midichan", m_channel);
+		m_widget->setProperty("CSQT_midicc", m_cc);
+		m_widget->setProperty("CSQT_midichan", m_channel);
 		m_widget->applyInternalProperties();
 		m_widget->markChanged();
 

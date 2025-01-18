@@ -41,7 +41,7 @@
 #include <Carbon/Carbon.h>
 #endif
 
-//#define QCS_USE_NEW_ICON
+//#define CSQT_USE_NEW_ICON
 
 class QAction;
 class QMenu;
@@ -67,7 +67,7 @@ class MidiHandler;
 class MidiLearnDialog;
 class WidgetLayout;
 
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 class CsoundHtmlView;
 #endif
 
@@ -143,7 +143,7 @@ public:
 	void stkCheck();
 	// localServer
 	bool startServer();
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 	void updateHtmlView();
 #endif
     void changeFontSize(int change);
@@ -305,7 +305,7 @@ private slots:
     }
     void gotoLineDialog();
 
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 	void runDebugger();
 	void stopDebugger();
 	void pauseDebugger();
@@ -367,13 +367,13 @@ private:
 	QQuickWidget *m_virtualKeyboard, *m_tableEditor;
 	QPointer <QQuickWidget> m_virtualKeyboardPointer, m_tableEditorPointer; // to control, if the object is deleted
 
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 public: CsoundHtmlView *csoundHtmlView;
 #endif
 private:
 	//    QString m_widgetClipboard;
 	Inspector *m_inspector;
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 	DebugPanel *m_debugPanel;
 	CsoundEngine *m_debugEngine;
 #endif
@@ -455,12 +455,12 @@ private:
     QAction *viewHtmlFullScreenAct;
     QAction *viewHelpFullScreenAct;
     QAction *viewWidgetsFullScreenAct;
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 	QAction *showDebugAct;
 #endif
 	QAction *showVirtualKeyboardAct;
 	QAction *showTableEditorAct;
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 	QAction *showHtml5Act;
     QAction *raiseHtml5Act;
 #endif

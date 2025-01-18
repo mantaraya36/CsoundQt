@@ -37,9 +37,9 @@ QuteComboBox::QuteComboBox(QWidget *parent) : QuteWidget(parent)
 	//   connect((QComboBox *)m_widget, SIGNAL(released()), this, SLOT(buttonReleased()));
     connect(static_cast<QComboBox *>(m_widget), SIGNAL(currentIndexChanged(int)),
             this, SLOT(indexChanged(int)));
-	setProperty("QCS_selectedIndex", 0);
-	setProperty("QCS_randomizable", false);
-	setProperty("QCS_randomizableGroup", 0);
+	setProperty("CSQT_selectedIndex", 0);
+	setProperty("CSQT_randomizable", false);
+	setProperty("CSQT_randomizableGroup", 0);
 }
 
 QuteComboBox::~QuteComboBox()
@@ -72,9 +72,9 @@ QString QuteComboBox::getCabbageLine()
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
 	line += "value(" + QString::number(m_value) + "), ";
 	line += "items(\"" + itemList() + "\")";
-	if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-		line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-		line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+	if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+		line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+		line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
 	}
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -103,8 +103,8 @@ QString QuteComboBox::getWidgetXmlText()
 	s.writeEndElement();
 	s.writeTextElement("selectedIndex", QString::number(((QComboBox *)m_widget)->currentIndex()));
 	s.writeStartElement("randomizable");
-	s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-	s.writeCharacters(property("QCS_randomizable").toBool() ? "true": "false");
+	s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+	s.writeCharacters(property("CSQT_randomizable").toBool() ? "true": "false");
 	s.writeEndElement();
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
@@ -226,7 +226,7 @@ void QuteComboBox::refreshWidget()
 void QuteComboBox::applyInternalProperties()
 {
 	QuteWidget::applyInternalProperties();
-    setValue(property("QCS_selectedIndex").toInt());
+    setValue(property("CSQT_selectedIndex").toInt());
 }
 
 void QuteComboBox::createPropertiesDialog()

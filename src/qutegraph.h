@@ -37,9 +37,9 @@ class QuteGraph : public QuteWidget
 {
 	Q_OBJECT
 
-//	Q_PROPERTY(bool QCS_grid MEMBER m_grid)
-//	Q_PROPERTY(bool QCS_logx MEMBER m_logx)
-//	Q_PROPERTY(bool QCS_logy MEMBER m_logy)
+//	Q_PROPERTY(bool CSQT_grid MEMBER m_grid)
+//	Q_PROPERTY(bool CSQT_logx MEMBER m_logx)
+//	Q_PROPERTY(bool CSQT_logy MEMBER m_logy)
 
 public:
 	QuteGraph(QWidget *parent);
@@ -61,7 +61,7 @@ public:
     void showGrid(bool visible) { m_drawGrid = visible; }
     void showTableInfo(bool state) {
         m_drawTableInfo = state;
-        setProperty("QCS_showTableInfo", state?"true":"false");
+        setProperty("CSQT_showTableInfo", state?"true":"false");
         if(m_label != nullptr) {
             if(state)
                 m_label->show();

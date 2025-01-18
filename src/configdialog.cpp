@@ -34,7 +34,7 @@
 
 typedef QPair<QString, QString> QStringPair;
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 #include "RtMidi.h"
 #endif
 
@@ -101,7 +101,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 	midiInterfaceComboBox->clear();
 	midiOutInterfaceComboBox->clear();
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	try {
 		RtMidiIn midiin((RtMidi::Api) m_options->rtMidiApi); // later: should be possible also with other APIs UNIX_JACK etc
 		for (int i = 0; i < (int) midiin.getPortCount(); i++) {
@@ -109,7 +109,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 		}
 	}
 
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -123,7 +123,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 			midiOutInterfaceComboBox->addItem(QString::fromStdString(midiout.getPortName(i)), QVariant(i));
 		}
 	}
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -401,7 +401,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 	//connect(RtMidiModuleComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(checkRtMidiModule(QString)) );
 
 
-#ifndef QCS_PYTHONQT
+#ifndef CSQT_PYTHONQT
 	pythonDirLineEdit->setEnabled(false);
 	pythonDirToolButton->setEnabled(false);
 	noPythonCheckBox->setEnabled(false);
@@ -982,7 +982,7 @@ void ConfigDialog::clearTemplate()
 
 void ConfigDialog::defaultTemplate()
 {
-	QString defaultText = QCS_DEFAULT_TEMPLATE;
+	QString defaultText = CSQT_DEFAULT_TEMPLATE;
 	templateTextEdit->setPlainText(defaultText );
 }
 

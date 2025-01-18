@@ -1,4 +1,4 @@
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 #include "basedocument.h"
 #include "documentpage.h"
 #include "csoundhtmlview.h"

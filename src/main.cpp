@@ -128,14 +128,14 @@ int main(int argc, char *argv[])
     FileOpenEater filterObj;
     qapp.installEventFilter(&filterObj);
 
-#ifdef QCS_USE_NEW_ICON
+#ifdef CSQT_USE_NEW_ICON
     QPixmap pixmap(":/images/splashscreen-alt.png");
 #else
     QPixmap pixmap(":/images/splashscreen.png");
 #endif
 
     QSplashScreen *splash = new QSplashScreen(pixmap);
-    splash->showMessage(QString("Version %1").arg(QCS_VERSION),
+    splash->showMessage(QString("Version %1").arg(CSQT_VERSION),
                         Qt::AlignCenter | Qt::AlignBottom, Qt::white);
     splash->show();
     splash->raise();

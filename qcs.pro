@@ -60,7 +60,7 @@ CONFIG += c++11
 DEFINES += CSOUND7
 CONFIG += csound7
 debugger {
-    DEFINES += QCS_DEBUGGER
+    DEFINES += CSQT_DEBUGGER
     message("Building debugger.")
 }
 message("Building for Csound 7.")
@@ -68,27 +68,27 @@ message("Building for Csound 7.")
 
 QT += concurrent network widgets printsupport quickwidgets
 #DEFINES += USE_QT5
-#CONFIG += QCS_QT5
+#CONFIG += CSQT_QT5
 
 #greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 2) {
 #    QT += quickwidgets
 #    DEFINES += USE_QT_GT_53
-#    CONFIG += QCS_QT53
+#    CONFIG += CSQT_QT53
 #}
 
 #greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 3) {
 #    DEFINES += USE_QT_GT_54
-#    CONFIG += QCS_QT54
+#    CONFIG += CSQT_QT54
 #}
 
 #greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 5) {
 #	DEFINES += USE_QT_GT_55
-#	CONFIG += QCS_QT55
+#	CONFIG += CSQT_QT55
 #}
 
 #greaterThan(QT_MAJOR_VERSION, 4): greaterThan (QT_MINOR_VERSION, 7) {
 #        DEFINES += USE_QT_GT_58
-#        CONFIG += QCS_QT58
+#        CONFIG += CSQT_QT58
 #}
 
 buildDoubles: message("Doubles is now built by default, no need to specify buildDoubles option")
@@ -115,7 +115,7 @@ record_support|perfThread_build {
 
 
 debugger {
-    DEFINES += QCS_DEBUGGER
+    DEFINES += CSQT_DEBUGGER
     message("Building debugger.")
 }
 
@@ -139,14 +139,14 @@ TRANSLATIONS = "src/translations/csoundqt_en.ts" \
 
 html_webengine: {
 message("Building html support with QtWebengine")
-DEFINES += QCS_QTHTML USE_WEBENGINE
+DEFINES += CSQT_QTHTML USE_WEBENGINE
 QT += network webenginewidgets webchannel
 CONFIG += c++11
 }
 
 html_webkit: {
 message("Building html support with QtWebkit")
-DEFINES += QCS_QTHTML USE_WEBKIT
+DEFINES += CSQT_QTHTML USE_WEBKIT
 QT += network webkit webkitwidgets
 CONFIG += c++11
 }

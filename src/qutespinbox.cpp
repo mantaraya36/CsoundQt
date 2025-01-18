@@ -41,21 +41,21 @@ QuteSpinBox::QuteSpinBox(QWidget* parent) : QuteText(parent)
 
     m_type = "editnum";
 
-	setProperty("QCS_value", (double) 0.0);
-	setProperty("QCS_resolution", (double) 0.1);
-	setProperty("QCS_minimum",(double)  -999999999999.0);
-	setProperty("QCS_maximum", (double) 999999999999.0);
-	setProperty("QCS_randomizable", false);
-	setProperty("QCS_randomizableGroup", 0);
+	setProperty("CSQT_value", (double) 0.0);
+	setProperty("CSQT_resolution", (double) 0.1);
+	setProperty("CSQT_minimum",(double)  -999999999999.0);
+	setProperty("CSQT_maximum", (double) 999999999999.0);
+	setProperty("CSQT_randomizable", false);
+	setProperty("CSQT_randomizableGroup", 0);
     // For numbers with fixed resolution it makes more sense to align to the right
-    setProperty("QCS_alignment", "right");
+    setProperty("CSQT_alignment", "right");
 
     // Remove these properties, which are part of parent class but
     // have no meaning here
-    setProperty("QCS_label", QVariant());
-    setProperty("QCS_color", QVariant());
-    setProperty("QCS_borderradius", QVariant());
-    setProperty("QCS_borderwidth", QVariant());
+    setProperty("CSQT_label", QVariant());
+    setProperty("CSQT_color", QVariant());
+    setProperty("CSQT_borderradius", QVariant());
+    setProperty("CSQT_borderwidth", QVariant());
 }
 
 QuteSpinBox::~QuteSpinBox() {}
@@ -67,8 +67,8 @@ void QuteSpinBox::setText(QString text)
 
 void QuteSpinBox::setMidiValue(int value)
 {
-	double max = property("QCS_maximum").toDouble();
-	double min = property("QCS_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
 	if (max != 999999999999.0 && min != -999999999999.0) {
 		double newval = min + ((value / 127.0)* (max - min));
 		setValue(newval);
@@ -82,7 +82,7 @@ void QuteSpinBox::setMidiValue(int value)
 
 //void QuteSpinBox::setResolution(double resolution)
 //{
-//  setProperty("QCS_resolution", resolution);
+//  setProperty("CSQT_resolution", resolution);
 //}
 
 QString QuteSpinBox::getWidgetLine()
@@ -90,14 +90,14 @@ QString QuteSpinBox::getWidgetLine()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	QString line = "ioText {" + QString::number(property("QCS_x").toInt()) + ", " + QString::number(property("QCS_y").toInt()) + "} ";
-	line += "{"+ QString::number(property("QCS_width").toInt()) +", "+ QString::number(property("QCS_height").toInt()) +"} ";
+	QString line = "ioText {" + QString::number(property("CSQT_x").toInt()) + ", " + QString::number(property("CSQT_y").toInt()) + "} ";
+	line += "{"+ QString::number(property("CSQT_width").toInt()) +", "+ QString::number(property("CSQT_height").toInt()) +"} ";
 	line += m_type + " ";
 	line += QString::number(static_cast<QDoubleSpinBox*>(m_widget)->value(), 'f', 6) + " ";
-	line += QString::number(property("QCS_resolution").toDouble(), 'f', 6) + " \"" + m_channel + "\" ";
-	line += property("QCS_alignment").toString() + " ";
-	line += "\"" + m_widget->property("QCS_font").toString() + "\" "
-			+ QString::number(m_widget->property("QCS_fontsize").toInt()) + " ";
+	line += QString::number(property("CSQT_resolution").toDouble(), 'f', 6) + " \"" + m_channel + "\" ";
+	line += property("CSQT_alignment").toString() + " ";
+	line += "\"" + m_widget->property("CSQT_font").toString() + "\" "
+			+ QString::number(m_widget->property("CSQT_fontsize").toInt()) + " ";
 	QColor color = m_widget->palette().color(QPalette::WindowText);
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
@@ -139,15 +139,15 @@ QString QuteSpinBox::getCabbageLine()
 	QString line = "numberbox channel(\"" + m_channel + "\"),  ";
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
 	//line += QString("text(%1), ").arg(m_channel); // Is it good idea to put channel as name?
-	line += QString( "range(%1,%2,%3,1,%4),  ").arg(property("QCS_minimum").toDouble()).arg(property("QCS_maximum").toDouble()).arg(m_value).arg(property("QCS_resolution").toDouble());
-	//color does not work CsoundQt, why? Leave it out now... line += QString("colour(\"%1\")").arg( property("QCS_color").toString());
-	QColor color = property("QCS_color").value<QColor>();
+	line += QString( "range(%1,%2,%3,1,%4),  ").arg(property("CSQT_minimum").toDouble()).arg(property("CSQT_maximum").toDouble()).arg(m_value).arg(property("CSQT_resolution").toDouble());
+	//color does not work CsoundQt, why? Leave it out now... line += QString("colour(\"%1\")").arg( property("CSQT_color").toString());
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "fontcolour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "colour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + ") ";
-	if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-			line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-			line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+	if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+			line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+			line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
 	}
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -164,7 +164,7 @@ QString QuteSpinBox::getQml()
     // currently QtQuick.Controls 2 SpindBox can be programmes to handle floating point
     // see https://doc.qt.io/qt-5.9/qml-qtquick-controls2-spinbox.html accepting floating point numbers
     // but this is not supported here yet. Use integer stepSize for your spingbox for now
-    float resolution = property("QCS_resolution").toFloat();
+    float resolution = property("CSQT_resolution").toFloat();
     if (floorf(resolution) != resolution ) { // check if integer
         qDebug() << "stepsize not integer";
 		return QString();
@@ -183,9 +183,9 @@ QString QuteSpinBox::getQml()
 	qml += QString("\t\ty: %1  * scaleItem.scale\n").arg(y());
 	qml += QString("\t\twidth: (%1 + up.indicator.width + down.indicator.width)  * scaleItem.scale\n").arg(width());
 	qml += QString("\t\theight: %1  * scaleItem.scale\n").arg(height());
-    qml += QString("\t\tfrom: %1\n").arg(property("QCS_minimum").toString());
-    qml += QString("\t\tto: %1\n").arg(property("QCS_maximum").toString());
-    qml += QString("\t\tstepSize: %1\n").arg(property("QCS_resolution").toInt()); // Int for now...
+    qml += QString("\t\tfrom: %1\n").arg(property("CSQT_minimum").toString());
+    qml += QString("\t\tto: %1\n").arg(property("CSQT_maximum").toString());
+    qml += QString("\t\tstepSize: %1\n").arg(property("CSQT_resolution").toInt()); // Int for now...
     qml += QString("\t\tvalue: %1\n").arg(int(getValue())); // TODO: use double
     qml += "\t\teditable: true\n";
     qml += QString("\t\tonValueChanged: csound.setControlChannel(\"%1\", value)\n").arg(m_channel);
@@ -211,34 +211,34 @@ QString QuteSpinBox::getWidgetXmlText()
 	//  s.writeTextElement("type", m_type);
 
 	//These are not implemented in blue
-	s.writeTextElement("alignment", property("QCS_alignment").toString());
+	s.writeTextElement("alignment", property("CSQT_alignment").toString());
 
-	s.writeTextElement("font", property("QCS_font").toString());
-	s.writeTextElement("fontsize", QString::number(property("QCS_fontsize").toDouble()));
+	s.writeTextElement("font", property("CSQT_font").toString());
+	s.writeTextElement("fontsize", QString::number(property("CSQT_fontsize").toDouble()));
 
-	QColor color = property("QCS_color").value<QColor>();
+	QColor color = property("CSQT_color").value<QColor>();
 	s.writeStartElement("color");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	s.writeStartElement("bgcolor");
-	s.writeAttribute("mode", property("QCS_bgcolormode").toBool()? "background":"nobackground");
+	s.writeAttribute("mode", property("CSQT_bgcolormode").toBool()? "background":"nobackground");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
-	s.writeTextElement("resolution", QString::number(property("QCS_resolution").toDouble(), 'f', 8));
+	s.writeTextElement("resolution", QString::number(property("CSQT_resolution").toDouble(), 'f', 8));
 
-	s.writeTextElement("minimum", QString::number(property("QCS_minimum").toDouble()));
-	s.writeTextElement("maximum", QString::number(property("QCS_maximum").toDouble()));
-	//  s.writeTextElement("bordermode", property("QCS_bordermode").toString());
-	//  s.writeTextElement("borderradius", QString::number(property("QCS_borderradius").toInt()));
-	//  s.writeTextElement("borderwidth", QString::number(property("QCS_borderwidth").toInt()));
+	s.writeTextElement("minimum", QString::number(property("CSQT_minimum").toDouble()));
+	s.writeTextElement("maximum", QString::number(property("CSQT_maximum").toDouble()));
+	//  s.writeTextElement("bordermode", property("CSQT_bordermode").toString());
+	//  s.writeTextElement("borderradius", QString::number(property("CSQT_borderradius").toInt()));
+	//  s.writeTextElement("borderwidth", QString::number(property("CSQT_borderwidth").toInt()));
 	s.writeStartElement("randomizable");
-	s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-	s.writeCharacters(property("QCS_randomizable").toBool() ? "true": "false");
+	s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+	s.writeCharacters(property("CSQT_randomizable").toBool() ? "true": "false");
 	s.writeEndElement();
 	s.writeTextElement("value", QString::number(m_value));
 	s.writeEndElement();
@@ -259,7 +259,7 @@ void QuteSpinBox::refreshWidget()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	//  double resolution = property("QCS_resolution").toDouble();
+	//  double resolution = property("CSQT_resolution").toDouble();
 	//  double val = resolution * (int(m_value /resolution) + 1.0); // ceil or int won't work here...
 	double val = m_value;
 	//  qDebug()<< "QuteSpinBox::refreshWidget()" << val << m_value << resolution;
@@ -282,9 +282,9 @@ void QuteSpinBox::applyInternalProperties()
 	widgetLock.lockForWrite();
 #endif
     auto w = static_cast<QDoubleSpinBox*>(m_widget);
-    w->setRange(property("QCS_minimum").toDouble(),property("QCS_maximum").toDouble());
-	m_value = property("QCS_value").toDouble();
-	double resolution = property("QCS_resolution").toDouble();
+    w->setRange(property("CSQT_minimum").toDouble(),property("CSQT_maximum").toDouble());
+	m_value = property("CSQT_value").toDouble();
+	double resolution = property("CSQT_resolution").toDouble();
 	m_valueChanged = true;
 	int i;
     for (i=0; i < 8; i++) {//     Check for used decimal places.
@@ -298,7 +298,7 @@ void QuteSpinBox::applyInternalProperties()
     w->setDecimals(i);
     w->setSingleStep(resolution);
     Qt::Alignment align;
-	QString alignText = property("QCS_alignment").toString();
+	QString alignText = property("CSQT_alignment").toString();
 	if (alignText == "left") {
 		align = Qt::AlignLeft|Qt::AlignVCenter;
 	}
@@ -309,12 +309,12 @@ void QuteSpinBox::applyInternalProperties()
 		align = Qt::AlignRight|Qt::AlignVCenter;
 	}
     w->setAlignment(align);
-	setTextColor(property("QCS_color").value<QColor>());
+	setTextColor(property("CSQT_color").value<QColor>());
 
-	double fontSize = (property("QCS_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
+	double fontSize = (property("CSQT_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
 
-    auto bgstr = property("QCS_bgcolormode").toBool() ?
-        QString("background-color:")+property("QCS_bgcolor").value<QColor>().name()+";" :
+    auto bgstr = property("CSQT_bgcolormode").toBool() ?
+        QString("background-color:")+property("CSQT_bgcolor").value<QColor>().name()+";" :
         QString("");
 
 #ifdef USEFONTPIXELSIZE
@@ -324,16 +324,16 @@ void QuteSpinBox::applyInternalProperties()
         "font-size: %2px;"
         "color: %3;"
         "%4 }")
-        .arg(property("QCS_font").toString())
+        .arg(property("CSQT_font").toString())
         .arg(QString::number(fontSize))
-        .arg(property("QCS_color").value<QColor>().name())
+        .arg(property("CSQT_color").value<QColor>().name())
         .arg(bgstr);
 #else
     int new_fontSize = 0;
     int totalHeight = 0;
     while (totalHeight < fontSize + 1) {
         new_fontSize++;
-        QFont font(property("QCS_font").toString(), new_fontSize);
+        QFont font(property("CSQT_font").toString(), new_fontSize);
         QFontMetricsF fm(font);
         totalHeight = fm.ascent() + fm.descent();
     }
@@ -343,9 +343,9 @@ void QuteSpinBox::applyInternalProperties()
         "font-size: %2pt;"
         "color: %3;"
         "%4 }")
-        .arg(property("QCS_font").toString())
+        .arg(property("CSQT_font").toString())
         .arg(QString::number(new_fontSize))
-        .arg(property("QCS_color").value<QColor>().name())
+        .arg(property("CSQT_color").value<QColor>().name())
         .arg(bgstr);
 
 #endif
@@ -393,9 +393,9 @@ void QuteSpinBox::createPropertiesDialog()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	resolutionSpinBox->setValue(property("QCS_resolution").toDouble());
-	minSpinBox->setValue(property("QCS_minimum").toDouble());
-	maxSpinBox->setValue(property("QCS_maximum").toDouble());
+	resolutionSpinBox->setValue(property("CSQT_resolution").toDouble());
+	minSpinBox->setValue(property("CSQT_minimum").toDouble());
+	maxSpinBox->setValue(property("CSQT_maximum").toDouble());
 	text->setText(static_cast<QDoubleSpinBox *>(m_widget)->text());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -406,28 +406,28 @@ void QuteSpinBox::applyProperties()
 {
 	switch (alignment->currentIndex()) {
 	case 0:
-		setProperty("QCS_alignment", "left");
+		setProperty("CSQT_alignment", "left");
 		break;
 	case 1:
-		setProperty("QCS_alignment", "center");
+		setProperty("CSQT_alignment", "center");
 		break;
 	case 2:
-		setProperty("QCS_alignment", "right");
+		setProperty("CSQT_alignment", "right");
 		break;
 	default:
-		setProperty("QCS_alignment", "");
+		setProperty("CSQT_alignment", "");
 	}
-	setProperty("QCS_font", font->currentFont().family());
-	setProperty("QCS_fontsize", fontSize->value());
-	setProperty("QCS_bgcolor", bgColor->palette().color(QPalette::Window));
-	setProperty("QCS_bgcolormode", bg->isChecked());
-	setProperty("QCS_color", textColor->palette().color(QPalette::Window));
-    setProperty("QCS_resolution", resolutionSpinBox->value());
-	setProperty("QCS_value", text->toPlainText().toDouble());
-	setProperty("QCS_maximum", maxSpinBox->value());
-	setProperty("QCS_minimum", minSpinBox->value());
-	//  setProperty("QCS_randomizable",false);
-    // setProperty("QCS_bordermode", border->isChecked() ? "border" : "noborder");
+	setProperty("CSQT_font", font->currentFont().family());
+	setProperty("CSQT_fontsize", fontSize->value());
+	setProperty("CSQT_bgcolor", bgColor->palette().color(QPalette::Window));
+	setProperty("CSQT_bgcolormode", bg->isChecked());
+	setProperty("CSQT_color", textColor->palette().color(QPalette::Window));
+    setProperty("CSQT_resolution", resolutionSpinBox->value());
+	setProperty("CSQT_value", text->toPlainText().toDouble());
+	setProperty("CSQT_maximum", maxSpinBox->value());
+	setProperty("CSQT_minimum", minSpinBox->value());
+	//  setProperty("CSQT_randomizable",false);
+    // setProperty("CSQT_bordermode", border->isChecked() ? "border" : "noborder");
     QuteWidget::applyProperties();  // Must be last so that the widgetChanged signal is last
 }
 

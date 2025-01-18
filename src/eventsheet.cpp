@@ -646,7 +646,7 @@ void EventSheet::markHistory()
 	if (history[historyIndex] != text) {
 		if (! history[historyIndex].isEmpty())
 			historyIndex++;
-		//    if (historyIndex >= QCS_MAX_UNDO) {
+		//    if (historyIndex >= CSQT_MAX_UNDO) {
 		//      history.pop_front();
 		//      historyIndex--;
 		//    }

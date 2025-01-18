@@ -40,23 +40,23 @@ QuteText::QuteText(QWidget *parent) : QuteWidget(parent)
     //  canFocus(true);
 
 	//   connect(static_cast<QLabel*>(m_widget), SIGNAL(popUpMenu(QPoint)), this, SLOT(popUpMenu(QPoint)));
-	setProperty("QCS_label", "");
-	setProperty("QCS_alignment", "left");
-    setProperty("QCS_valignment", "top");
-    setProperty("QCS_font", "Arial");
-	setProperty("QCS_fontsize", 12.0);
-	setProperty("QCS_bgcolor", QColor());
-	setProperty("QCS_bgcolormode", false);
-	setProperty("QCS_color", QColor(Qt::black));
-	setProperty("QCS_bordermode", "noborder");
-	setProperty("QCS_borderradius", 1);
-	setProperty("QCS_borderwidth", 1);
+	setProperty("CSQT_label", "");
+	setProperty("CSQT_alignment", "left");
+    setProperty("CSQT_valignment", "top");
+    setProperty("CSQT_font", "Arial");
+	setProperty("CSQT_fontsize", 12.0);
+	setProperty("CSQT_bgcolor", QColor());
+	setProperty("CSQT_bgcolormode", false);
+	setProperty("CSQT_color", QColor(Qt::black));
+	setProperty("CSQT_bordermode", "noborder");
+	setProperty("CSQT_borderradius", 1);
+	setProperty("CSQT_borderwidth", 1);
 
 	m_fontScaling = 1.0;
 	m_fontOffset = 1.0;
 	m_type = "display";
     m_precision = 3;
-    setProperty("QCS_precision", m_precision);
+    setProperty("CSQT_precision", m_precision);
 
 }
 
@@ -122,20 +122,20 @@ void QuteText::setAlignment(QString alignment)
 
 void QuteText::setFont(QString font)
 {
-	setProperty("QCS_font", font);
+	setProperty("CSQT_font", font);
 }
 
 void QuteText::setFontSize(int fontSize)
 {
 	qDebug() << "QuteText::setFontSize(int fontSize) " << fontSize;
-	setProperty("QCS_fontsize", fontSize);
+	setProperty("CSQT_fontsize", fontSize);
 }
 
 
 void QuteText::setTextColor(QColor color)
 {
 	// For old format only
-    setProperty("QCS_color", color);
+    setProperty("CSQT_color", color);
 	QPalette palette = m_widget->palette();
     palette.setColor(QPalette::WindowText, color);
 	m_widget->setPalette(palette);
@@ -144,7 +144,7 @@ void QuteText::setTextColor(QColor color)
 void QuteText::setBgColor(QColor color)
 {
 	// For old format only
-    setProperty("QCS_bgcolor", color);
+    setProperty("CSQT_bgcolor", color);
 	QPalette palette = m_widget->palette();
     palette.setColor(QPalette::Window, color);
 	m_widget->setPalette(palette);
@@ -170,7 +170,7 @@ void QuteText::setText(QString text)
 	widgetLock.lockForWrite();
 #endif
 
-	setProperty("QCS_label", text);
+	setProperty("CSQT_label", text);
 	QString displayText = text;
 	m_stringValue = text;
 	m_valueChanged = true;
@@ -196,15 +196,15 @@ void QuteText::applyInternalProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-    static_cast<QLabel*>(m_widget)->setText(property("QCS_label").toString());
-    m_precision = property("QCS_precision").toInt();
-    m_stringValue = property("QCS_label").toString();
+    static_cast<QLabel*>(m_widget)->setText(property("CSQT_label").toString());
+    m_precision = property("CSQT_precision").toInt();
+    m_stringValue = property("CSQT_label").toString();
 	m_value = m_stringValue.toDouble();
 	m_valueChanged = true;
 
     Qt::Alignment align;
-    QString horizontalAlignment = property("QCS_alignment").toString();
-    QString verticalAlignment = property("QCS_valignment").toString();
+    QString horizontalAlignment = property("CSQT_alignment").toString();
+    QString verticalAlignment = property("CSQT_valignment").toString();
 
     if(verticalAlignment == "top")
         align = Qt::AlignTop;
@@ -221,42 +221,42 @@ void QuteText::applyInternalProperties()
         align |= Qt::AlignRight;
     }
 	static_cast<QLabel*>(m_widget)->setAlignment(align);
-	setTextColor(property("QCS_color").value<QColor>());
-    int borderWidth = property("QCS_borderwidth").toInt();
-    QString bordermode = property("QCS_bordermode").toString();
+	setTextColor(property("CSQT_color").value<QColor>());
+    int borderWidth = property("CSQT_borderwidth").toInt();
+    QString bordermode = property("CSQT_bordermode").toString();
     if(bordermode == "noborder" && borderWidth > 0) {
-        setProperty("QCS_borderwidth", 0);
+        setProperty("CSQT_borderwidth", 0);
         borderWidth = 0;
     } else if(bordermode == "border" && borderWidth == 0) {
-        setProperty("QCS_bordermode", "noborder");
+        setProperty("CSQT_bordermode", "noborder");
     }
     QString borderStyle = borderWidth > 0 ? "solid" : "none";
 
-    double scaledFontSize = property("QCS_fontsize").toDouble() * m_fontScaling;
+    double scaledFontSize = property("CSQT_fontsize").toDouble() * m_fontScaling;
     double fontSize = scaledFontSize + m_fontOffset;
 
     /*
 	while (totalHeight < fontSize + 1) {
         new_fontSize += 2;
         font.setPointSize(new_fontSize);
-        // QFont font(property("QCS_font").toString(), new_fontSize);
+        // QFont font(property("CSQT_font").toString(), new_fontSize);
 		QFontMetricsF fm(font);
         totalHeight = fm.ascent() + fm.descent();
 	}
     */
 
-    QString bgstr = property("QCS_bgcolormode").toBool() ?
-        (QString("; background-color:")+property("QCS_bgcolor").value<QColor>().name()) :
+    QString bgstr = property("CSQT_bgcolormode").toBool() ?
+        (QString("; background-color:")+property("CSQT_bgcolor").value<QColor>().name()) :
         QString("");
 
     m_widget->setStyleSheet(
-        "QLabel{ font-family:\"" + property("QCS_font").toString() + "\""
+        "QLabel{ font-family:\"" + property("CSQT_font").toString() + "\""
             // + "; font-size: " + QString::number(new_fontSize) + "pt"
             + "; font-size: " + QString::number(fontSize) + "px"
             + bgstr
-            + "; color:" + property("QCS_color").value<QColor>().name()
-            + "; border-color:" + property("QCS_color").value<QColor>().name()
-            + "; border-radius:" + QString::number(property("QCS_borderradius").toInt()) + "px"
+            + "; color:" + property("CSQT_color").value<QColor>().name()
+            + "; border-color:" + property("CSQT_color").value<QColor>().name()
+            + "; border-radius:" + QString::number(property("CSQT_borderradius").toInt()) + "px"
             + "; border-width: " + QString::number(borderWidth) + "px"
             + "; border-style: " + borderStyle
             + "; }");
@@ -283,8 +283,8 @@ QString QuteText::getWidgetLine()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	QString line = "ioText {" + QString::number(property("QCS_x").toInt()) + ", " + QString::number(property("QCS_y").toInt()) + "} ";
-	line += "{"+ QString::number(property("QCS_width").toInt()) +", "+ QString::number(property("QCS_height").toInt()) +"} ";
+	QString line = "ioText {" + QString::number(property("CSQT_x").toInt()) + ", " + QString::number(property("CSQT_y").toInt()) + "} ";
+	line += "{"+ QString::number(property("CSQT_width").toInt()) +", "+ QString::number(property("CSQT_height").toInt()) +"} ";
 	line += m_type + " ";
 	line += QString::number(m_value, 'f', 6) + " 0.00100 \"" + m_channel + "\" ";
 	QString alignment = "";
@@ -295,7 +295,7 @@ QString QuteText::getWidgetLine()
 	else if (((QLabel *)m_widget)->alignment() & Qt::AlignRight)
 		alignment = "right";
 	line += alignment + " ";
-	line += "\"" + property("QCS_font").toString() + "\" " + QString::number(property("QCS_fontsize").toInt()) + " ";
+	line += "\"" + property("CSQT_font").toString() + "\" " + QString::number(property("CSQT_fontsize").toInt()) + " ";
 	QColor color = m_widget->palette().color(QPalette::WindowText);
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
@@ -307,7 +307,7 @@ QString QuteText::getWidgetLine()
 	line += m_widget->autoFillBackground()? "background ":"nobackground ";
 	line += static_cast<QFrame*>(m_widget)->frameShape()==QFrame::NoFrame ? "noborder ": "border ";
 	//   line += ((QLabel *)m_widget)->toPlainText();
-	QString outText = property("QCS_label").toString();
+	QString outText = property("CSQT_label").toString();
     outText.replace(QRegularExpression("[\n\r]"), "\u00AC");
 	line += outText;
 #ifdef  USE_WIDGET_MUTEX
@@ -330,17 +330,17 @@ QString QuteText::getCabbageLine() // QuteText is used both for label and displa
 
 	QString line = (m_type == "label") ? "label " : "numberbox channel(\"" + m_channel + "\"),  ";;
 	line += "bounds(" + QString::number(x()) + ", " + QString::number(y()) + ","  + QString::number(width()) +", "+ QString::number(height()) + "), ";
-	QString alignment = property("QCS_alignment").toString();
+	QString alignment = property("CSQT_alignment").toString();
 	alignment.replace("center","centre");
 	line += "align(\"" + alignment + "\"), ";
-	QColor color = property("QCS_color").value<QColor>();
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "fontcolour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "colour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
     // Cabbage does not set font or fontsize.
     // Text is scaled according to heigth. Maybe set heigth = fontsize + something?
 	if ( m_type == "label" ) 	{ // then it is a label
-		line += "text(\"" + property("QCS_label").toString() + "\") " ;
+		line += "text(\"" + property("CSQT_label").toString() + "\") " ;
 	} else { // display
         line += QString("range(-1000000000000,1000000000000,%1), ").arg(m_value); // set redicolously large min and max value and hope the user will not use larger numbers...
 		line += "active(0)";
@@ -361,20 +361,20 @@ QString QuteText::getQml()
     if (m_type == "label" || m_type == "display") {
 
         // check if it has background and border
-        bool hasBackground = property("QCS_bgcolormode").toBool();
-        bool hasBorder = (property("QCS_bordermode").toString() == "border");
-        QString color = property("QCS_color").value<QColor>().name();
+        bool hasBackground = property("CSQT_bgcolormode").toBool();
+        bool hasBorder = (property("CSQT_bordermode").toString() == "border");
+        QString color = property("CSQT_color").value<QColor>().name();
 
         qml += "\n\tRectangle {\n"; // place within rectangle
         qml += QString("\t\tx: %1 * scaleItem.scale\n").arg(x());
         qml += QString("\t\ty: %1  * scaleItem.scale\n").arg(y());
         qml += QString("\t\twidth: %1 * scaleItem.scale\n").arg(width());
         qml += QString("\t\theight: %1 * scaleItem.scale\n").arg(height());
-        QString bgColor = hasBackground ? property("QCS_bgcolor").value<QColor>().name() : "transparent";
+        QString bgColor = hasBackground ? property("CSQT_bgcolor").value<QColor>().name() : "transparent";
         qml += QString("\t\tcolor: \"%1\"\n").arg(bgColor);
         if (hasBorder) {
-            qml += QString("\t\tborder.width: %1\n").arg(QString::number(property("QCS_borderwidth").toInt()));
-            qml += QString("\t\tradius: %1\n").arg(QString::number(property("QCS_borderradius").toInt()));
+            qml += QString("\t\tborder.width: %1\n").arg(QString::number(property("CSQT_borderwidth").toInt()));
+            qml += QString("\t\tradius: %1\n").arg(QString::number(property("CSQT_borderradius").toInt()));
             qml += QString("\t\tborder.color: \"%1\"\n").arg(color);
         } else {
             qml += "\n\tborder.width: 0";
@@ -387,11 +387,11 @@ QString QuteText::getQml()
         }
 
         qml += QString("\t\t\tanchors.centerIn: parent\n");
-        qml += QString("\t\t\tfont.pixelSize: %1 * scaleItem.scale\n").arg(property("QCS_fontsize").toString()); // is it OK on ndroid? not pointsize?
-        qml += QString("\t\t\ttext: \"%1\"\n").arg(property("QCS_label").toString());
+        qml += QString("\t\t\tfont.pixelSize: %1 * scaleItem.scale\n").arg(property("CSQT_fontsize").toString()); // is it OK on ndroid? not pointsize?
+        qml += QString("\t\t\ttext: \"%1\"\n").arg(property("CSQT_label").toString());
 
         qml += QString("\t\t\tcolor: \"%1\"\n").arg(color);
-        qml += QString("\t\tfont.family: \"%1\"\n").arg(property("QCS_font").toString());
+        qml += QString("\t\tfont.family: \"%1\"\n").arg(property("CSQT_font").toString());
         // TODO: alignment
         qml += "\t\t}\n"; // end label
         qml += "\t}\n"; // end rectangle
@@ -414,32 +414,32 @@ QString QuteText::getWidgetXmlText()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	s.writeTextElement("label", property("QCS_label").toString());
-	s.writeTextElement("alignment", property("QCS_alignment").toString());
-    s.writeTextElement("valignment", property("QCS_valignment").toString());
+	s.writeTextElement("label", property("CSQT_label").toString());
+	s.writeTextElement("alignment", property("CSQT_alignment").toString());
+    s.writeTextElement("valignment", property("CSQT_valignment").toString());
 
 
-	s.writeTextElement("font", property("QCS_font").toString());
-	s.writeTextElement("fontsize", QString::number(property("QCS_fontsize").toInt()));
-	s.writeTextElement("precision", QString::number(property("QCS_precision").toInt()));
+	s.writeTextElement("font", property("CSQT_font").toString());
+	s.writeTextElement("fontsize", QString::number(property("CSQT_fontsize").toInt()));
+	s.writeTextElement("precision", QString::number(property("CSQT_precision").toInt()));
 
-	QColor color = property("QCS_color").value<QColor>();
+	QColor color = property("CSQT_color").value<QColor>();
 	s.writeStartElement("color");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	s.writeStartElement("bgcolor");
-	s.writeAttribute("mode", property("QCS_bgcolormode").toBool()? "background":"nobackground");
+	s.writeAttribute("mode", property("CSQT_bgcolormode").toBool()? "background":"nobackground");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
 
-	s.writeTextElement("bordermode", property("QCS_bordermode").toString());
-	s.writeTextElement("borderradius", QString::number(property("QCS_borderradius").toInt()));
-	s.writeTextElement("borderwidth", QString::number(property("QCS_borderwidth").toInt()));
+	s.writeTextElement("bordermode", property("CSQT_bordermode").toString());
+	s.writeTextElement("borderradius", QString::number(property("CSQT_borderradius").toInt()));
+	s.writeTextElement("borderwidth", QString::number(property("CSQT_borderwidth").toInt()));
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -468,7 +468,7 @@ void QuteText::createPropertiesDialog()
 
 	text = new QTextEdit(dialog);
 	text->setAcceptRichText(false);
-	text->setText(property("QCS_label").toString());
+	text->setText(property("CSQT_label").toString());
     text->setMinimumWidth(320);
     text->setMaximumWidth(740);
     layout->addWidget(text, 5, 1, 1, 4, Qt::AlignLeft|Qt::AlignVCenter);
@@ -479,21 +479,21 @@ void QuteText::createPropertiesDialog()
     labelPtrs["textColor"] = label;
 
     textColor = new SelectColorButton(dialog);
-    textColor->setColor(property("QCS_color").value<QColor>());
+    textColor->setColor(property("CSQT_color").value<QColor>());
     layout->addWidget(textColor, 6,1, Qt::AlignLeft|Qt::AlignVCenter);
     // connect(textColor, SIGNAL(released()), this, SLOT(selectTextColor()));
 
     bg = new QCheckBox("Background", dialog);
     layout->addWidget(bg, 6, 2, Qt::AlignRight|Qt::AlignVCenter);
     bgColor = new SelectColorButton(dialog);
-    bgColor->setColor(property("QCS_bgcolor").value<QColor>());
+    bgColor->setColor(property("CSQT_bgcolor").value<QColor>());
     layout->addWidget(bgColor, 6,3, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel("Precision", dialog);
     layout->addWidget(label, 7, 0, Qt::AlignRight|Qt::AlignVCenter);
     precisionSpinBox = new QSpinBox(dialog);
     precisionSpinBox->unsetLocale();
-    precisionSpinBox->setValue(property("QCS_precision").toInt());
+    precisionSpinBox->setValue(property("CSQT_precision").toInt());
     layout->addWidget(precisionSpinBox, 7, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
 
@@ -567,28 +567,28 @@ void QuteText::createPropertiesDialog()
 	widgetLock.lockForRead();
 #endif
     // QPixmap pixmap(64,64);
-    // QPalette palette(property("QCS_color").value<QColor>());
+    // QPalette palette(property("CSQT_color").value<QColor>());
     /*
-    pixmap.fill(property("QCS_color").value<QColor>());
+    pixmap.fill(property("CSQT_color").value<QColor>());
 	textColor->setIcon(pixmap);
     textColor->setPalette(palette);
 	palette.color(QPalette::Window);
     */
     /*
-	pixmap.fill(property("QCS_bgcolor").value<QColor>());
+	pixmap.fill(property("CSQT_bgcolor").value<QColor>());
 	bgColor->setIcon(pixmap);
-	palette = QPalette(property("QCS_bgcolor").value<QColor>());
+	palette = QPalette(property("CSQT_bgcolor").value<QColor>());
 	bgColor->setPalette(palette);
     palette.color(QPalette::Window);
     */
-    bg->setChecked(property("QCS_bgcolormode").toBool());
-    // border->setChecked(property("QCS_bordermode").toString() == "border");
-	font->setCurrentFont(QFont(property("QCS_font").toString()));
-	fontSize->setValue(property("QCS_fontsize").toInt());
-	borderRadius->setValue(property("QCS_borderradius").toInt());
-	borderWidth->setValue(property("QCS_borderwidth").toInt());
+    bg->setChecked(property("CSQT_bgcolormode").toBool());
+    // border->setChecked(property("CSQT_bordermode").toString() == "border");
+	font->setCurrentFont(QFont(property("CSQT_font").toString()));
+	fontSize->setValue(property("CSQT_fontsize").toInt());
+	borderRadius->setValue(property("CSQT_borderradius").toInt());
+	borderWidth->setValue(property("CSQT_borderwidth").toInt());
 
-    QString currentAlignment = property("QCS_alignment").toString();
+    QString currentAlignment = property("CSQT_alignment").toString();
     if (currentAlignment == "left")
         alignment->setCurrentIndex(0);
     else if (currentAlignment == "center")
@@ -600,7 +600,7 @@ void QuteText::createPropertiesDialog()
         alignment->setCurrentIndex(0);
     }
 
-    currentAlignment = property("QCS_valignment").toString();
+    currentAlignment = property("CSQT_valignment").toString();
     if (currentAlignment == "top")
         vertAlignmentComboBox->setCurrentIndex(0);
     else if (currentAlignment == "center")
@@ -621,47 +621,47 @@ void QuteText::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	setProperty("QCS_label", text->toPlainText());
+	setProperty("CSQT_label", text->toPlainText());
 
     switch (alignment->currentIndex()) {
 	case 0:
-		setProperty("QCS_alignment", "left");
+		setProperty("CSQT_alignment", "left");
 		break;
 	case 1:
-		setProperty("QCS_alignment", "center");
+		setProperty("CSQT_alignment", "center");
 		break;
 	case 2:
-		setProperty("QCS_alignment", "right");
+		setProperty("CSQT_alignment", "right");
 		break;
 	default:
-		setProperty("QCS_alignment", "");
+		setProperty("CSQT_alignment", "");
 	}
 
     switch (vertAlignmentComboBox->currentIndex()) {
     case 0:
-        setProperty("QCS_valignment", "top");
+        setProperty("CSQT_valignment", "top");
         break;
     case 1:
-        setProperty("QCS_valignment", "center");
+        setProperty("CSQT_valignment", "center");
         break;
     case 2:
-        setProperty("QCS_valignment", "bottom");
+        setProperty("CSQT_valignment", "bottom");
         break;
     default:
-        setProperty("QCS_valignment", "");
+        setProperty("CSQT_valignment", "");
     }
 
-    setProperty("QCS_font", font->currentFont().family());
-	setProperty("QCS_fontsize", fontSize->value());
-    setProperty("QCS_bgcolor", bgColor->getColor());
-    setProperty("QCS_bgcolormode", bg->isChecked());
-    // setProperty("QCS_color", textColor->palette().color(QPalette::Window));
-    setProperty("QCS_color", textColor->getColor());
-    setProperty("QCS_bordermode", borderWidth->value() > 0);
-    setProperty("QCS_borderradius", borderRadius->value());
-	setProperty("QCS_borderwidth", borderWidth->value());
+    setProperty("CSQT_font", font->currentFont().family());
+	setProperty("CSQT_fontsize", fontSize->value());
+    setProperty("CSQT_bgcolor", bgColor->getColor());
+    setProperty("CSQT_bgcolormode", bg->isChecked());
+    // setProperty("CSQT_color", textColor->palette().color(QPalette::Window));
+    setProperty("CSQT_color", textColor->getColor());
+    setProperty("CSQT_bordermode", borderWidth->value() > 0);
+    setProperty("CSQT_borderradius", borderRadius->value());
+	setProperty("CSQT_borderwidth", borderWidth->value());
     m_precision = precisionSpinBox->value();
-    setProperty("QCS_precision", m_precision);
+    setProperty("CSQT_precision", m_precision);
 
 
 #ifdef  USE_WIDGET_MUTEX
@@ -676,7 +676,7 @@ void QuteText::selectTextColor()
 	QColor color = QColorDialog::getColor(m_widget->palette().color(QPalette::WindowText), this);
 	if (color.isValid()) {
 		//    setTextColor(color);
-		//    setProperty("QCS_color", color);
+		//    setProperty("CSQT_color", color);
 		textColor->setPalette(QPalette(color));
 		QPixmap pixmap(64,64);
 		pixmap.fill(color);
@@ -691,7 +691,7 @@ void QuteText::selectBgColor()
 	QColor color = QColorDialog::getColor(m_widget->palette().color(QPalette::Window), this);
 	if (color.isValid()) {
 		//    setBgColor(color);
-		//    setProperty("QCS_bgcolor", color);
+		//    setProperty("CSQT_bgcolor", color);
 		bgColor->setPalette(QPalette(color));
 		QPixmap pixmap(64,64);
 		pixmap.fill(color);
@@ -713,9 +713,9 @@ QuteLineEdit::QuteLineEdit(QWidget* parent) : QuteText(parent)
 			this, SLOT(textEdited(QString)));
 	//   connect(static_cast<QLineEdit*>(m_widget), SIGNAL(popUpMenu(QPoint)), this, SLOT(popUpMenu(QPoint)));
 	m_type = "edit";
-	setProperty("QCS_bordermode", QVariant()); // Remove these property
-	setProperty("QCS_borderradius", QVariant()); // Remove these property
-	setProperty("QCS_borderwidth", QVariant()); // Remove these property
+	setProperty("CSQT_bordermode", QVariant()); // Remove these property
+	setProperty("CSQT_borderradius", QVariant()); // Remove these property
+	setProperty("CSQT_borderwidth", QVariant()); // Remove these property
 
     // Necessary to pass mouse tracking to widget panel for _MouseX channels
     m_widget->setMouseTracking(true);
@@ -732,7 +732,7 @@ QuteLineEdit::~QuteLineEdit()
 
 void QuteLineEdit::setText(QString text)
 {
-	setProperty("QCS_label", text);
+	setProperty("CSQT_label", text);
 	int cursorPos = static_cast<QLineEdit*>(m_widget)->cursorPosition();
 	m_widget->blockSignals(true);
 	static_cast<QLineEdit*>(m_widget)->setText(text);
@@ -749,17 +749,17 @@ QString QuteLineEdit::getWidgetLine()
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
 	line += m_type + " ";
 	line += QString::number(m_value, 'f', 6) + " 0.00100 \"" + m_channel + "\" ";
-	line += property("QCS_alignmet").toString() + " ";
-	line += "\"" + property("QCS_font").toString() + "\" " + QString::number(property("QCS_fontsize").toInt()) + " ";
-	QColor color = property("QCS_color").value<QColor>();
+	line += property("CSQT_alignmet").toString() + " ";
+	line += "\"" + property("CSQT_font").toString() + "\" " + QString::number(property("CSQT_fontsize").toInt()) + " ";
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
 			+ ", " + QString::number(color.blue() * 256) + "} ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
 			+ ", " + QString::number(color.blue() * 256) + "} ";
-	line += property("QCS_bgcolormode").toBool() ? "true":"false";
+	line += property("CSQT_bgcolormode").toBool() ? "true":"false";
 	line += "noborder ";
 	line += static_cast<QLineEdit*>(m_widget)->text();
 	//   qDebug("QuteLineEdit::getWidgetLine() %s", line.toStdString().c_str());
@@ -779,11 +779,11 @@ QString QuteLineEdit::getWidgetXmlText()
 #endif
 
 	s.writeTextElement("label",  static_cast<QLineEdit *>(m_widget)->text());
-	s.writeTextElement("alignment", property("QCS_alignment").toString());
+	s.writeTextElement("alignment", property("CSQT_alignment").toString());
 
-	s.writeTextElement("font", property("QCS_font").toString());
-	s.writeTextElement("fontsize", QString::number(property("QCS_fontsize").toInt()));
-	s.writeTextElement("precision", QString::number(property("QCS_precision").toInt()));
+	s.writeTextElement("font", property("CSQT_font").toString());
+	s.writeTextElement("fontsize", QString::number(property("CSQT_fontsize").toInt()));
+	s.writeTextElement("precision", QString::number(property("CSQT_precision").toInt()));
 
 	QColor color = m_widget->palette().color(QPalette::WindowText);
 	s.writeStartElement("color");
@@ -802,8 +802,8 @@ QString QuteLineEdit::getWidgetXmlText()
 	s.writeTextElement("background", m_widget->autoFillBackground()? "background":"nobackground");
 	//  s.writeTextElement("border", "border");
 	//
-	//  s.writeTextElement("bordermode", property("QCS_bordermode").toString());
-	//  s.writeTextElement("borderradius", QString::number(property("QCS_borderradius").toInt()));
+	//  s.writeTextElement("bordermode", property("CSQT_bordermode").toString());
+	//  s.writeTextElement("borderradius", QString::number(property("CSQT_borderradius").toInt()));
 	//  s.writeTextElement("randomizable", "");
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
@@ -846,12 +846,12 @@ void QuteLineEdit::applyInternalProperties()
 	QuteWidget::applyInternalProperties();
 	//  qDebug() << "QuteLineEdit::applyInternalProperties()";
 
-	//  static_cast<QLineEdit*>(m_widget)->setText(property("QCS_label").toString());
-	m_stringValue = property("QCS_label").toString();
+	//  static_cast<QLineEdit*>(m_widget)->setText(property("CSQT_label").toString());
+	m_stringValue = property("CSQT_label").toString();
 	m_valueChanged = true;
 	Qt::Alignment align;
 
-	QString alignText = property("QCS_alignment").toString();
+	QString alignText = property("CSQT_alignment").toString();
 	if (alignText == "left") {
 		align = Qt::AlignLeft|Qt::AlignVCenter;
 	}
@@ -862,20 +862,20 @@ void QuteLineEdit::applyInternalProperties()
 		align = Qt::AlignRight|Qt::AlignVCenter;
 	}
 	static_cast<QLineEdit*>(m_widget)->setAlignment(align);
-	setTextColor(property("QCS_color").value<QColor>());
-	QString borderStyle = (property("QCS_bordermode").toString() == "border" ? "solid": "none");
+	setTextColor(property("CSQT_color").value<QColor>());
+	QString borderStyle = (property("CSQT_bordermode").toString() == "border" ? "solid": "none");
 
-	double fontSize = (property("QCS_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
+	double fontSize = (property("CSQT_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
 
 #ifdef USEFONTPIXELSIZE
-    m_widget->setStyleSheet("QLineEdit { font-family:\"" + property("QCS_font").toString()
+    m_widget->setStyleSheet("QLineEdit { font-family:\"" + property("CSQT_font").toString()
                             + "\"; font-size: " + QString::number(fontSize) + "px"
-                            + (property("QCS_bgcolormode").toBool() ?
-                                   QString("; background-color:") + property("QCS_bgcolor").value<QColor>().name() : QString("; "))
-                            + "; color:" + property("QCS_color").value<QColor>().name()
-                            + "; border-color:" + property("QCS_color").value<QColor>().name()
-                            + "; border-radius:" + QString::number(property("QCS_borderradius").toInt()) + "px"
-                            + "; border-width:" + QString::number(property("QCS_borderwidth").toInt()) + "px"
+                            + (property("CSQT_bgcolormode").toBool() ?
+                                   QString("; background-color:") + property("CSQT_bgcolor").value<QColor>().name() : QString("; "))
+                            + "; color:" + property("CSQT_color").value<QColor>().name()
+                            + "; border-color:" + property("CSQT_color").value<QColor>().name()
+                            + "; border-radius:" + QString::number(property("CSQT_borderradius").toInt()) + "px"
+                            + "; border-width:" + QString::number(property("CSQT_borderwidth").toInt()) + "px"
                             + "; border-style: " + borderStyle
                             + "; }");
 #else
@@ -883,19 +883,19 @@ void QuteLineEdit::applyInternalProperties()
     int totalHeight = 0;
 	while (totalHeight < fontSize + 1) {
 		new_fontSize++;
-		QFont font(property("QCS_font").toString(), new_fontSize);
+		QFont font(property("CSQT_font").toString(), new_fontSize);
 		QFontMetricsF fm(font);
 		totalHeight = fm.ascent() + fm.descent();
 	}
 
-	m_widget->setStyleSheet("QLineEdit { font-family:\"" + property("QCS_font").toString()
+	m_widget->setStyleSheet("QLineEdit { font-family:\"" + property("CSQT_font").toString()
 							+ "\"; font-size: " + QString::number(new_fontSize)  + "pt"
-							+ (property("QCS_bgcolormode").toBool() ?
-								   QString("; background-color:") + property("QCS_bgcolor").value<QColor>().name() : QString("; "))
-							+ "; color:" + property("QCS_color").value<QColor>().name()
-							+ "; border-color:" + property("QCS_color").value<QColor>().name()
-							+ "; border-radius:" + QString::number(property("QCS_borderradius").toInt()) + "px"
-							+ "; border-width:" + QString::number(property("QCS_borderwidth").toInt()) + "px"
+							+ (property("CSQT_bgcolormode").toBool() ?
+								   QString("; background-color:") + property("CSQT_bgcolor").value<QColor>().name() : QString("; "))
+							+ "; color:" + property("CSQT_color").value<QColor>().name()
+							+ "; border-color:" + property("CSQT_color").value<QColor>().name()
+							+ "; border-radius:" + QString::number(property("CSQT_borderradius").toInt()) + "px"
+							+ "; border-width:" + QString::number(property("CSQT_borderwidth").toInt()) + "px"
 							+ "; border-style: " + borderStyle
 							+ "; }");
 #endif
@@ -909,10 +909,10 @@ QString QuteLineEdit::getCabbageLine()
 #endif
 	QString line = "texteditor channel(\"" + m_channel + "\"),  ";
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
-	line += QString("text(\"%1\"), ").arg(property("QCS_label").toString());
-	QColor color = property("QCS_color").value<QColor>();
+	line += QString("text(\"%1\"), ").arg(property("CSQT_label").toString());
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "fontcolour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "colour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + ") ";
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -941,7 +941,7 @@ void QuteLineEdit::createPropertiesDialog()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	text->setText(property("QCS_label").toString());
+	text->setText(property("CSQT_label").toString());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -949,19 +949,19 @@ void QuteLineEdit::createPropertiesDialog()
 
 //void QuteLineEdit::applyProperties()
 //{
-//  setProperty("QCS_label", text->toPlainText());
+//  setProperty("CSQT_label", text->toPlainText());
 //  switch (alignment->currentIndex()) {
 //    case 0:
-//      setProperty("QCS_alignment", "left");
+//      setProperty("CSQT_alignment", "left");
 //      break;
 //    case 1:
-//      setProperty("QCS_alignment", "center");
+//      setProperty("CSQT_alignment", "center");
 //      break;
 //    case 2:
-//      setProperty("QCS_alignment", "right");
+//      setProperty("CSQT_alignment", "right");
 //      break;
 //    default:
-//      setProperty("QCS_alignment", "");
+//      setProperty("CSQT_alignment", "");
 //  }
 //  QuteWidget::applyProperties();  //Must be last to make sure the widgetChanged signal is last
 //}
@@ -1001,17 +1001,17 @@ QuteScrollNumber::QuteScrollNumber(QWidget* parent) : QuteText(parent)
 
 	m_type = "scroll";
 
-	setProperty("QCS_value", (double) 0.0);
-	setProperty("QCS_resolution", (double) 0.01);
-	setProperty("QCS_minimum",(double)  -999999999999.0);
-	setProperty("QCS_maximum", (double) 99999999999999.0);
-	setProperty("QCS_randomizable", false);
-	setProperty("QCS_randomizableGroup", 0);
-	setProperty("QCS_mouseControl", "continuous");
-	setProperty("QCS_mouseControlAct", "jump");
+	setProperty("CSQT_value", (double) 0.0);
+	setProperty("CSQT_resolution", (double) 0.01);
+	setProperty("CSQT_minimum",(double)  -999999999999.0);
+	setProperty("CSQT_maximum", (double) 99999999999999.0);
+	setProperty("CSQT_randomizable", false);
+	setProperty("CSQT_randomizableGroup", 0);
+	setProperty("CSQT_mouseControl", "continuous");
+	setProperty("CSQT_mouseControlAct", "jump");
 
-	setProperty("QCS_label", QVariant()); // Remove this property which is part of parent class.
-	setProperty("QCS_precision", QVariant()); // Remove this property which is part of parent class.
+	setProperty("CSQT_label", QVariant()); // Remove this property which is part of parent class.
+	setProperty("CSQT_precision", QVariant()); // Remove this property which is part of parent class.
 	m_places = 2;
 	m_min = -999999999999.0;
 	m_max = 99999999999999.0;
@@ -1063,22 +1063,22 @@ QString QuteScrollNumber::getWidgetLine()
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
 	line += m_type + " ";
 	line += QString::number(m_value, 'f', 6) + " ";
-	line += QString::number(property("QCS_resolution").toDouble(), 'f', 6);
+	line += QString::number(property("CSQT_resolution").toDouble(), 'f', 6);
 	line += + " \"" + m_channel + "\" ";
-	line += property("QCS_alignment").toString() + " ";
-	line += "\"" + property("QCS_font").toString() + "\" "
-			+ QString::number(property("QCS_fontsize").toInt()) + " ";
-	QColor color = property("QCS_color").value<QColor>();
+	line += property("CSQT_alignment").toString() + " ";
+	line += "\"" + property("CSQT_font").toString() + "\" "
+			+ QString::number(property("CSQT_fontsize").toInt()) + " ";
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
 			+ ", " + QString::number(color.blue() * 256) + "} ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "{" + QString::number(color.red() * 256)
 			+ ", " + QString::number(color.green() * 256)
 			+ ", " + QString::number(color.blue() * 256) + "} ";
-	line += property("QCS_bgcolormode").toBool() ? "background ":"nobackground ";
-	line += property("QCS_bordermode").toBool() ? "noborder ": "border ";
-	QString outText = property("QCS_label").toString();
+	line += property("CSQT_bgcolormode").toBool() ? "background ":"nobackground ";
+	line += property("CSQT_bordermode").toBool() ? "noborder ": "border ";
+	QString outText = property("CSQT_label").toString();
     outText.replace(QRegularExpression("[\n\r]"), "\u00AC");
 	line += outText;
 	//   qDebug("QuteText::getWidgetLine() %s", line.toStdString().c_str());
@@ -1110,37 +1110,37 @@ QString QuteScrollNumber::getWidgetXmlText()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	s.writeTextElement("alignment", property("QCS_alignment").toString());
-	s.writeTextElement("font", property("QCS_font").toString());
-	s.writeTextElement("fontsize", QString::number(property("QCS_fontsize").toInt()));
+	s.writeTextElement("alignment", property("CSQT_alignment").toString());
+	s.writeTextElement("font", property("CSQT_font").toString());
+	s.writeTextElement("fontsize", QString::number(property("CSQT_fontsize").toInt()));
 
-	QColor color = property("QCS_color").value<QColor>();
+	QColor color = property("CSQT_color").value<QColor>();
 	s.writeStartElement("color");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	s.writeStartElement("bgcolor");
-	s.writeAttribute("mode", property("QCS_bgcolormode").toBool()? "background":"nobackground");
+	s.writeAttribute("mode", property("CSQT_bgcolormode").toBool()? "background":"nobackground");
 	s.writeTextElement("r", QString::number(color.red()));
 	s.writeTextElement("g", QString::number(color.green()));
 	s.writeTextElement("b", QString::number(color.blue()));
 	s.writeEndElement();
 
 	s.writeTextElement("value", QString::number(m_value, 'f', 8));
-	s.writeTextElement("resolution", QString::number(property("QCS_resolution").toDouble(), 'f', 8));
-	s.writeTextElement("minimum", QString::number(property("QCS_minimum").toDouble(), 'f', 8));
-	s.writeTextElement("maximum", QString::number(property("QCS_maximum").toDouble(), 'f', 8));
-	s.writeTextElement("bordermode", property("QCS_bordermode").toString());
-	s.writeTextElement("borderradius", QString::number(property("QCS_borderradius").toInt()));
-	s.writeTextElement("borderwidth", QString::number(property("QCS_borderwidth").toInt()));
+	s.writeTextElement("resolution", QString::number(property("CSQT_resolution").toDouble(), 'f', 8));
+	s.writeTextElement("minimum", QString::number(property("CSQT_minimum").toDouble(), 'f', 8));
+	s.writeTextElement("maximum", QString::number(property("CSQT_maximum").toDouble(), 'f', 8));
+	s.writeTextElement("bordermode", property("CSQT_bordermode").toString());
+	s.writeTextElement("borderradius", QString::number(property("CSQT_borderradius").toInt()));
+	s.writeTextElement("borderwidth", QString::number(property("CSQT_borderwidth").toInt()));
 	s.writeStartElement("randomizable");
-	s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-	s.writeCharacters(property("QCS_randomizable").toBool() ? "true": "false");
+	s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+	s.writeCharacters(property("CSQT_randomizable").toBool() ? "true": "false");
 	s.writeEndElement();
 	s.writeStartElement("mouseControl");
-	s.writeAttribute("act", property("QCS_mouseControl").toString());
+	s.writeAttribute("act", property("CSQT_mouseControl").toString());
 	s.writeEndElement();
 
 	s.writeEndElement();
@@ -1219,9 +1219,9 @@ void QuteScrollNumber::createPropertiesDialog()
 	widgetLock.lockForRead();
 #endif
 
-	resolutionSpinBox->setValue(property("QCS_resolution").toDouble());
-	minSpinBox->setValue(property("QCS_minimum").toDouble());
-	maxSpinBox->setValue(property("QCS_maximum").toDouble());
+	resolutionSpinBox->setValue(property("CSQT_resolution").toDouble());
+	minSpinBox->setValue(property("CSQT_minimum").toDouble());
+	maxSpinBox->setValue(property("CSQT_maximum").toDouble());
 
     vertAlignmentComboBox->hide();
     labelPtrs["vertAlign"]->hide();
@@ -1235,10 +1235,10 @@ void QuteScrollNumber::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	setProperty("QCS_resolution", resolutionSpinBox->value());
-	setProperty("QCS_value",text->toPlainText().toDouble());
-	setProperty("QCS_minimum",minSpinBox->value());
-	setProperty("QCS_maximum",maxSpinBox->value());
+	setProperty("CSQT_resolution", resolutionSpinBox->value());
+	setProperty("CSQT_value",text->toPlainText().toDouble());
+	setProperty("CSQT_minimum",minSpinBox->value());
+	setProperty("CSQT_maximum",maxSpinBox->value());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -1253,16 +1253,16 @@ void QuteScrollNumber::applyInternalProperties()
     // QuteWidget::applyInternalProperties();
     QuteText::applyInternalProperties();
 
-	m_min = property("QCS_minimum").toDouble();
-	m_max = property("QCS_maximum").toDouble();
-	setResolution(property("QCS_resolution").toDouble());
-	setValue(property("QCS_value").toDouble());
-	//  m_value = property("QCS_value").toDouble();
-	//  m_value2 = property("QCS_value2").toDouble();
-	//  m_stringValue = property("QCS_stringValue").toString();
-	//  static_cast<QLabel*>(m_widget)->setText(property("QCS_label").toString());
+	m_min = property("CSQT_minimum").toDouble();
+	m_max = property("CSQT_maximum").toDouble();
+	setResolution(property("CSQT_resolution").toDouble());
+	setValue(property("CSQT_value").toDouble());
+	//  m_value = property("CSQT_value").toDouble();
+	//  m_value2 = property("CSQT_value2").toDouble();
+	//  m_stringValue = property("CSQT_stringValue").toString();
+	//  static_cast<QLabel*>(m_widget)->setText(property("CSQT_label").toString());
 	Qt::Alignment align;
-	QString alignText = property("QCS_alignment").toString();
+	QString alignText = property("CSQT_alignment").toString();
 	if (alignText == "left") {
 		align = Qt::AlignLeft|Qt::AlignVCenter;
 	}
@@ -1273,33 +1273,33 @@ void QuteScrollNumber::applyInternalProperties()
 		align = Qt::AlignRight|Qt::AlignVCenter;
 	}
 	static_cast<ScrollNumberWidget*>(m_widget)->setAlignment(align);
-	setTextColor(property("QCS_color").value<QColor>());
+	setTextColor(property("CSQT_color").value<QColor>());
     /*
-	QString borderStyle = (property("QCS_bordermode").toString() == "border" ? "solid": "none");
+	QString borderStyle = (property("CSQT_bordermode").toString() == "border" ? "solid": "none");
 
 
 	int new_fontSize = 0;
 	int totalHeight = 0;
-	double fontSize = (property("QCS_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
+	double fontSize = (property("CSQT_fontsize").toDouble()*m_fontScaling) + m_fontOffset;
 
 	while (totalHeight < fontSize + 1) {
 		new_fontSize++;
-		QFont font(property("QCS_font").toString(), new_fontSize);
+		QFont font(property("CSQT_font").toString(), new_fontSize);
 		QFontMetricsF fm(font);
 		totalHeight = fm.ascent() + fm.descent();
 	}
 
-	m_widget->setStyleSheet("QLabel { font-family:\"" + property("QCS_font").toString()
+	m_widget->setStyleSheet("QLabel { font-family:\"" + property("CSQT_font").toString()
 							+ "\"; font-size: " + QString::number(new_fontSize)  + "pt"
-							+ (property("QCS_bgcolormode").toBool() ?
-								   QString("; background-color:") + property("QCS_bgcolor").value<QColor>().name() : QString("; "))
-							+ "; color:" + property("QCS_color").value<QColor>().name()
-							+ "; border-color:" + property("QCS_color").value<QColor>().name()
-							+ "; border-radius:" + QString::number(property("QCS_borderradius").toInt()) + "px"
-							+ "; border-width:" + QString::number(property("QCS_borderwidth").toInt()) + "px"
+							+ (property("CSQT_bgcolormode").toBool() ?
+								   QString("; background-color:") + property("CSQT_bgcolor").value<QColor>().name() : QString("; "))
+							+ "; color:" + property("CSQT_color").value<QColor>().name()
+							+ "; border-color:" + property("CSQT_color").value<QColor>().name()
+							+ "; border-radius:" + QString::number(property("CSQT_borderradius").toInt()) + "px"
+							+ "; border-width:" + QString::number(property("CSQT_borderwidth").toInt()) + "px"
 							+ "; border-style: " + borderStyle
 							+ "; }");
-	//  qDebug() << property("QCS_bgcolormode").toBool();
+	//  qDebug() << property("CSQT_bgcolormode").toBool();
 	//  qDebug() << "QuteScrollNumber::applyInternalProperties() sylesheet" <<  m_widget->styleSheet();
     */
 	m_valueChanged = true;
@@ -1312,12 +1312,12 @@ QString QuteScrollNumber::getCabbageLine()
 #endif
 	QString line = "numberbox channel(\"" + m_channel + "\"),  ";
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
-	QString alignment = property("QCS_alignment").toString();
+	QString alignment = property("CSQT_alignment").toString();
 	alignment.replace("center","centre");
 	line += "align(\"" + alignment + "\"), ";
-	QColor color = property("QCS_color").value<QColor>();
+	QColor color = property("CSQT_color").value<QColor>();
 	line += "fontcolour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
-	color = property("QCS_bgcolor").value<QColor>();
+	color = property("CSQT_bgcolor").value<QColor>();
 	line += "colour(" + QString::number(color.red()) + "," +  QString::number(color.green()) + "," +  QString::number(color.blue()) + "), ";
 	line += QString("range(-1000000000000,1000000000000,%1), ").arg(m_value); // set redicolously large min and max value and hope the user will use larger numbers...
 	line += "active(0)";
@@ -1381,8 +1381,8 @@ void QuteScrollNumber::setValue(double value)
 
 void QuteScrollNumber::setMidiValue(int value)
 {
-	double max = property("QCS_maximum").toDouble();
-	double min = property("QCS_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
 	// it seems better to allow it always, then user gets at least some feedback
 	//if (max != 99999999999999.0 && min != -999999999999.0) {
 		double newval = min + ((value / 127.0)* (max - min));
@@ -1421,8 +1421,8 @@ void QuteScrollNumber::setValueFromDialog() {
                 tr("Enter New Value"),
                 tr("Value"),
                 m_value,
-                property("QCS_minimum").toDouble(),
-                property("QCS_maximum").toDouble(),
+                property("CSQT_minimum").toDouble(),
+                property("CSQT_maximum").toDouble(),
                 3);
     setValue(newvalue);
     QPair<QString, double> channelValue(m_channel, m_value);

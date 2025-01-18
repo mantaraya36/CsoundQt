@@ -37,16 +37,16 @@ QuteButton::QuteButton(QWidget *parent) : QuteWidget(parent)
     connect(static_cast<QPushButton *>(m_widget), SIGNAL(released()),
             this, SLOT(buttonReleased()));
 
-	setProperty("QCS_type", "event");
-	setProperty("QCS_pressedValue", 1.0);
-	setProperty("QCS_stringvalue", "");
-	setProperty("QCS_text", "");
-	setProperty("QCS_image", "");
-	setProperty("QCS_eventLine", "");
-	setProperty("QCS_latch", false);
-	setProperty("QCS_momentaryMidiButton", false); // used for latched button if bound to MIDI controller
-    setProperty("QCS_latched", false);
-    setProperty("QCS_fontsize", 10);
+	setProperty("CSQT_type", "event");
+	setProperty("CSQT_pressedValue", 1.0);
+	setProperty("CSQT_stringvalue", "");
+	setProperty("CSQT_text", "");
+	setProperty("CSQT_image", "");
+	setProperty("CSQT_eventLine", "");
+	setProperty("CSQT_latch", false);
+	setProperty("CSQT_momentaryMidiButton", false); // used for latched button if bound to MIDI controller
+    setProperty("CSQT_latched", false);
+    setProperty("CSQT_fontsize", 10);
     
 	QPixmap p = QPixmap(8, 8);
 	p.fill(QColor(Qt::green));
@@ -71,7 +71,7 @@ void QuteButton::setValue(double value)
 		m_value = -value;
 	} else {
 		m_currentValue = value != 0 ? m_value : 0.0;
-		if (property("QCS_latch").toBool()) {
+		if (property("CSQT_latch").toBool()) {
 			static_cast<QPushButton *>(m_widget)->setChecked(m_currentValue != 0);
 		}
 	}
@@ -141,12 +141,12 @@ QString QuteButton::getWidgetLine()
 #endif
 	QString line = "ioButton {" + QString::number(x()) + ", " + QString::number(y()) + "} ";
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
-	line +=  property("QCS_type").toString()  + " ";
+	line +=  property("CSQT_type").toString()  + " ";
 	line +=  QString::number(m_value,'f', 6) + " ";
 	line += "\"" + m_channel + "\" ";
     line += "\"" + static_cast<QPushButton *>(m_widget)->text().replace(QRegularExpression("[\n\r]"), "\u00AC") + "\" ";
-	line += "\"" + property("QCS_image").toString() + "\" ";
-	line += property("QCS_eventLine").toString();
+	line += "\"" + property("CSQT_image").toString() + "\" ";
+	line += property("CSQT_eventLine").toString();
 	//   qDebug("QuteButton::getWidgetLine() %s", line.toStdString().c_str());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -161,15 +161,15 @@ QString QuteButton::getCabbageLine()
 #endif
 	QString line = "button channel(\"" + m_channel + "\"),  ";
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
-	if (property("QCS_latch").toBool()) {
-		line += QString("text(\"%1\", \"%2\"), ").arg(property("QCS_text").toString() + " OFF").arg(property("QCS_text").toString() + " ON"); // set different texts for ON/OFF if latced
+	if (property("CSQT_latch").toBool()) {
+		line += QString("text(\"%1\", \"%2\"), ").arg(property("CSQT_text").toString() + " OFF").arg(property("CSQT_text").toString() + " ON"); // set different texts for ON/OFF if latced
 	} 	else  {
-		line += "text(\"" + property("QCS_text").toString()+ " \"), "; // otherwise just the button text
+		line += "text(\"" + property("CSQT_text").toString()+ " \"), "; // otherwise just the button text
 	}
-	line += QString("latched(%1)").arg((int)property("QCS_latch").toBool());
-	if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-		line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-		line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+	line += QString("latched(%1)").arg((int)property("CSQT_latch").toBool());
+	if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+		line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+		line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
 	}
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -190,15 +190,15 @@ QString QuteButton::getQml()
 	qml += QString("\t\ty: %1 * scaleItem.scale\n").arg(y());
 	qml += QString("\t\twidth: %1 * scaleItem.scale\n").arg(width());
 	qml += QString("\t\theight: %1 * scaleItem.scale\n").arg(height());
-	qml += QString("\t\ttext: \"%1\"\n").arg( property("QCS_text").toString());
-	bool checkable = property("QCS_latch").toBool();
+	qml += QString("\t\ttext: \"%1\"\n").arg( property("CSQT_text").toString());
+	bool checkable = property("CSQT_latch").toBool();
 	if (checkable) {
 		qml += "\t\tcheckable: true\n";
 	}
 
-	qml += QString("\t\tproperty double pressedValue: %1\n").arg(property("QCS_pressedValue").toDouble()); // to be used for pressing the button.
+	qml += QString("\t\tproperty double pressedValue: %1\n").arg(property("CSQT_pressedValue").toDouble()); // to be used for pressing the button.
 
-	QString type = property("QCS_type").toString();
+	QString type = property("CSQT_type").toString();
 	qml += QString("\t\tproperty bool isEnventButton: %1\n").arg( (type=="value" ? "false" : "true" )  );
 	if (type == "value") {
 		qml += QString(R"(
@@ -214,9 +214,9 @@ QString QuteButton::getQml()
 
 
 	if (type == "event" || type == "pictevent") {
-		QString eventLine = property("QCS_eventLine").toString();
+		QString eventLine = property("CSQT_eventLine").toString();
         QString turnOffLine = QString();
-		if (property("QCS_latch").toBool() && eventLine.size() > 0) {
+		if (property("CSQT_latch").toBool() && eventLine.size() > 0) {
             QStringList lineElements = eventLine.split(QRegularExpression("\\s"),Qt::SkipEmptyParts);
 			if (lineElements.size() > 0 && lineElements[0] == "i") {
 				lineElements.removeAt(0); // Remove first element if it is "i"
@@ -268,16 +268,16 @@ QString QuteButton::getWidgetXmlText()
 	widgetLock.lockForRead();
 #endif
 
-	s.writeTextElement("type", property("QCS_type").toString());
+	s.writeTextElement("type", property("CSQT_type").toString());
 	s.writeTextElement("pressedValue", QString::number(m_value,'f', 8));
 	s.writeTextElement("stringvalue", m_stringValue);
-	s.writeTextElement("text", property("QCS_text").toString());
-	s.writeTextElement("image", property("QCS_image").toString());
-	s.writeTextElement("eventLine", property("QCS_eventLine").toString());
-	s.writeTextElement("latch", property("QCS_latch").toString());
-	s.writeTextElement("momentaryMidiButton", property("QCS_momentaryMidiButton").toString());
-	s.writeTextElement("latched", property("QCS_latched").toString());
-    s.writeTextElement("fontsize", QString::number(property("QCS_fontsize").toInt()));
+	s.writeTextElement("text", property("CSQT_text").toString());
+	s.writeTextElement("image", property("CSQT_image").toString());
+	s.writeTextElement("eventLine", property("CSQT_eventLine").toString());
+	s.writeTextElement("latch", property("CSQT_latch").toString());
+	s.writeTextElement("momentaryMidiButton", property("CSQT_momentaryMidiButton").toString());
+	s.writeTextElement("latched", property("CSQT_latched").toString());
+    s.writeTextElement("fontsize", QString::number(property("CSQT_fontsize").toInt()));
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -300,14 +300,14 @@ void QuteButton::applyProperties()
         // remove all spaces at the beginning. This is needed for event queue lines
         eventLine.remove(0,1);
 	}
-	setProperty("QCS_eventLine", eventLine);
-    setProperty("QCS_text", text->toPlainText());
-	setProperty("QCS_image", filenameLineEdit->text());
-	setProperty("QCS_type", typeComboBox->currentText());
-	setProperty("QCS_pressedValue", valueBox->value());
-	setProperty("QCS_latch", latchCheckBox->isChecked());
-	setProperty("QCS_momentaryMidiButton", useMomentaryMidiButtonCheckBox->isChecked());
-    setProperty("QCS_fontsize", fontSizeSpinBox->value());
+	setProperty("CSQT_eventLine", eventLine);
+    setProperty("CSQT_text", text->toPlainText());
+	setProperty("CSQT_image", filenameLineEdit->text());
+	setProperty("CSQT_type", typeComboBox->currentText());
+	setProperty("CSQT_pressedValue", valueBox->value());
+	setProperty("CSQT_latch", latchCheckBox->isChecked());
+	setProperty("CSQT_momentaryMidiButton", useMomentaryMidiButtonCheckBox->isChecked());
+    setProperty("CSQT_fontsize", fontSizeSpinBox->value());
 
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -335,13 +335,13 @@ void QuteButton::createPropertiesDialog()
 	typeComboBox->addItem("pictevent");
 	typeComboBox->addItem("pictvalue");
 	typeComboBox->addItem("pict");
-	typeComboBox->setCurrentIndex(typeComboBox->findText(property("QCS_type").toString()));
+	typeComboBox->setCurrentIndex(typeComboBox->findText(property("CSQT_type").toString()));
 	layout->addWidget(typeComboBox, 4, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
 	latchCheckBox = new QCheckBox(dialog);
 	latchCheckBox->setText(tr("Latch"));
 	layout->addWidget(latchCheckBox, 5, 1, 1,2, Qt::AlignLeft|Qt::AlignVCenter);
-	latchCheckBox->setChecked(property("QCS_latch").toBool());
+	latchCheckBox->setChecked(property("CSQT_latch").toBool());
 	label = new QLabel(dialog);
 	label->setText("Value");
 	layout->addWidget(label, 4, 2, Qt::AlignRight|Qt::AlignVCenter);
@@ -361,7 +361,7 @@ void QuteButton::createPropertiesDialog()
 
     text = new QTextEdit(dialog);
 	text->setMinimumWidth(320);
-	text->setText(property("QCS_text").toString());
+	text->setText(property("CSQT_text").toString());
     layout->addWidget(text, 6, 1, 1, 3, Qt::AlignLeft|Qt::AlignVCenter);
 
     label = new QLabel(dialog);
@@ -372,7 +372,7 @@ void QuteButton::createPropertiesDialog()
     fontSizeSpinBox->unsetLocale();
     fontSizeSpinBox->setMinimum(6);
     fontSizeSpinBox->setMaximum(999);
-    fontSizeSpinBox->setValue(property("QCS_fontsize").toInt());
+    fontSizeSpinBox->setValue(property("CSQT_fontsize").toInt());
     layout->addWidget(fontSizeSpinBox, 7, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
 	label = new QLabel(dialog);
@@ -380,7 +380,7 @@ void QuteButton::createPropertiesDialog()
     layout->addWidget(label, 8, 0, Qt::AlignRight|Qt::AlignVCenter);
 	filenameLineEdit = new QLineEdit(dialog);
 	filenameLineEdit->setMinimumWidth(320);
-	filenameLineEdit->setText(property("QCS_image").toString());
+	filenameLineEdit->setText(property("CSQT_image").toString());
     layout->addWidget(filenameLineEdit, 8, 1, 1, 3, Qt::AlignLeft|Qt::AlignVCenter);
 
 	QPushButton *browseButton = new QPushButton(dialog);
@@ -395,14 +395,14 @@ void QuteButton::createPropertiesDialog()
 	//   text->setText(((QuteLabel *)m_widget)->toPlainText());
     layout->addWidget(line, 9,1,1,3, Qt::AlignLeft|Qt::AlignVCenter);
 	line->setMinimumWidth(320);
-	line->setText(property("QCS_eventLine").toString());
+	line->setText(property("CSQT_eventLine").toString());
 
 	useMomentaryMidiButtonCheckBox = new QCheckBox(dialog);
 	useMomentaryMidiButtonCheckBox->setText(tr("Momentary"));
 	useMomentaryMidiButtonCheckBox->setWhatsThis(tr("Check if you use MIDI push button (momentary button) to toggle the latch - \nFirst push switches on, second off."));
 	// TODO: enabling/disabling needs some signal->slot connection
 	//useMomentaryMidiButtonCheckBox->setEnabled( latchCheckBox->isChecked() );
-	useMomentaryMidiButtonCheckBox->setChecked(property("QCS_momentaryMidiButton").toBool());
+	useMomentaryMidiButtonCheckBox->setChecked(property("CSQT_momentaryMidiButton").toBool());
 
 	const int midiRow = layout->rowCount()-2;
 	layout->removeWidget(midiLearnButton);
@@ -419,7 +419,7 @@ void QuteButton::createPropertiesDialog()
 void QuteButton::setText(QString text)
 {
 	// For old widget format conversion of line endings
-	setProperty("QCS_text", text);
+	setProperty("CSQT_text", text);
     static_cast<QPushButton *>(m_widget)->setText(text);
 }
 
@@ -430,12 +430,12 @@ void QuteButton::popUpMenu(QPoint pos)
 
 void QuteButton::setMidiValue(int value)
 {
-	double pressedValue = property("QCS_pressedValue").toDouble();
+	double pressedValue = property("CSQT_pressedValue").toDouble();
 	double newValue = 0;
 
-	bool isLatch = property("QCS_latch").toBool();
-	bool useMomentaryMidiButton = property("QCS_momentaryMidiButton").toBool();
-    QString type = property("QCS_type").toString();
+	bool isLatch = property("CSQT_latch").toBool();
+	bool useMomentaryMidiButton = property("CSQT_momentaryMidiButton").toBool();
+    QString type = property("CSQT_type").toString();
 
     qDebug () << "Playing: " << m_isPlaying << type;
 
@@ -471,10 +471,10 @@ void QuteButton::refreshWidget()
 	widgetLock.lockForRead();
 #endif
 
-	//  setProperty("QCS_value", m_value);
-	//  setProperty("QCS_stringvalue", m_stringValue);
+	//  setProperty("CSQT_value", m_value);
+	//  setProperty("CSQT_stringvalue", m_stringValue);
 
-	setProperty("QCS_latched", m_currentValue != 0);
+	setProperty("CSQT_latched", m_currentValue != 0);
 	m_valueChanged = false;
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -486,14 +486,14 @@ void QuteButton::applyInternalProperties()
 {
 	QuteWidget::applyInternalProperties();
     //qDebug() << "QuteButton::applyInternalProperties";
-    m_value = property("QCS_pressedValue").toDouble();
-	//  m_value2 = property("QCS_value2").toDouble();
-	m_stringValue = property("QCS_stringvalue").toString();
-	QString type = property("QCS_type").toString();
+    m_value = property("CSQT_pressedValue").toDouble();
+	//  m_value2 = property("CSQT_value2").toDouble();
+	m_stringValue = property("CSQT_stringvalue").toString();
+	QString type = property("CSQT_type").toString();
     auto w = static_cast<QPushButton*>(m_widget);
-    w->setCheckable(property("QCS_latch").toBool());
+    w->setCheckable(property("CSQT_latch").toBool());
     // Set icon here, because it can be overwritten if button is "pict"
-    if (property("QCS_latch").toBool()) {
+    if (property("CSQT_latch").toBool()) {
         w->setIcon(onIcon);
     } else {
         w->setIcon(QIcon());
@@ -502,7 +502,7 @@ void QuteButton::applyInternalProperties()
     if (type == "event" || type == "value") {
         icon = QIcon();
 		static_cast<QPushButton *>(m_widget)->setIcon(icon);
-        auto fontsizeProperty = property("QCS_fontsize");
+        auto fontsizeProperty = property("CSQT_fontsize");
         if(!fontsizeProperty.isValid()) {
             qDebug() << "Button: fontsize invalid / not present. Setting to default";
         } else {
@@ -515,13 +515,13 @@ void QuteButton::applyInternalProperties()
                 w->setStyleSheet(sheet);
             }
         }
-        w->setText(property("QCS_text").toString());
+        w->setText(property("CSQT_text").toString());
 
     } else if (type == "pictevent" || type == "pictvalue" || type == "pict") {
         qDebug() << "///////////////////////////";
         w->setStyleSheet(nullptr);
         w->setText("");
-		icon = QIcon(QPixmap(property("QCS_image").toString()));
+		icon = QIcon(QPixmap(property("CSQT_image").toString()));
 		static_cast<QPushButton *>(m_widget)->setIcon(icon);
 		static_cast<QPushButton *>(m_widget)->setIconSize(QSize(width(),height()));
     } else {
@@ -532,11 +532,11 @@ void QuteButton::applyInternalProperties()
 
 
 void QuteButton::performAction() {
-    QString type = property("QCS_type").toString();
-    QString eventLine = property("QCS_eventLine").toString();
+    QString type = property("CSQT_type").toString();
+    QString eventLine = property("CSQT_eventLine").toString();
     QString name = m_channel;
-	bool isLatch = property("QCS_latch").toBool();
-    //bool useMomentaryMidiButton = property("QCS_momentaryMidiButton").toBool();
+	bool isLatch = property("CSQT_latch").toBool();
+    //bool useMomentaryMidiButton = property("CSQT_momentaryMidiButton").toBool();
 
 	if (type.contains("event") && !eventLine.isEmpty()) {
 		if ( hasIndefiniteDuration() ) {		
@@ -560,7 +560,7 @@ void QuteButton::performAction() {
 				m_isPlaying = false;
 				emit(queueEventSignal(lineElements.join(" ")));
 			} else {
-				setValue( property("QCS_pressedValue").toDouble()  ); // was 1
+				setValue( property("CSQT_pressedValue").toDouble()  ); // was 1
 				m_isPlaying = true;
 				emit(queueEventSignal(eventLine));
 			}
@@ -589,7 +589,7 @@ void QuteButton::performAction() {
         else if (name.startsWith("_Browse")) {
             QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"));
             if (fileName != "") {
-                setProperty("QCS_stringvalue", fileName);
+                setProperty("CSQT_stringvalue", fileName);
                 emit newValue(QPair<QString, QString>(name, fileName));
             }
         }
@@ -598,7 +598,7 @@ void QuteButton::performAction() {
             QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Select File(s)"));
             if (!fileNames.isEmpty()) {
                 QString joinedNames = fileNames.join("|");
-                setProperty("QCS_stringvalue", joinedNames);
+                setProperty("CSQT_stringvalue", joinedNames);
                 emit newValue(QPair<QString, QString>(name, joinedNames));
             }
         }
@@ -612,7 +612,7 @@ void QuteButton::performAction() {
 
 bool QuteButton::hasIndefiniteDuration()
 {
-	QString eventLine = property("QCS_eventLine").toString();
+	QString eventLine = property("CSQT_eventLine").toString();
 	if ( !eventLine.isEmpty()) {
         QStringList lineElements = eventLine.split(QRegularExpression("\\s"),Qt::SkipEmptyParts);
 		if (lineElements.size() > 0 && lineElements[0] == "i") {
@@ -639,7 +639,7 @@ void QuteButton::buttonPressed()
         return;
     }
     auto w = static_cast<QPushButton *>(m_widget);
-    if (property("QCS_latch").toBool()) {
+    if (property("CSQT_latch").toBool()) {
         m_currentValue = !w->isChecked() ? m_value : 0;
     } else {
 		m_currentValue = m_value;
@@ -663,11 +663,11 @@ void QuteButton::buttonReleased()
         performAction();
         return;
     }
-	bool isLatch = property("QCS_latch").toBool();
+	bool isLatch = property("CSQT_latch").toBool();
 
 	if (!isLatch ) {
         m_currentValue = 0;
-		if (  property("QCS_type").toString().contains("event") && hasIndefiniteDuration() ) {
+		if (  property("CSQT_type").toString().contains("event") && hasIndefiniteDuration() ) {
 			performAction(); // to stop the playing instrument
 		}
 	}

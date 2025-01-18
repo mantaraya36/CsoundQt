@@ -33,11 +33,11 @@ QuteCheckBox::QuteCheckBox(QWidget *parent) : QuteWidget(parent)
 	m_widget->setContextMenuPolicy(Qt::NoContextMenu);
 	canFocus(false);
 
-	setProperty("QCS_selected", false);
-    setProperty("QCS_label", "");
-	setProperty("QCS_pressedValue", 1.0);
-	setProperty("QCS_randomizable", false);
-	setProperty("QCS_randomizableGroup", 0);
+	setProperty("CSQT_selected", false);
+    setProperty("CSQT_label", "");
+	setProperty("CSQT_pressedValue", 1.0);
+	setProperty("CSQT_randomizable", false);
+	setProperty("CSQT_randomizableGroup", 0);
 
 	m_currentValue = 0;
 
@@ -119,9 +119,9 @@ QString QuteCheckBox::getCabbageLine()
 	line += "value(" + (static_cast<QCheckBox *>(m_widget)->isChecked()?
 							QString("1"):QString("0")) + ")";
 	//line += QString(", caption(%1)").arg(m_channel);
-	if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-		line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-		line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+	if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+		line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+		line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
 	}
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -147,7 +147,7 @@ QString QuteCheckBox::getQml()
     qml += QString("\t\twidth: %1  * scaleItem.scale\n").arg(width());
     qml += QString("\t\theight: %1  * scaleItem.scale\n").arg(height());
     qml += QString("\t\tchecked: %1\n").arg(getValue()==0 ? "false" : "true" );
-    qml += QString("\t\tonCheckedChanged: csound.setControlChannel(\"%1\", checked ? %2 : 0)\n").arg(m_channel).arg(property("QCS_pressedValue").toDouble());
+    qml += QString("\t\tonCheckedChanged: csound.setControlChannel(\"%1\", checked ? %2 : 0)\n").arg(m_channel).arg(property("CSQT_pressedValue").toDouble());
     //color, font and other outlook properties ignored by now
     qml += "\t}";
 #ifdef  USE_WIDGET_MUTEX
@@ -159,7 +159,7 @@ QString QuteCheckBox::getQml()
 
 void QuteCheckBox::setMidiValue(int value)
 {
-	double pressedVal = property("QCS_pressedValue").toDouble();
+	double pressedVal = property("CSQT_pressedValue").toDouble();
 	double newval= value == 0 ? 0 : pressedVal;
 	setValue(newval);
 	QPair<QString, double> channelValue(m_channel, newval);
@@ -178,12 +178,12 @@ QString QuteCheckBox::getWidgetXmlText()
 
 	s.writeTextElement("selected",
 					   m_currentValue != 0 ? QString("true"):QString("false"));
-	s.writeTextElement("label", property("QCS_label").toString());
+	s.writeTextElement("label", property("CSQT_label").toString());
     s.writeTextElement("pressedValue",
-                       QString::number(property("QCS_pressedValue").toDouble()));
+                       QString::number(property("CSQT_pressedValue").toDouble()));
 	s.writeStartElement("randomizable");
-	s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-	s.writeCharacters(property("QCS_randomizable").toBool() ? "true": "false");
+	s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+	s.writeCharacters(property("CSQT_randomizable").toBool() ? "true": "false");
 	s.writeEndElement();
 	s.writeEndElement();
 
@@ -202,8 +202,8 @@ void QuteCheckBox::refreshWidget()
 	m_widget->blockSignals(true);
 	static_cast<QCheckBox *>(m_widget)->setChecked(m_currentValue != 0);
 	m_widget->blockSignals(false);
-	//  setProperty("QCS_pressedValue", m_value);
-	setProperty("QCS_selected", m_currentValue != 0);
+	//  setProperty("CSQT_pressedValue", m_value);
+	setProperty("CSQT_selected", m_currentValue != 0);
 
 	m_valueChanged = false;
 #ifdef  USE_WIDGET_MUTEX
@@ -225,9 +225,9 @@ void QuteCheckBox::applyInternalProperties()
 	QuteWidget::applyInternalProperties();
 	//  qDebug() << "QuteSlider::applyInternalProperties()";
     // Pressed value must go before selected to make sure it has the right value...
-    m_value = property("QCS_pressedValue").toDouble();
-	setValue(property("QCS_selected").toBool() ? 1:0);
-    setLabel(property("QCS_label").toString());
+    m_value = property("CSQT_pressedValue").toDouble();
+	setValue(property("CSQT_selected").toBool() ? 1:0);
+    setLabel(property("CSQT_label").toString());
 
     static_cast<QCheckBox*>(m_widget)->setStyleSheet(QString("QCheckBox::indicator { "
                              "width:%1px; "
@@ -240,7 +240,7 @@ void QuteCheckBox::stateChanged(int state)
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	m_currentValue = (state != Qt::Unchecked ? property("QCS_pressedValue").toDouble() : 0);
+	m_currentValue = (state != Qt::Unchecked ? property("CSQT_pressedValue").toDouble() : 0);
 	QPair<QString, double> channelValue(m_channel, m_currentValue);
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -253,7 +253,7 @@ void QuteCheckBox::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	setProperty("QCS_pressedValue", valueBox->value());
+	setProperty("CSQT_pressedValue", valueBox->value());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -278,7 +278,7 @@ void QuteCheckBox::createPropertiesDialog()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	valueBox->setValue(property("QCS_pressedValue").toDouble());
+	valueBox->setValue(property("CSQT_pressedValue").toDouble());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif

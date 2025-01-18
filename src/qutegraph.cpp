@@ -99,21 +99,21 @@ QuteGraph::QuteGraph(QWidget *parent) : QuteWidget(parent)
     this->setStyleSheet("QFrame { border: 0px; }");
 
 	// Default properties
-	setProperty("QCS_zoomx", 1.0);
-	setProperty("QCS_zoomy", 1.0);
-	setProperty("QCS_dispx", 1.0);
-	setProperty("QCS_dispy", 1.0);
-	setProperty("QCS_modex", "auto");
-	setProperty("QCS_modey", "auto");
-    setProperty("QCS_showSelector", true);
-    setProperty("QCS_showGrid", true);
-    setProperty("QCS_showTableInfo", true);
-    setProperty("QCS_showScrollbars", true);
-    setProperty("QCS_enableTables", true);
-    setProperty("QCS_enableDisplays", true);
+	setProperty("CSQT_zoomx", 1.0);
+	setProperty("CSQT_zoomy", 1.0);
+	setProperty("CSQT_dispx", 1.0);
+	setProperty("CSQT_dispy", 1.0);
+	setProperty("CSQT_modex", "auto");
+	setProperty("CSQT_modey", "auto");
+    setProperty("CSQT_showSelector", true);
+    setProperty("CSQT_showGrid", true);
+    setProperty("CSQT_showTableInfo", true);
+    setProperty("CSQT_showScrollbars", true);
+    setProperty("CSQT_enableTables", true);
+    setProperty("CSQT_enableDisplays", true);
     m_enableTables = true;
     m_enableDisplays = true;
-	setProperty("QCS_all", true);
+	setProperty("CSQT_all", true);
 
     m_showPeak = false;
     m_showPeakCenterFrequency = 1000.0;
@@ -144,7 +144,7 @@ QString QuteGraph::getWidgetLine()
 	QString line = "ioGraph {" + QString::number(x()) + ", " + QString::number(y()) + "} ";
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} table ";
 	line += QString::number(m_value, 'f', 6) + " ";
-	line += QString::number(property("QCS_zoomx").toDouble(), 'f', 6) + " ";
+	line += QString::number(property("CSQT_zoomx").toDouble(), 'f', 6) + " ";
 	line += m_channel;
 	//   qDebug("QuteGraph::getWidgetLine(): %s", line.toStdString().c_str());
 #ifdef  USE_WIDGET_MUTEX
@@ -165,23 +165,23 @@ QString QuteGraph::getWidgetXmlText()
 
 	s.writeTextElement("value", QString::number((int)m_value));
 	s.writeTextElement("objectName2", m_channel2);
-	s.writeTextElement("zoomx", QString::number(property("QCS_zoomx").toDouble(), 'f', 8));
-	s.writeTextElement("zoomy", QString::number(property("QCS_zoomy").toDouble(), 'f', 8));
-	s.writeTextElement("dispx", QString::number(property("QCS_dispx").toDouble(), 'f', 8));
-	s.writeTextElement("dispy", QString::number(property("QCS_dispy").toDouble(), 'f', 8));
-	s.writeTextElement("modex", property("QCS_modex").toString());
-	s.writeTextElement("modey", property("QCS_modey").toString());
+	s.writeTextElement("zoomx", QString::number(property("CSQT_zoomx").toDouble(), 'f', 8));
+	s.writeTextElement("zoomy", QString::number(property("CSQT_zoomy").toDouble(), 'f', 8));
+	s.writeTextElement("dispx", QString::number(property("CSQT_dispx").toDouble(), 'f', 8));
+	s.writeTextElement("dispy", QString::number(property("CSQT_dispy").toDouble(), 'f', 8));
+	s.writeTextElement("modex", property("CSQT_modex").toString());
+	s.writeTextElement("modey", property("CSQT_modey").toString());
     s.writeTextElement("showSelector",
-                       property("QCS_showSelector").toBool() ? "true" : "false");
-    s.writeTextElement("showGrid", property("QCS_showGrid").toBool() ? "true" : "false");
+                       property("CSQT_showSelector").toBool() ? "true" : "false");
+    s.writeTextElement("showGrid", property("CSQT_showGrid").toBool() ? "true" : "false");
     s.writeTextElement("showTableInfo",
-                       property("QCS_showTableInfo").toBool() ? "true" : "false");
+                       property("CSQT_showTableInfo").toBool() ? "true" : "false");
     s.writeTextElement("showScrollbars",
-                       property("QCS_showScrollbars").toBool() ? "true" : "false");
+                       property("CSQT_showScrollbars").toBool() ? "true" : "false");
     s.writeTextElement("enableTables",
-                       property("QCS_enableTables").toBool() ? "true" : "false");
+                       property("CSQT_enableTables").toBool() ? "true" : "false");
     s.writeTextElement("enableDisplays", m_enableDisplays ? "true" : "false");
-	s.writeTextElement("all", property("QCS_all").toBool() ? "true" : "false");
+	s.writeTextElement("all", property("CSQT_all").toBool() ? "true" : "false");
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -275,8 +275,8 @@ void QuteGraph::keyPressEvent(QKeyEvent *event) {
         event->accept();
         break;
     case Qt::Key_S:
-        flag = !property("QCS_showSelector").toBool();
-        setProperty("QCS_showSelector", flag?"true":"false");
+        flag = !property("CSQT_showSelector").toBool();
+        setProperty("CSQT_showSelector", flag?"true":"false");
         if(flag)
             m_pageComboBox->show();
         else
@@ -284,14 +284,14 @@ void QuteGraph::keyPressEvent(QKeyEvent *event) {
         event->accept();
         break;
     case Qt::Key_G:
-        flag = !property("QCS_showGrid").toBool();
-        setProperty("QCS_showGrid", flag?"true":"false");
+        flag = !property("CSQT_showGrid").toBool();
+        setProperty("CSQT_showGrid", flag?"true":"false");
         m_drawGrid = flag;
         event->accept();
         break;
     case Qt::Key_C:
-        flag = !property("QCS_showTableInfo").toBool();
-        setProperty("QCS_showTableInfo", flag?"true":"false");
+        flag = !property("CSQT_showTableInfo").toBool();
+        setProperty("CSQT_showTableInfo", flag?"true":"false");
         m_drawTableInfo = flag;
         if(flag)
             m_label->show();
@@ -300,18 +300,18 @@ void QuteGraph::keyPressEvent(QKeyEvent *event) {
         event->accept();
         break;
     case Qt::Key_Plus:
-        setProperty("QCS_zoomx", property("QCS_zoomx").toDouble()*2);
+        setProperty("CSQT_zoomx", property("CSQT_zoomx").toDouble()*2);
         applyInternalProperties();
         event->accept();
         break;
     case Qt::Key_Minus:
-        setProperty("QCS_zoomx", qMax(1.0, property("QCS_zoomx").toDouble()*0.5));
+        setProperty("CSQT_zoomx", qMax(1.0, property("CSQT_zoomx").toDouble()*0.5));
         applyInternalProperties();
         event->accept();
         break;
     case Qt::Key_Z:
-        flag = !property("QCS_showScrollbars").toBool();
-        setProperty("QCS_showScrollbars", flag);
+        flag = !property("CSQT_showScrollbars").toBool();
+        setProperty("CSQT_showScrollbars", flag);
         showScrollbars(flag);
         event->accept();
         break;
@@ -574,7 +574,7 @@ void QuteGraph::createPropertiesDialog()
                                      "graph, use a TablePlot widget for that.\n"
                                      "NB2: If you plan to use the Graph widget to display"
                                      "spectra or signals, uncheck this option");
-    acceptTablesCheckBox->setChecked(property("QCS_enableTables").toBool());
+    acceptTablesCheckBox->setChecked(property("CSQT_enableTables").toBool());
     layout->addWidget(acceptTablesCheckBox, 9, 0, Qt::AlignLeft|Qt::AlignVCenter);
 
     acceptDisplaysCheckBox = new QCheckBox(dialog);
@@ -582,33 +582,33 @@ void QuteGraph::createPropertiesDialog()
     acceptDisplaysCheckBox->setToolTip("Enable displaying audio signals/spectra. Check this"
                                        "if you plan to use the graph widget to display audio"
                                        "signals and spectra using the opcodes display/dispfft");
-    acceptDisplaysCheckBox->setChecked(property("QCS_enableDisplays").toBool());
+    acceptDisplaysCheckBox->setChecked(property("CSQT_enableDisplays").toBool());
     layout->addWidget(acceptDisplaysCheckBox, 9, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
     showSelectorCheckBox = new QCheckBox("Show Selector", dialog);
-    showSelectorCheckBox->setChecked(property("QCS_showSelector").toBool());
+    showSelectorCheckBox->setChecked(property("CSQT_showSelector").toBool());
     layout->addWidget(showSelectorCheckBox, 10, 0, Qt::AlignLeft|Qt::AlignVCenter);
 
     showGridCheckBox = new QCheckBox("Show Grid", dialog);
-    showGridCheckBox->setChecked(property("QCS_showGrid").toBool());
+    showGridCheckBox->setChecked(property("CSQT_showGrid").toBool());
     showGridCheckBox->setToolTip("Show the grid. Has effect only for spectral graphs");
     layout->addWidget(showGridCheckBox, 10, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
     showTableInfoCheckBox = new QCheckBox("Show Table Information", dialog);
     showTableInfoCheckBox->setCheckState(
-                property("QCS_showTableInfo").toBool()?Qt::Checked:Qt::Unchecked);
+                property("CSQT_showTableInfo").toBool()?Qt::Checked:Qt::Unchecked);
     showTableInfoCheckBox->setToolTip("Show the grid. Has effect only for spectral graphs");
     layout->addWidget(showTableInfoCheckBox, 11, 0, Qt::AlignLeft|Qt::AlignVCenter);
 
     showScrollbarsCheckBox = new QCheckBox("Show Scrollbars", dialog);
-    showScrollbarsCheckBox->setChecked(property("QCS_showScrollbars").toBool());
+    showScrollbarsCheckBox->setChecked(property("CSQT_showScrollbars").toBool());
     layout->addWidget(showScrollbarsCheckBox, 11, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	zoomxBox->setValue(property("QCS_zoomx").toDouble());
-	zoomyBox->setValue(property("QCS_zoomy").toDouble());
+	zoomxBox->setValue(property("CSQT_zoomx").toDouble());
+	zoomyBox->setValue(property("CSQT_zoomy").toDouble());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -621,19 +621,19 @@ void QuteGraph::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	setProperty("QCS_objectName2", name2LineEdit->text());
-	setProperty("QCS_zoomx", zoomxBox->value());
-	setProperty("QCS_zoomy", zoomyBox->value());
-    setProperty("QCS_dispx", 1);
-	setProperty("QCS_dispy", 1);
-	setProperty("QCS_modex", "lin");
-	setProperty("QCS_modey", "lin");
-	setProperty("QCS_all", true);
-    setProperty("QCS_showSelector", showSelectorCheckBox->checkState());
-    setProperty("QCS_showGrid", showGridCheckBox->checkState());
-    setProperty("QCS_showScrollbars", showScrollbarsCheckBox->isChecked());
-    setProperty("QCS_enableTables", acceptTablesCheckBox->isChecked());   
-    setProperty("QCS_enableDisplays", acceptDisplaysCheckBox->isChecked());
+	setProperty("CSQT_objectName2", name2LineEdit->text());
+	setProperty("CSQT_zoomx", zoomxBox->value());
+	setProperty("CSQT_zoomy", zoomyBox->value());
+    setProperty("CSQT_dispx", 1);
+	setProperty("CSQT_dispy", 1);
+	setProperty("CSQT_modex", "lin");
+	setProperty("CSQT_modey", "lin");
+	setProperty("CSQT_all", true);
+    setProperty("CSQT_showSelector", showSelectorCheckBox->checkState());
+    setProperty("CSQT_showGrid", showGridCheckBox->checkState());
+    setProperty("CSQT_showScrollbars", showScrollbarsCheckBox->isChecked());
+    setProperty("CSQT_enableTables", acceptTablesCheckBox->isChecked());   
+    setProperty("CSQT_enableDisplays", acceptDisplaysCheckBox->isChecked());
 
     m_enableTables = acceptTablesCheckBox->isChecked();
     m_enableDisplays = acceptDisplaysCheckBox->isChecked();
@@ -813,7 +813,7 @@ void QuteGraph::addCurve(Curve * curve)
 	view->setContextMenuPolicy(Qt::NoContextMenu);
     view->setScene(scene);
     view->setObjectName(curve->get_caption());
-    auto scrollbarPolicy = property("QCS_showScrollbars").toBool() ? Qt::ScrollBarAsNeeded
+    auto scrollbarPolicy = property("CSQT_showScrollbars").toBool() ? Qt::ScrollBarAsNeeded
                                                                    : Qt::ScrollBarAlwaysOff;
     view->setHorizontalScrollBarPolicy(scrollbarPolicy);
     view->show();
@@ -1007,16 +1007,16 @@ void QuteGraph::setCurveData(Curve * curve)
 void QuteGraph::applyInternalProperties()
 {
 	QuteWidget::applyInternalProperties();
-    if(property("QCS_showSelector").toBool()) {
+    if(property("CSQT_showSelector").toBool()) {
         m_pageComboBox->show();
     } else {
         m_pageComboBox->hide();
     }
 	changeCurve(-2);  // Redraw
-    m_drawGrid = property("QCS_showGrid").toBool();
-    m_drawTableInfo = property("QCS_showTableInfo").toBool();
+    m_drawGrid = property("CSQT_showGrid").toBool();
+    m_drawTableInfo = property("CSQT_showTableInfo").toBool();
 
-    showScrollbars(property("QCS_showScrollbars").toBool());
+    showScrollbars(property("CSQT_showScrollbars").toBool());
 }
 
 void QuteGraph::drawFtablePath(Curve *curve, int index) {
@@ -1343,7 +1343,7 @@ void QuteGraph::drawSpectrum(Curve *curve, int index) {
         if(m_showPeakTemp) {
             // if using the mouth to point at a near peak, we take zoom into account and
             // the bandwidth is a fraction of the displayed frequency range.
-            auto zoomx = property("QCS_zoomx").toDouble();
+            auto zoomx = property("CSQT_zoomx").toDouble();
             bandwidth = nyquist / zoomx / 8.0;
         }
         else
@@ -1464,8 +1464,8 @@ void QuteGraph::scaleGraph(int index)
 
     double max = curves[index]->get_max();
     double min = curves[index]->get_min();
-	double zoomx = property("QCS_zoomx").toDouble();
-	double zoomy = property("QCS_zoomy").toDouble();
+	double zoomx = property("CSQT_zoomx").toDouble();
+	double zoomy = property("CSQT_zoomy").toDouble();
 	//  double span = max - min;
     //  FIXME implement dispx, dispy and modex, modey
     int size = curve->get_size();
@@ -1771,26 +1771,26 @@ QuteTable::QuteTable(QWidget *parent) : QuteWidget(parent) {
     m_value = 0;
     m_tabnum = 0;
     // auto w = static_cast<QuteTableWidget*>(m_widget);
-    setProperty("QCS_randomizable", false);
+    setProperty("CSQT_randomizable", false);
     m_widget->setContextMenuPolicy(Qt::NoContextMenu);
     m_widget->setMouseTracking(true);
-    setProperty("QCS_range", 0.0);
+    setProperty("CSQT_range", 0.0);
     setColor(QColor(255, 193, 3));
-    setProperty("QCS_showGrid", true);
+    setProperty("CSQT_showGrid", true);
 }
 
 void QuteTable::setColor(QColor color) {
-    setProperty("QCS_color", color);
+    setProperty("CSQT_color", color);
     static_cast<QuteTableWidget*>(m_widget)->setColor(color);
 }
 
 void QuteTable::applyInternalProperties() {
     QuteWidget::applyInternalProperties();
     auto w = static_cast<QuteTableWidget*>(m_widget);
-    auto color = property("QCS_color").value<QColor>();
+    auto color = property("CSQT_color").value<QColor>();
     w->setColor(color);
-    w->setRange(property("QCS_range").toDouble());
-    w->showGrid(property("QCS_showGrid").toBool());
+    w->setRange(property("CSQT_range").toDouble());
+    w->showGrid(property("CSQT_showGrid").toBool());
 }
 
 void QuteTable::createPropertiesDialog() {
@@ -1801,10 +1801,10 @@ void QuteTable::createPropertiesDialog() {
     layout->addWidget(label, 4, 0, Qt::AlignRight|Qt::AlignVCenter);
 
     colorButton = new SelectColorButton(dialog);
-    colorButton->setColor(property("QCS_color").value<QColor>());
+    colorButton->setColor(property("CSQT_color").value<QColor>());
     layout->addWidget(colorButton, 4, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
-    double range = property("QCS_range").toDouble();
+    double range = property("CSQT_range").toDouble();
     rangeCheckBox = new QCheckBox("Fixed Range", dialog);
     rangeCheckBox->setToolTip("If checked the range is fixed to the value set on the right."
                               "If the table has values outside this range these will not be"
@@ -1823,7 +1823,7 @@ void QuteTable::createPropertiesDialog() {
     connect(rangeCheckBox, SIGNAL(toggled(bool)), rangeSpinBox, SLOT(setEnabled(bool)));
 
     gridCheckBox = new QCheckBox("Show Grid", dialog);
-    gridCheckBox->setChecked(property("QCS_showGrid").toBool());
+    gridCheckBox->setChecked(property("CSQT_showGrid").toBool());
     layout->addWidget(gridCheckBox, 6, 1, Qt::AlignLeft|Qt::AlignVCenter);
 
 }
@@ -1832,16 +1832,16 @@ void QuteTable::applyProperties() {
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.lockForWrite();
 #endif
-    setProperty("QCS_color", colorButton->getColor());
+    setProperty("CSQT_color", colorButton->getColor());
     bool fixedrange = rangeCheckBox->isChecked();
     double range = rangeSpinBox->value();
     if(fixedrange) {
         Q_ASSERT(range > 0.0);
-        setProperty("QCS_range", range);
+        setProperty("CSQT_range", range);
     } else {
-        setProperty("QCS_range", 0.0);
+        setProperty("CSQT_range", 0.0);
     }
-    setProperty("QCS_showGrid", gridCheckBox->isChecked());
+    setProperty("CSQT_showGrid", gridCheckBox->isChecked());
 
 #ifdef  USE_WIDGET_MUTEX
     widgetLock.unlock();
@@ -1868,14 +1868,14 @@ QString QuteTable::getWidgetXmlText() {
     QXmlStreamWriter s(&xmlText);
     createXmlWriter(s);        // --------- start
 
-    QColor color = property("QCS_color").value<QColor>();
+    QColor color = property("CSQT_color").value<QColor>();
     s.writeStartElement("color");
     s.writeTextElement("r", QString::number(color.red()));
     s.writeTextElement("g", QString::number(color.green()));
     s.writeTextElement("b", QString::number(color.blue()));
     s.writeEndElement();
 
-    auto range = property("QCS_range").toDouble();
+    auto range = property("CSQT_range").toDouble();
     s.writeTextElement("range", QString::number(range, 'f', 2));
 
     s.writeEndElement();      // --------- end

@@ -117,7 +117,7 @@ Options::Options(ConfigLists *configlists) :
     pdfviewer = "";
     language = 0;  // Interface language
 
-    csdTemplate = QCS_DEFAULT_TEMPLATE ; // was: ""
+    csdTemplate = CSQT_DEFAULT_TEMPLATE ; // was: ""
 
     // Csound Utilities options
     cvInputName = "input.wav";

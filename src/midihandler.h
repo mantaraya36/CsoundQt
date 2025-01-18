@@ -40,7 +40,7 @@ private:
 	QVector<DocumentPage *> m_listeners;
 	MidiLearnDialog *m_midiLearnDialog;
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	RtMidiIn *m_midiin;
 	RtMidiOut *m_midiout;
 #endif

@@ -1,11 +1,11 @@
 #include "midihandler.h"
 #include "midilearndialog.h"
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 #include "RtMidi.h"
 #endif
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 static void midiInMessageCallback(double deltatime,
 								std::vector< unsigned char > *message,
 								void *userData)
@@ -24,7 +24,7 @@ static void midiInMessageCallback(double deltatime,
 MidiHandler::MidiHandler(int api, QObject *parent) :
     QObject(parent)
 {
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	qDebug()<<"Using RtMidi API: " << api;
 	m_midiin = new RtMidiIn((RtMidi::Api) api, "CsoundQt"); //api - see RtMidi.h for types
 	m_midiout = new RtMidiOut((RtMidi::Api) api, "CsoundQt");
@@ -77,7 +77,7 @@ void MidiHandler::passMidiMessage(std::vector<unsigned char> *message)
 
 void MidiHandler::sendMidiOut(std::vector<unsigned char> *message)
 {
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	m_midiout->sendMessage(message);
 #else
     (void) message;
@@ -97,7 +97,7 @@ void MidiHandler::setMidiInterface(int number)
 
 int MidiHandler::findMidiInPortByName(QString name) {
 	int port = 9999; // stands for None
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	// to check agains alsa names wihtout port
     static const QRegularExpression re("(\\s\\d+):(\\d+)$");
     int index = name.indexOf(re);
@@ -122,7 +122,7 @@ int MidiHandler::findMidiInPortByName(QString name) {
 
 int MidiHandler::findMidiOutPortByName(QString name) {
 	int port = 9999; // stands for None
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
     static const QRegularExpression re("(\\s\\d+):(\\d+)$");
     int index = name.indexOf(re);
 	if (index>0) {
@@ -147,11 +147,11 @@ int MidiHandler::findMidiOutPortByName(QString name) {
 void MidiHandler::openMidiInPort(int port)
 {
     (void) port;
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	try {
 		closeMidiInPort();
 	}
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -162,7 +162,7 @@ void MidiHandler::openMidiInPort(int port)
 	try {
 		m_midiin->openPort(port, "MIDI in");
 	}
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -189,11 +189,11 @@ void MidiHandler::setMidiOutInterface(int number)
 void MidiHandler::openMidiOutPort(int port)
 {
     (void) port;
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	try {
 		closeMidiOutPort();
 	}
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -204,7 +204,7 @@ void MidiHandler::openMidiOutPort(int port)
 	try {
 		m_midiout->openPort(port, "MIDI out");
 	}
-#ifdef QCS_OLD_RTMIDI
+#ifdef CSQT_OLD_RTMIDI
 	catch (RtError &error) {
 #else
 	catch (RtMidiError &error) {
@@ -221,14 +221,14 @@ void MidiHandler::openMidiOutPort(int port)
 
 void MidiHandler::closeMidiInPort()
 {
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	m_midiin->closePort();
 #endif
 }
 
 void MidiHandler::closeMidiOutPort()
 {
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
 	m_midiout->closePort();
 #endif
 }

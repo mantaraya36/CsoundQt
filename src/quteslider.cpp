@@ -44,15 +44,15 @@ QuteSlider::QuteSlider(QWidget *parent) : QuteWidget(parent)
 
 	connect(static_cast<QSlider *>(m_widget), SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)));
 
-	setProperty("QCS_minimum", 0.0);
-	setProperty("QCS_maximum", 1.0);
-	setProperty("QCS_value", 0.0);
-	setProperty("QCS_mode", "lin");
-	setProperty("QCS_mouseControl", "continuous");
-	setProperty("QCS_mouseControlAct", "jump");
-	setProperty("QCS_resolution", -1.0);
-	setProperty("QCS_randomizable", false);
-	setProperty("QCS_randomizableGroup", 0);
+	setProperty("CSQT_minimum", 0.0);
+	setProperty("CSQT_maximum", 1.0);
+	setProperty("CSQT_value", 0.0);
+	setProperty("CSQT_mode", "lin");
+	setProperty("CSQT_mouseControl", "continuous");
+	setProperty("CSQT_mouseControlAct", "jump");
+	setProperty("CSQT_resolution", -1.0);
+	setProperty("CSQT_randomizable", false);
+	setProperty("CSQT_randomizableGroup", 0);
 }
 
 QuteSlider::~QuteSlider()
@@ -77,8 +77,8 @@ void QuteSlider::setValue(double value)
 
 void QuteSlider::setMidiValue(int value)
 {	//qDebug()<<Q_FUNC_INFO<<value;
-	double max = property("QCS_maximum").toDouble();
-	double min = property("QCS_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
 	double newval = min + ((value / 127.0)* (max - min));
 	setValue(newval);
 	QPair<QString, double> channelValue(m_channel, newval);
@@ -91,8 +91,8 @@ void QuteSlider::refreshWidget()
 	widgetLock.lockForRead();
 #endif
 	//  qDebug() << "QuteSlider::refreshWidget " << m_value;
-	double min = property("QCS_minimum").toDouble();
-	double max = property("QCS_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
 	int val = (int) (m_len * (m_value - min)/(max- min));
 	m_valueChanged = false;
 #ifdef  USE_WIDGET_MUTEX
@@ -108,11 +108,11 @@ void QuteSlider::applyInternalProperties()
 	QuteWidget::applyInternalProperties();
 	//  qDebug() << "QuteSlider::applyInternalProperties()";
 
-	m_value = property("QCS_value").toDouble();
-	//  m_value2 = property("QCS_value2").toDouble();
-	//  m_stringValue = property("QCS_stringValue").toString();
-	double max = property("QCS_maximum").toDouble();
-	double min = property("QCS_minimum").toDouble();
+	m_value = property("CSQT_value").toDouble();
+	//  m_value2 = property("CSQT_value2").toDouble();
+	//  m_stringValue = property("CSQT_stringValue").toString();
+	double max = property("CSQT_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
 	if (max < min) {
 		double temp = max;
 		max = min;
@@ -144,8 +144,8 @@ QString QuteSlider::getWidgetLine()
 #endif
 	QString line = "ioSlider {" + QString::number(x()) + ", " + QString::number(y()) + "} ";
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
-	line += QString::number(property("QCS_minimum").toDouble(), 'f', 6) + " ";
-	line += QString::number(property("QCS_maximum").toDouble(), 'f', 6) + " ";
+	line += QString::number(property("CSQT_minimum").toDouble(), 'f', 6) + " ";
+	line += QString::number(property("CSQT_maximum").toDouble(), 'f', 6) + " ";
 	line += QString::number(m_value, 'f', 6) + " " + m_channel;
 	//   qDebug("QuteSlider::getWidgetLine() %s", line.toStdString().c_str());
 #ifdef  USE_WIDGET_MUTEX
@@ -168,11 +168,11 @@ QString QuteSlider::getCabbageLine()
 	}
 	line += "channel(\"" + m_channel + "\"),  ";
 	line += QString("bounds(%1,%2,%3,%4), ").arg(x()).arg(y()).arg(width()).arg(height());
-	line += QString("range(%1,%2,%3) " ).arg(property("QCS_minimum").toDouble()).arg(property("QCS_maximum").toDouble()).arg(m_value);
+	line += QString("range(%1,%2,%3) " ).arg(property("CSQT_minimum").toDouble()).arg(property("CSQT_maximum").toDouble()).arg(m_value);
 	//line += QString(", text(%1), ").arg(m_channel); // Is it good idea to put channel as name - not really since geometry probably does not allow it
-	if (property("QCS_midicc").toInt() >= 0 && property("QCS_midichan").toInt()>0) { // insert only if midi channel is above 0
-		line += ", midiCtrl(\"" + QString::number(property("QCS_midichan").toInt()) + ",";
-		line +=  QString::number(property("QCS_midicc").toInt()) + "\")";
+	if (property("CSQT_midicc").toInt() >= 0 && property("CSQT_midichan").toInt()>0) { // insert only if midi channel is above 0
+		line += ", midiCtrl(\"" + QString::number(property("CSQT_midichan").toInt()) + ",";
+		line +=  QString::number(property("CSQT_midicc").toInt()) + "\")";
 	}
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -193,8 +193,8 @@ QString QuteSlider::getQml()
 	qml += QString("\t\ty: %1  * scaleItem.scale\n").arg(y());
 	qml += QString("\t\twidth: %1 * scaleItem.scale\n").arg(width());
 	qml += QString("\t\theight: %1 * scaleItem.scale\n").arg(height());
-	qml += QString("\t\tfrom: %1\n").arg(property("QCS_minimum").toString());
-	qml += QString("\t\tto: %1\n").arg(property("QCS_maximum").toString());
+	qml += QString("\t\tfrom: %1\n").arg(property("CSQT_minimum").toString());
+	qml += QString("\t\tto: %1\n").arg(property("CSQT_maximum").toString());
 	qml += QString("\t\tvalue: %1\n").arg(getValue());
 	if ( width() > height() ) {
 		qml += "\t\torientation: Qt.Horizontal\n";
@@ -217,8 +217,8 @@ QString QuteSlider::getCsladspaLine()
 	widgetLock.lockForRead();
 #endif
 	QString line = "ControlPort=" + m_channel + "|" + m_channel + "\n";
-	line += "Range=" + QString::number(property("QCS_minimum").toDouble(), 'f', 8)
-			+ "|" + QString::number(property("QCS_maximum").toDouble(), 'f', 8);
+	line += "Range=" + QString::number(property("CSQT_minimum").toDouble(), 'f', 8)
+			+ "|" + QString::number(property("CSQT_maximum").toDouble(), 'f', 8);
 
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -235,19 +235,19 @@ QString QuteSlider::getWidgetXmlText()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	s.writeTextElement("minimum", QString::number(property("QCS_minimum").toDouble(), 'f', 8));
-	s.writeTextElement("maximum", QString::number(property("QCS_maximum").toDouble(), 'f', 8));
+	s.writeTextElement("minimum", QString::number(property("CSQT_minimum").toDouble(), 'f', 8));
+	s.writeTextElement("maximum", QString::number(property("CSQT_maximum").toDouble(), 'f', 8));
 	s.writeTextElement("value", QString::number(m_value, 'f', 8));
-	s.writeTextElement("mode", property("QCS_mode").toString());
+	s.writeTextElement("mode", property("CSQT_mode").toString());
 
 	s.writeStartElement("mouseControl");
-	s.writeAttribute("act", property("QCS_mouseControlAct").toString());
-	s.writeCharacters(property("QCS_mouseControl").toString());
+	s.writeAttribute("act", property("CSQT_mouseControlAct").toString());
+	s.writeCharacters(property("CSQT_mouseControl").toString());
 	s.writeEndElement();
-	s.writeTextElement("resolution", QString::number(property("QCS_resolution").toDouble(), 'f', 8));
+	s.writeTextElement("resolution", QString::number(property("CSQT_resolution").toDouble(), 'f', 8));
 	s.writeStartElement("randomizable");
-	s.writeAttribute("group", QString::number(property("QCS_randomizableGroup").toInt()));
-	s.writeCharacters(property("QCS_randomizable").toBool() ? "true": "false");
+	s.writeAttribute("group", QString::number(property("CSQT_randomizableGroup").toInt()));
+	s.writeCharacters(property("CSQT_randomizable").toBool() ? "true": "false");
 	s.writeEndElement();
 
 	s.writeEndElement();
@@ -284,9 +284,9 @@ void QuteSlider::createPropertiesDialog()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	minSpinBox->setValue(property("QCS_minimum").toDouble());
-	maxSpinBox->setValue(property("QCS_maximum").toDouble());
-	//  setProperty("QCS_value", m_value);
+	minSpinBox->setValue(property("CSQT_minimum").toDouble());
+	maxSpinBox->setValue(property("CSQT_maximum").toDouble());
+	//  setProperty("CSQT_value", m_value);
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -297,8 +297,8 @@ void QuteSlider::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForWrite();
 #endif
-	setProperty("QCS_maximum", maxSpinBox->value());
-	setProperty("QCS_minimum", minSpinBox->value());
+	setProperty("CSQT_maximum", maxSpinBox->value());
+	setProperty("CSQT_minimum", minSpinBox->value());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -311,8 +311,8 @@ void QuteSlider::sliderChanged(int value)
 	widgetLock.lockForRead();
 #endif
 	double normalized = (double) value / (double) m_len;
-	double min = property("QCS_minimum").toDouble();
-	double max = property("QCS_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
 	double scaledValue =  min + (normalized * (max-min));
 	setInternalValue(scaledValue);
 	QPair<QString, double> channelValue(m_channel, m_value);
@@ -324,8 +324,8 @@ void QuteSlider::sliderChanged(int value)
 
 void QuteSlider::setInternalValue(double value)
 {
-	double max = property("QCS_maximum").toDouble();
-	double min = property("QCS_minimum").toDouble();
+	double max = property("CSQT_maximum").toDouble();
+	double min = property("CSQT_minimum").toDouble();
 	if (value > max)
 		m_value = max;
 	else if (value < min)
@@ -333,5 +333,5 @@ void QuteSlider::setInternalValue(double value)
 	else
 		m_value = value;
 	m_valueChanged = true;
-	//  setProperty("QCS_value", m_value);
+	//  setProperty("CSQT_value", m_value);
 }

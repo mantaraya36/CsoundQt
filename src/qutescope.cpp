@@ -69,13 +69,13 @@ QuteScope::QuteScope(QWidget *parent) : QuteWidget(parent)
 	m_dataDisplay->show();
 
 	// Default properties
-	setProperty("QCS_type", "scope");
-	setProperty("QCS_zoomx", 1.0);
-	setProperty("QCS_zoomy", 1.0);
-	setProperty("QCS_dispx", 1.0);
-	setProperty("QCS_dispy", 1.0);
-	setProperty("QCS_mode", "lin");
-    setProperty("QCS_triggermode", "NoTrigger");
+	setProperty("CSQT_type", "scope");
+	setProperty("CSQT_zoomx", 1.0);
+	setProperty("CSQT_zoomy", 1.0);
+	setProperty("CSQT_dispx", 1.0);
+	setProperty("CSQT_dispy", 1.0);
+	setProperty("CSQT_mode", "lin");
+    setProperty("CSQT_triggermode", "NoTrigger");
 }
 
 QuteScope::~QuteScope()
@@ -112,7 +112,7 @@ QString QuteScope::getWidgetLine()
 #endif
 	QString line = "ioGraph {" + QString::number(x()) + ", " + QString::number(y()) + "} ";
 	line += "{"+ QString::number(width()) +", "+ QString::number(height()) +"} ";
-	line += property("QCS_type").toString() + " " + QString::number(property("QCS_zoomx").toDouble(), 'f', 6) + " ";
+	line += property("CSQT_type").toString() + " " + QString::number(property("CSQT_zoomx").toDouble(), 'f', 6) + " ";
 	line += QString::number((int) m_value) + " ";
 	line += m_channel;
 	//   qDebug("QuteScope::getWidgetLine() %s", line.toStdString().c_str());
@@ -132,13 +132,13 @@ QString QuteScope::getWidgetXmlText()
 #endif
 
 	s.writeTextElement("value", QString::number(m_value, 'f', 8));
-	s.writeTextElement("type", property("QCS_type").toString());
-	s.writeTextElement("zoomx", QString::number(property("QCS_zoomx").toDouble(), 'f', 8));
-	s.writeTextElement("zoomy", QString::number(property("QCS_zoomy").toDouble(), 'f', 8));
-	s.writeTextElement("dispx", QString::number(property("QCS_dispx").toDouble(), 'f', 8));
-	s.writeTextElement("dispy", QString::number(property("QCS_dispy").toDouble(), 'f', 8));
-    s.writeTextElement("mode",  QString::number(property("QCS_mode").toDouble(), 'f', 8));
-    s.writeTextElement("triggermode", property("QCS_triggermode").toString());
+	s.writeTextElement("type", property("CSQT_type").toString());
+	s.writeTextElement("zoomx", QString::number(property("CSQT_zoomx").toDouble(), 'f', 8));
+	s.writeTextElement("zoomy", QString::number(property("CSQT_zoomy").toDouble(), 'f', 8));
+	s.writeTextElement("dispx", QString::number(property("CSQT_dispx").toDouble(), 'f', 8));
+	s.writeTextElement("dispy", QString::number(property("CSQT_dispy").toDouble(), 'f', 8));
+    s.writeTextElement("mode",  QString::number(property("CSQT_mode").toDouble(), 'f', 8));
+    s.writeTextElement("triggermode", property("CSQT_triggermode").toString());
 	s.writeEndElement();
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -197,9 +197,9 @@ void QuteScope::updateLabel()
 void QuteScope::applyInternalProperties()
 {
 	QuteWidget::applyInternalProperties();
-	setType(property("QCS_type").toString());
-	setValue(property("QCS_value").toDouble());
-    m_params->triggerMode = triggerNameToMode(property("QCS_triggermode").toString());
+	setType(property("CSQT_type").toString());
+	setValue(property("CSQT_value").toDouble());
+    m_params->triggerMode = triggerNameToMode(property("CSQT_triggermode").toString());
 }
 
 void QuteScope::createPropertiesDialog()
@@ -246,17 +246,17 @@ void QuteScope::createPropertiesDialog()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	typeComboBox->setCurrentIndex(typeComboBox->findData(QVariant(property("QCS_type").toString())));
+	typeComboBox->setCurrentIndex(typeComboBox->findData(QVariant(property("CSQT_type").toString())));
 	channelBox->setCurrentIndex(channelBox->findData(QVariant((int) m_value)));
-	zoomxBox->setValue(property("QCS_zoomx").toDouble());
-	zoomyBox->setValue(property("QCS_zoomy").toDouble());
+	zoomxBox->setValue(property("CSQT_zoomx").toDouble());
+	zoomyBox->setValue(property("CSQT_zoomy").toDouble());
 
     label = new QLabel("Trigger");
     layout->addWidget(label, 9, 0, Qt::AlignRight|Qt::AlignVCenter);
     triggerBox = new QComboBox(dialog);
     triggerBox->addItem("No Trigger", "NoTrigger");
     triggerBox->addItem("Trigger Up", "TriggerUp");
-    triggerBox->setCurrentIndex(triggerBox->findData(property("QCS_triggermode").toString()));
+    triggerBox->setCurrentIndex(triggerBox->findData(property("CSQT_triggermode").toString()));
     layout->addWidget(triggerBox, 9, 1, Qt::AlignLeft|Qt::AlignVCenter);
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -268,12 +268,12 @@ void QuteScope::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	setProperty("QCS_type", typeComboBox->itemData(typeComboBox->currentIndex()).toString());
-	setProperty("QCS_zoomx", zoomxBox->value());
-	setProperty("QCS_zoomy", zoomyBox->value());
-	setProperty("QCS_value", channelBox->itemData(channelBox->currentIndex()).toInt());
+	setProperty("CSQT_type", typeComboBox->itemData(typeComboBox->currentIndex()).toString());
+	setProperty("CSQT_zoomx", zoomxBox->value());
+	setProperty("CSQT_zoomy", zoomyBox->value());
+	setProperty("CSQT_value", channelBox->itemData(channelBox->currentIndex()).toInt());
     auto triggerModeStr = triggerBox->currentData().toString();
-    setProperty("QCS_triggermode", triggerModeStr);
+    setProperty("CSQT_triggermode", triggerModeStr);
     m_params->triggerMode = triggerNameToMode(triggerModeStr);
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
@@ -298,8 +298,8 @@ void QuteScope::resizeEvent(QResizeEvent * event)
 void QuteScope::updateData()
 {
     m_dataDisplay->updateData((int) m_value,
-                              property("QCS_zoomx").toDouble(),
-                              property("QCS_zoomy").toDouble(),
+                              property("CSQT_zoomx").toDouble(),
+                              property("CSQT_zoomy").toDouble(),
                               static_cast<ScopeWidget *>(m_widget)->freeze);
 }
 

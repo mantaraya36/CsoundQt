@@ -68,12 +68,12 @@ WidgetLayout::WidgetLayout(QWidget* parent) : QWidget(parent)
 
     midiWriteCounter = 0;
     midiReadCounter = 0;
-    midiQueue.resize(QCS_MAX_MIDI_QUEUE);
-    for (int i = 0; i <QCS_MAX_MIDI_QUEUE; i++ ) {
+    midiQueue.resize(CSQT_MAX_MIDI_QUEUE);
+    for (int i = 0; i <CSQT_MAX_MIDI_QUEUE; i++ ) {
         midiQueue[i].resize(3);
     }
 
-    curveUpdateBuffer.resize(QCS_CURVE_BUFFER_SIZE);
+    curveUpdateBuffer.resize(CSQT_CURVE_BUFFER_SIZE);
     curveUpdateBufferCount = 0;
 
     createSliderAct = new QAction(tr("Slider"),this);
@@ -295,13 +295,13 @@ void WidgetLayout::loadXmlWidgets(QString xmlWidgets)
             version = ret;
         }
     }
-    if (version > QString(QCS_CURRENT_XML_VERSION).toInt()) {
+    if (version > QString(CSQT_CURRENT_XML_VERSION).toInt()) {
         qDebug() << "WidgetLayout::loadXmlWidgets Newer Widget Format version";
         QMessageBox::warning(this, tr("Newer Widget Format"),
                              tr("The file was saved by a more recent version of CsoundQt.\n"
                                 "Some features may not be available and will not be saved!"));
     }
-    else if (version < QString(QCS_CURRENT_XML_VERSION).toInt()) {  // Just print a silent warning
+    else if (version < QString(CSQT_CURRENT_XML_VERSION).toInt()) {  // Just print a silent warning
         qDebug() << "Older widget format.";
     }
     if (m_editMode) {
@@ -399,8 +399,8 @@ QString WidgetLayout::getWidgetsText()
          << "<visible>" << (m_visible ? QString("true"):QString("false")) << "</visible>\n"
          << "<uuid>" << m_uuid << "</uuid>\n";
 
-    QColor bgColor = this->property("QCS_bgcolor").value<QColor>();
-    auto bg = this->property("QCS_bg").toBool()? QString("background"):QString("nobackground");
+    QColor bgColor = this->property("CSQT_bgcolor").value<QColor>();
+    auto bg = this->property("CSQT_bg").toBool()? QString("background"):QString("nobackground");
     txts << "<bgcolor mode=\"" << bg << "\">\n";
     txts << "<r>"<<QString::number(bgColor.red())<<"</r>\n"
          << "<g>"<<QString::number(bgColor.green())<<"</g>\n"
@@ -450,8 +450,8 @@ QString WidgetLayout::getMacWidgetsText()
     text = "<MacGUI>\n";
     QString bg, color;
     layoutMutex.lock();
-    QColor bgColor = this->property("QCS_bgcolor").value<QColor>();
-    bg =  this->property("QCS_bg").toBool()? QString("background"):QString("nobackground");
+    QColor bgColor = this->property("CSQT_bgcolor").value<QColor>();
+    bg =  this->property("CSQT_bg").toBool()? QString("background"):QString("nobackground");
     color = QString::number((int) (bgColor.redF()*65535.)) + ", ";
     color +=  QString::number((int) (bgColor.greenF()*65535.)) + ", ";
     color +=  QString::number((int) (bgColor.blueF()*65535.));
@@ -703,9 +703,9 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
         QDomElement ebg = element.firstChildElement("bgcolor");
         if (!ebg.isNull()) {
             if (element.attribute("mode")== "background") {
-                w->setProperty("QCS_bgcolormode", true);
+                w->setProperty("CSQT_bgcolormode", true);
             }
-            w->setProperty("QCS_bgcolor", QVariant(getColorFromElement(ebg)));
+            w->setProperty("CSQT_bgcolor", QVariant(getColorFromElement(ebg)));
         }
         widget = static_cast<QuteWidget *>(w);
     }
@@ -810,8 +810,8 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
         return -2;
     }
     if(forceBackground) {
-        widget->setProperty("QCS_bgcolormode", true);
-        widget->setProperty("QCS_bgcolor", QColor(240, 240, 240));
+        widget->setProperty("CSQT_bgcolormode", true);
+        widget->setProperty("CSQT_bgcolor", QColor(240, 240, 240));
     }
 
     for (int i = 0; i < childNodes.size() ; i++) {
@@ -819,9 +819,9 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
         QString nodeName = node.nodeName();
         if (nodeName == "color" || nodeName == "bgcolor") {  // COLOR type
             if (node.attribute("mode") == "background") {
-                widget->setProperty("QCS_bgcolormode", true);
+                widget->setProperty("CSQT_bgcolormode", true);
             }
-            nodeName.prepend("QCS_");
+            nodeName.prepend("CSQT_");
             widget->setProperty(nodeName.toLocal8Bit(), getColorFromElement(node));
         }
         // It's necessary to do a type conversion here rather than storing
@@ -830,20 +830,20 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
         else if (nodeName == "value" || nodeName == "resolution"
                  || nodeName == "minimum" || nodeName == "maximum"
                  || nodeName == "pressedValue") {  // DOUBLE type
-            nodeName.prepend("QCS_");
+            nodeName.prepend("CSQT_");
             widget->setProperty(nodeName.toLocal8Bit(), node.firstChild().nodeValue().toDouble());
         }
         else if (nodeName == "x") {
             auto value = node.firstChild().nodeValue().toInt();
             if(offset)
                 value += 20;
-            widget->setProperty("QCS_x", value);
+            widget->setProperty("CSQT_x", value);
         }
         else if (nodeName == "y") {  // INT type (with offset)
             auto value = node.firstChild().nodeValue().toInt();
             if(offset)
                 value += 20;
-            widget->setProperty("QCS_y", value);
+            widget->setProperty("CSQT_y", value);
         }
         else if (nodeName == "width" || nodeName == "height"
                  || nodeName == "fontsize"
@@ -852,17 +852,17 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
                  || nodeName == "borderradius"
                  || nodeName == "selectedIndex" ) {  // INT type
             QDomNode n = node.firstChild();
-            nodeName.prepend("QCS_");
+            nodeName.prepend("CSQT_");
             widget->setProperty(nodeName.toLocal8Bit(), n.nodeValue().toInt());
         }
         else if (nodeName == "midichan") {
             auto value = node.firstChild().nodeValue().toInt();
-            widget->setProperty("QCS_midichan", value);
+            widget->setProperty("CSQT_midichan", value);
             registerWidgetChannel(widget, value);
         }
         else if (nodeName == "midicc") {
             auto value = node.firstChild().nodeValue().toInt();
-            widget->setProperty("QCS_midicc", value);
+            widget->setProperty("CSQT_midicc", value);
             registerWidgetController(widget, value);
         }
         else if (nodeName == "randomizable" || nodeName == "selected"
@@ -870,10 +870,10 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
             QDomNode n = node.firstChild();
             if (nodeName == "randomizable") {
                 if (node.attribute("group") != "") {
-                    widget->setProperty("QCS_randomizableGroup", node.attribute("group").toInt() );
+                    widget->setProperty("CSQT_randomizableGroup", node.attribute("group").toInt() );
                 }
             }
-            nodeName.prepend("QCS_");
+            nodeName.prepend("CSQT_");
             widget->setProperty(nodeName.toLocal8Bit(), n.nodeValue() == "true");
 
         }
@@ -904,11 +904,11 @@ int WidgetLayout::newXmlWidget(QDomNode mainnode, bool offset, bool newId)
             while (!uuidFree(uuid)) {
                 uuid = QUuid::createUuid().toString();
             }
-            widget->setProperty("QCS_uuid", uuid);
+            widget->setProperty("CSQT_uuid", uuid);
         }
         else {  // STRING type (all the rest)
             QDomNode n = node.firstChild();
-            nodeName.prepend("QCS_");
+            nodeName.prepend("CSQT_");
             widget->setProperty(nodeName.toLocal8Bit(), n.nodeValue());
         }
     }
@@ -1053,9 +1053,9 @@ QString WidgetLayout::getMidiControllerInstrument()
 		if (registeredControllers[i].cc >= 0 && registeredControllers[i].chan>0) {
 			QuteWidget * widget = registeredControllers[i].widget;
 
-			bool isEventButton = (widget->getWidgetType()=="BSBButton"  && widget->property("QCS_type").toString().contains("event") ); // type "event" or "pictevent"
+			bool isEventButton = (widget->getWidgetType()=="BSBButton"  && widget->property("CSQT_type").toString().contains("event") ); // type "event" or "pictevent"
 			if ( isEventButton) {
-				QString eventLine = widget->property("QCS_eventLine").toString();
+				QString eventLine = widget->property("CSQT_eventLine").toString();
 
 				// find out if event has negative p3
                 QStringList lineElements = eventLine.split(QRegularExpression("\\s"),SKIP_EMPTY_PARTS);
@@ -1086,7 +1086,7 @@ QString WidgetLayout::getMidiControllerInstrument()
 							.arg(registeredControllers[i].cc)
 							.arg(eventLine) + "\n";
 				} else {
-					if (widget->property("QCS_latch").toBool()) {
+					if (widget->property("CSQT_latch").toBool()) {
 						// toggle button -  turn off on second press
 						instrLines += QString(R"(
 	if (trigger:k(ctrl7:k(%1,%2,0,1),0.9, 0)==1) then
@@ -1118,18 +1118,18 @@ QString WidgetLayout::getMidiControllerInstrument()
 				}
 			} else {
 				if (widget->getWidgetType()=="BSBButton" &&
-						widget->property("QCS_type").toString().contains("value")) {
+						widget->property("CSQT_type").toString().contains("value")) {
 					instrLines += QString ("\tchnset ctrl7:k(%1, %2, 0, %3), \"%4\"\n")
 							.arg(registeredControllers[i].chan)
 							.arg(registeredControllers[i].cc)
-							.arg( widget->property("QCS_pressedValue").toDouble() )
+							.arg( widget->property("CSQT_pressedValue").toDouble() )
 							.arg(widget->getChannelName() );
 				} else {
 				instrLines += QString ("\tchnset ctrl7:k(%1, %2, %3, %4), \"%5\"\n")
 				        .arg(registeredControllers[i].chan)
 				        .arg(registeredControllers[i].cc)
-				        .arg( widget->property("QCS_minimum").toDouble() )
-				        .arg( widget->property("QCS_maximum").toDouble() )
+				        .arg( widget->property("CSQT_minimum").toDouble() )
+				        .arg( widget->property("CSQT_maximum").toDouble() )
 				        .arg(widget->getChannelName() );
 				}
 			}
@@ -1201,9 +1201,9 @@ void WidgetLayout::setWidgetToolTip(QuteWidget *widget, bool show)
                  + tr("ChannelV: ")+ channel2Name;
     }
 
-    int midichan = widget->property("QCS_midichan").toInt();
+    int midichan = widget->property("CSQT_midichan").toInt();
     if(midichan > 0) {
-        int midicc = widget->property("QCS_midicc").toInt();
+        int midicc = widget->property("CSQT_midicc").toInt();
         lines << QString(tr("MIDI chan: %1 CC: %2")).arg(midichan).arg(midicc);
     }
 
@@ -1223,8 +1223,8 @@ void WidgetLayout::setContained(bool contained)
     }
 //    qDebug() << "WidgetLayout::setContained " << contained;
     m_contained = contained;
-    bool bg = this->property("QCS_bg").toBool();
-    QColor bgColor = this->property("QCS_bgcolor").value<QColor>();
+    bool bg = this->property("CSQT_bg").toBool();
+    QColor bgColor = this->property("CSQT_bgcolor").value<QColor>();
     setBackground(bg, bgColor);
     if (m_contained) {
         this->setAutoFillBackground(false);
@@ -1297,7 +1297,7 @@ void WidgetLayout::appendCurve(WINDAT *windat)
             return;
         }
     }
-    if (curves.size() > QCS_CURVE_BUFFER_MAX) {
+    if (curves.size() > CSQT_CURVE_BUFFER_MAX) {
         qDebug() << "WidgetLayout::appendCurve curve size exceeded. Curve discarded!";
         return;
     }
@@ -1396,7 +1396,7 @@ uintptr_t WidgetLayout::getCurveById(uintptr_t id)
 void WidgetLayout::updateCurve(WINDAT *windat)
 {
     //  qDebug() << "WidgetLayout::updateCurve(WINDAT *windat) " << windat->windid;
-    if (curveUpdateBufferCount+1 < QCS_CURVE_BUFFER_SIZE) {
+    if (curveUpdateBufferCount+1 < CSQT_CURVE_BUFFER_SIZE) {
         curveUpdateBufferCount++;
         curveUpdateBuffer[curveUpdateBufferCount] = *windat;
     }
@@ -1486,7 +1486,7 @@ void WidgetLayout::refreshWidgets()
             }
         }
         midiReadCounter++;
-        midiReadCounter = midiReadCounter%QCS_MAX_MIDI_QUEUE;
+        midiReadCounter = midiReadCounter%CSQT_MAX_MIDI_QUEUE;
     }
     QMutexLocker locker(&widgetsMutex);
     for (int i=0; i < m_widgets.size(); i++) {
@@ -1742,8 +1742,8 @@ void WidgetLayout::widgetMoved(QPair<int, int> delta)
             m_widgets[i]->move(newx, newy);
             editWidgets[i]->move(newx, newy);
 			// set the position to properties otherwis MidiLearn -> applyInetrnalProperties sets it to wrong (old) position
-			m_widgets[i]->setProperty("QCS_x", newx);
-			m_widgets[i]->setProperty("QCS_y", newy);
+			m_widgets[i]->setProperty("CSQT_x", newx);
+			m_widgets[i]->setProperty("CSQT_y", newy);
 
         }
     }
@@ -1764,8 +1764,8 @@ void WidgetLayout::widgetResized(QPair<int, int> delta)
             m_widgets[i]->setWidgetGeometry(m_widgets[i]->x(), m_widgets[i]->y(), neww, newh);
             editWidgets[i]->resize(neww, newh);
 			// set the position to properties otherwis MidiLearn -> applyInetrnalProperties sets it to wrong (old) position
-			m_widgets[i]->setProperty("QCS_width", neww);
-			m_widgets[i]->setProperty("QCS_height", newh);
+			m_widgets[i]->setProperty("CSQT_width", neww);
+			m_widgets[i]->setProperty("CSQT_height", newh);
         }
     }
     widgetsMutex.unlock();
@@ -2293,7 +2293,7 @@ void WidgetLayout::propertiesDialog()
     else {
         color = this->palette().button().color();
     }
-    bgButton->setProperty("QCS_color",QVariant(color));
+    bgButton->setProperty("CSQT_color",QVariant(color));
     pixmap.fill(color);
     bgButton->setIcon(pixmap);
     layout->addWidget(bgButton, 1, 1, Qt::AlignLeft|Qt::AlignVCenter);
@@ -2313,7 +2313,7 @@ void WidgetLayout::propertiesDialog()
 
 void WidgetLayout::applyProperties()
 {
-    QColor color = bgButton->property("QCS_color").value<QColor>();
+    QColor color = bgButton->property("CSQT_color").value<QColor>();
     setBackground(bgCheckBox->isChecked(), color);
     widgetChanged();
     mouseBut2 = 0;  // Button un clicked is not propagated after opening the edit dialog. Do it artificially here
@@ -2329,7 +2329,7 @@ void WidgetLayout::selectBgColor()
         color = QColorDialog::getColor(this->palette().button().color(), this);
     }
     if (color.isValid()) {
-        bgButton->setProperty("QCS_color",QVariant(color));
+        bgButton->setProperty("CSQT_color",QVariant(color));
         QPixmap pixmap(64,64);
         pixmap.fill(color);
         bgButton->setIcon(pixmap);
@@ -2770,8 +2770,8 @@ void WidgetLayout::widgetChanged(QuteWidget* widget)
         }
         setWidgetToolTip(widget, m_tooltips);
         //    widgetsMutex.unlock();
-        int cc = widget->property("QCS_midicc").toInt();  // Is it safe to query these here?
-        int chan = widget->property("QCS_midichan").toInt();
+        int cc = widget->property("CSQT_midicc").toInt();  // Is it safe to query these here?
+        int chan = widget->property("CSQT_midichan").toInt();
         registerWidgetController(widget, cc);
         registerWidgetChannel(widget, chan);
         setModified(true);
@@ -2862,7 +2862,7 @@ int WidgetLayout::parseXmlNode(QDomNode node)
     QString name = node.nodeName();
     if (name == "objectName") {
         m_objectName = node.firstChild().nodeValue();
-        //    this->setProperty("QCS_objectName", node.firstChild().nodeValue());
+        //    this->setProperty("CSQT_objectName", node.firstChild().nodeValue());
     }
     else if (name == "label") {
         this->setWindowTitle(node.firstChild().nodeValue());
@@ -2925,13 +2925,13 @@ QString WidgetLayout::createSlider(int x, int y, int width, int height, QString 
     //   qDebug("ioSlider x=%i y=%i w=%i h=%i", x,y, width, height);
     QStringList parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS);
     QuteSlider *widget= new QuteSlider(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
-    widget->setProperty("QCS_minimum",parts[5].toDouble());
-    widget->setProperty("QCS_maximum",parts[6].toDouble());
-    widget->setProperty("QCS_value",parts[7].toDouble());
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
+    widget->setProperty("CSQT_minimum",parts[5].toDouble());
+    widget->setProperty("CSQT_maximum",parts[6].toDouble());
+    widget->setProperty("CSQT_value",parts[7].toDouble());
 
     if (parts.size()>8) {
         int i=8;
@@ -2941,7 +2941,7 @@ QString WidgetLayout::createSlider(int x, int y, int width, int height, QString 
             i++;
         }
         channelName.chop(1);  //remove last space
-        widget->setProperty("QCS_objectName", channelName);
+        widget->setProperty("CSQT_objectName", channelName);
     }
     widget->applyInternalProperties();
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this,
@@ -2960,36 +2960,36 @@ QString WidgetLayout::createText(int x, int y, int width, int height, QString wi
     if (lastParts.size() < 9)
         return "";
     QuteText *widget= new QuteText(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     widget->setType(parts[5]);
-    widget->setProperty("QCS_objectName",quoteParts[1]);
-    widget->setProperty("QCS_alignment",quoteParts[2].simplified());
-    widget->setProperty("QCS_font",quoteParts[3].simplified());
-    widget->setProperty("QCS_fontsize",lastParts[0].toInt() + 2);
-    widget->setProperty("QCS_color", QColor(lastParts[1].toDouble()/256.0,
+    widget->setProperty("CSQT_objectName",quoteParts[1]);
+    widget->setProperty("CSQT_alignment",quoteParts[2].simplified());
+    widget->setProperty("CSQT_font",quoteParts[3].simplified());
+    widget->setProperty("CSQT_fontsize",lastParts[0].toInt() + 2);
+    widget->setProperty("CSQT_color", QColor(lastParts[1].toDouble()/256.0,
                         lastParts[2].toDouble()/256.0,
             lastParts[3].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolor", QColor(lastParts[4].toDouble()/256.0,
+    widget->setProperty("CSQT_bgcolor", QColor(lastParts[4].toDouble()/256.0,
                         lastParts[5].toDouble()/256.0,
             lastParts[6].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolormode", lastParts[7] == "background");
-    widget->setProperty("QCS_bordermode", lastParts[8]);
+    widget->setProperty("CSQT_bgcolormode", lastParts[7] == "background");
+    widget->setProperty("CSQT_bordermode", lastParts[8]);
     QString labelText = widgetLine.mid(widgetLine.indexOf("border") + 7);
     if (parts[5] == "label") {
-        widget->setProperty("QCS_precision", 3);
+        widget->setProperty("CSQT_precision", 3);
         widget->setTransparentForMouse(true);
     }
     else if (parts[5] == "display") {
-        widget->setProperty("QCS_precision", 3);
+        widget->setProperty("CSQT_precision", 3);
     }
     else {
-        widget->setProperty("QCS_resolution", parts[7].toDouble());
+        widget->setProperty("CSQT_resolution", parts[7].toDouble());
     }
     labelText.replace("\u00AC", "\n");
-    widget->setProperty("QCS_label", labelText);
+    widget->setProperty("CSQT_label", labelText);
     widget->setFontOffset(m_fontOffset);
     widget->setFontScaling(m_fontScaling);
     widget->applyInternalProperties();
@@ -3008,24 +3008,24 @@ QString WidgetLayout::createScrollNumber(int x, int y, int width, int height, QS
         return "";
     QuteScrollNumber *widget= new QuteScrollNumber(this);
 
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     widget->setType(parts[5]);
-    widget->setProperty("QCS_resolution", parts[7].toDouble());
-    widget->setProperty("QCS_objectName",quoteParts[1]);
-    widget->setProperty("QCS_alignment",quoteParts[2].simplified());
-    widget->setProperty("QCS_font",quoteParts[3].simplified());
-    widget->setProperty("QCS_fontsize",lastParts[0].toInt() + 2);
-    widget->setProperty("QCS_color", QColor(lastParts[1].toDouble()/256.0,
+    widget->setProperty("CSQT_resolution", parts[7].toDouble());
+    widget->setProperty("CSQT_objectName",quoteParts[1]);
+    widget->setProperty("CSQT_alignment",quoteParts[2].simplified());
+    widget->setProperty("CSQT_font",quoteParts[3].simplified());
+    widget->setProperty("CSQT_fontsize",lastParts[0].toInt() + 2);
+    widget->setProperty("CSQT_color", QColor(lastParts[1].toDouble()/256.0,
                         lastParts[2].toDouble()/256.0,
             lastParts[3].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolor", QColor(lastParts[4].toDouble()/256.0,
+    widget->setProperty("CSQT_bgcolor", QColor(lastParts[4].toDouble()/256.0,
                         lastParts[5].toDouble()/256.0,
             lastParts[6].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolormode", lastParts[7] == "background");
-    widget->setProperty("QCS_bordermode", lastParts[8]);
+    widget->setProperty("CSQT_bgcolormode", lastParts[7] == "background");
+    widget->setProperty("CSQT_bordermode", lastParts[8]);
 
     widget->setFontOffset(m_fontOffset);
     widget->setFontScaling(m_fontScaling);
@@ -3036,7 +3036,7 @@ QString WidgetLayout::createScrollNumber(int x, int y, int width, int height, QS
         i++;
     }
     labelText.chop(1);
-    widget->setProperty("QCS_value", labelText.toDouble());
+    widget->setProperty("CSQT_value", labelText.toDouble());
     //  widget->setValue(labelText.toDouble());
     widget->applyInternalProperties();
     connect(widget, SIGNAL(newValue(QPair<QString,double>)),
@@ -3058,26 +3058,26 @@ QString WidgetLayout::createLineEdit(int x, int y, int width, int height, QStrin
         return "";
     QuteLineEdit *widget= new QuteLineEdit(this);
 
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     widget->setType(parts[5]);
-    widget->setProperty("QCS_objectName", quoteParts[1]);
-    widget->setProperty("QCS_alignment",quoteParts[2].simplified());
-    widget->setProperty("QCS_font",quoteParts[3].simplified());
-    widget->setProperty("QCS_fontsize",lastParts[0].toInt() + 2);
-    widget->setProperty("QCS_color", QColor(lastParts[1].toDouble()/256.0,
+    widget->setProperty("CSQT_objectName", quoteParts[1]);
+    widget->setProperty("CSQT_alignment",quoteParts[2].simplified());
+    widget->setProperty("CSQT_font",quoteParts[3].simplified());
+    widget->setProperty("CSQT_fontsize",lastParts[0].toInt() + 2);
+    widget->setProperty("CSQT_color", QColor(lastParts[1].toDouble()/256.0,
                         lastParts[2].toDouble()/256.0,
             lastParts[3].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolor", QColor(lastParts[4].toDouble()/256.0,
+    widget->setProperty("CSQT_bgcolor", QColor(lastParts[4].toDouble()/256.0,
                         lastParts[5].toDouble()/256.0,
             lastParts[6].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolormode", lastParts[7] == "background");
-    widget->setProperty("QCS_bordermode", lastParts[8]);
+    widget->setProperty("CSQT_bgcolormode", lastParts[7] == "background");
+    widget->setProperty("CSQT_bordermode", lastParts[8]);
     QString labelText = "";
     labelText = widgetLine.mid(widgetLine.indexOf("border") + 7);
-    widget->setProperty("QCS_label", labelText);
+    widget->setProperty("CSQT_label", labelText);
     widget->applyInternalProperties();
     QDEBUG << ">>>>> name" << quoteParts[1] << ", bgcolormode" << lastParts[7];
 
@@ -3097,24 +3097,24 @@ QString WidgetLayout::createSpinBox(int x, int y, int width, int height, QString
         return "";
     QuteSpinBox *widget= new QuteSpinBox(this);
 
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     widget->setType(parts[5]);
-    widget->setProperty("QCS_resolution",parts[7].toDouble());
-    widget->setProperty("QCS_objectName",quoteParts[1]);
-    widget->setProperty("QCS_alignment",quoteParts[2].simplified());
-    widget->setProperty("QCS_font",quoteParts[3].simplified());
-    widget->setProperty("QCS_fontsize",lastParts[0].toInt() + 2);
-    widget->setProperty("QCS_color", QColor(lastParts[1].toDouble()/256.0,
+    widget->setProperty("CSQT_resolution",parts[7].toDouble());
+    widget->setProperty("CSQT_objectName",quoteParts[1]);
+    widget->setProperty("CSQT_alignment",quoteParts[2].simplified());
+    widget->setProperty("CSQT_font",quoteParts[3].simplified());
+    widget->setProperty("CSQT_fontsize",lastParts[0].toInt() + 2);
+    widget->setProperty("CSQT_color", QColor(lastParts[1].toDouble()/256.0,
                         lastParts[2].toDouble()/256.0,
             lastParts[3].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolor", QColor(lastParts[4].toDouble()/256.0,
+    widget->setProperty("CSQT_bgcolor", QColor(lastParts[4].toDouble()/256.0,
                         lastParts[5].toDouble()/256.0,
             lastParts[6].toDouble()/256.0));
-    widget->setProperty("QCS_bgcolormode", lastParts[7] == "background");
-    widget->setProperty("QCS_bordermode", lastParts[8]);
+    widget->setProperty("CSQT_bgcolormode", lastParts[7] == "background");
+    widget->setProperty("CSQT_bordermode", lastParts[8]);
 
     QString labelText = "";
     int i = 9;
@@ -3123,7 +3123,7 @@ QString WidgetLayout::createSpinBox(int x, int y, int width, int height, QString
         i++;
     }
     labelText.chop(1);
-    widget->setProperty("QCS_value", labelText.toDouble());
+    widget->setProperty("CSQT_value", labelText.toDouble());
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this, SLOT(newValue(QPair<QString,double>)));
     widget->applyInternalProperties();
     registerWidget(widget);
@@ -3141,19 +3141,19 @@ QString WidgetLayout::createButton(int x, int y, int width, int height, QString 
     //   if (lastParts.size() < 9)
     //     return -1;
     QuteButton *widget= new QuteButton(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
-    widget->setProperty("QCS_objectName",quoteParts[1]);
-    widget->setProperty("QCS_type",parts[5]);
-    widget->setProperty("QCS_pressedValue",parts[6].toDouble()); //value produced by button when pushed
-    //  widget->setProperty("QCS_stringvalue",parts[7].toDouble()); // Not available in old format
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
+    widget->setProperty("CSQT_objectName",quoteParts[1]);
+    widget->setProperty("CSQT_type",parts[5]);
+    widget->setProperty("CSQT_pressedValue",parts[6].toDouble()); //value produced by button when pushed
+    //  widget->setProperty("CSQT_stringvalue",parts[7].toDouble()); // Not available in old format
     widget->setText(quoteParts[3]);
-    widget->setProperty("QCS_image",quoteParts[5]);
+    widget->setProperty("CSQT_image",quoteParts[5]);
     if (quoteParts.size()>6) {
         quoteParts[6].remove(0,1); //remove initial space
-        widget->setProperty("QCS_eventLine", quoteParts[6]);
+        widget->setProperty("CSQT_eventLine", quoteParts[6]);
     }
     connect(widget, SIGNAL(queueEventSignal(QString)), this, SLOT(queueEvent(QString)));
     connect(widget, SIGNAL(newValue(QPair<QString,QString>)),
@@ -3170,14 +3170,14 @@ QString WidgetLayout::createKnob(int x, int y, int width, int height, QString wi
     auto parts = QStringView(widgetLine).split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS); // splitRef
     // QStringList parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS);
     QuteKnob *widget= new QuteKnob(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
-    widget->setProperty("QCS_minimum",parts[5].toDouble());
-    widget->setProperty("QCS_maximum",parts[6].toDouble());
-    widget->setProperty("QCS_resolution",parts[7].toDouble());
-    widget->setProperty("QCS_value",parts[8].toDouble());
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
+    widget->setProperty("CSQT_minimum",parts[5].toDouble());
+    widget->setProperty("CSQT_maximum",parts[6].toDouble());
+    widget->setProperty("CSQT_resolution",parts[7].toDouble());
+    widget->setProperty("CSQT_value",parts[8].toDouble());
     if (parts.size()>9) {
         int i=9;
         QString channelName = "";
@@ -3186,7 +3186,7 @@ QString WidgetLayout::createKnob(int x, int y, int width, int height, QString wi
             i++;
         }
         channelName.chop(1);  //remove last space
-        widget->setProperty("QCS_objectName", channelName);
+        widget->setProperty("CSQT_objectName", channelName);
     }
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this, SLOT(newValue(QPair<QString,double>)));
     widget->applyInternalProperties();
@@ -3198,10 +3198,10 @@ QString WidgetLayout::createCheckBox(int x, int y, int width, int height, QStrin
 {
     auto parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS); // splitRef
     QuteCheckBox *widget= new QuteCheckBox(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     widget->setValue(parts[5]=="on");
     if (parts.size()>6) {
         int i=6;
@@ -3211,7 +3211,7 @@ QString WidgetLayout::createCheckBox(int x, int y, int width, int height, QStrin
             i++;
         }
         channelName.chop(1);  //remove last space
-        widget->setProperty("QCS_objectName", channelName);
+        widget->setProperty("CSQT_objectName", channelName);
     }
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this, SLOT(newValue(QPair<QString,double>)));
     widget->applyInternalProperties();
@@ -3224,14 +3224,14 @@ QString WidgetLayout::createMenu(int x, int y, int width, int height, QString wi
     auto parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS); // was: splitRef
     auto quoteParts = widgetLine.split('"');
     QuteComboBox *widget= new QuteComboBox(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     if (quoteParts.size() > 2) {
-        widget->setProperty("QCS_objectName", quoteParts[2].trimmed()); //remove initial space from channel name
+        widget->setProperty("CSQT_objectName", quoteParts[2].trimmed()); //remove initial space from channel name
     }
-    widget->setProperty("QCS_selectedIndex", parts[5].toInt());
+    widget->setProperty("CSQT_selectedIndex", parts[5].toInt());
 
     widget->setText(quoteParts[1]);
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this, SLOT(newValue(QPair<QString,double>)));
@@ -3254,24 +3254,24 @@ QString WidgetLayout::createMeter(int x, int y, int width, int height, QString w
         return 0;
     }
     QuteMeter *widget= new QuteMeter(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
-    widget->setProperty("QCS_color" ,QColor(parts[5].toDouble()/256.0,
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
+    widget->setProperty("CSQT_color" ,QColor(parts[5].toDouble()/256.0,
                         parts[6].toDouble()/256.0,
             parts[7].toDouble()/256.0));
-    widget->setProperty("QCS_type", parts2[1]);
-    widget->setProperty("QCS_objectName2", quoteParts[1]);
-    widget->setProperty("QCS_yValue", quoteParts[2].toDouble());
-    widget->setProperty("QCS_xValue", parts2[0].toDouble());
-    widget->setProperty("QCS_objectName", quoteParts[3]);
-    widget->setProperty("QCS_pointsize", parts2[2].toInt());
-    widget->setProperty("QCS_fadeSpeed", parts2[3].toInt());
-    widget->setProperty("QCS_xMin", 0.0);
-    widget->setProperty("QCS_xMax", 1.0);
-    widget->setProperty("QCS_yMin", 0.0);
-    widget->setProperty("QCS_yMax", 1.0);
+    widget->setProperty("CSQT_type", parts2[1]);
+    widget->setProperty("CSQT_objectName2", quoteParts[1]);
+    widget->setProperty("CSQT_yValue", quoteParts[2].toDouble());
+    widget->setProperty("CSQT_xValue", parts2[0].toDouble());
+    widget->setProperty("CSQT_objectName", quoteParts[3]);
+    widget->setProperty("CSQT_pointsize", parts2[2].toInt());
+    widget->setProperty("CSQT_fadeSpeed", parts2[3].toInt());
+    widget->setProperty("CSQT_xMin", 0.0);
+    widget->setProperty("CSQT_xMax", 1.0);
+    widget->setProperty("CSQT_yMin", 0.0);
+    widget->setProperty("CSQT_yMax", 1.0);
     //  widget->setBehavior(parts2[4]);
 
     connect(widget, SIGNAL(newValue(QPair<QString,double>)), this, SLOT(newValue(QPair<QString,double>)));
@@ -3285,10 +3285,10 @@ QString WidgetLayout::createConsole(int x, int y, int width, int height, QString
     //    qDebug("ioListing x=%i y=%i w=%i h=%i", x,y, width, height);
     QStringList parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS);
     QuteConsole *widget= new QuteConsole(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
 
     widget->applyInternalProperties();
     consoleWidgets.append(widget);
@@ -3300,18 +3300,18 @@ QString WidgetLayout::createGraph(int x, int y, int width, int height, QString w
 {
     QStringList parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS);
     QuteGraph *widget= new QuteGraph(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     //Graph widget is always of type "graph" part 5 is discarded
     if (parts.size() > 6)
         widget->setValue(parts[6].toDouble());
     if (parts.size() > 7) {
-        widget->setProperty("QCS_zoomx",parts[7].toDouble());
+        widget->setProperty("CSQT_zoomx",parts[7].toDouble());
     }
     else
-        widget->setProperty("QCS_zoomx", 1.0);
+        widget->setProperty("CSQT_zoomx", 1.0);
     if (parts.size()>8) {
         int i = 8;
         QString channelName = "";
@@ -3320,7 +3320,7 @@ QString WidgetLayout::createGraph(int x, int y, int width, int height, QString w
             i++;
         }
         channelName.chop(1);  //remove last space
-        widget->setProperty("QCS_objectName", channelName);
+        widget->setProperty("CSQT_objectName", channelName);
     }
     for (int i = 0; i < curves.size(); i++) {
         widget->addCurve(curves[i]);
@@ -3336,23 +3336,23 @@ QString WidgetLayout::createGraph(int x, int y, int width, int height, QString w
 QString WidgetLayout::createScope(int x, int y, int width, int height, QString widgetLine)
 {
     QuteScope *widget= new QuteScope(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     QStringList parts = widgetLine.split(QRegularExpression("[\\{\\}, ]"), SKIP_EMPTY_PARTS);
     if (parts.size() > 5) {
-        widget->setProperty("QCS_type",parts[5]);
+        widget->setProperty("CSQT_type",parts[5]);
     }
     if (parts.size() > 6) {
-        widget->setProperty("QCS_zoomx",parts[6].toDouble());
+        widget->setProperty("CSQT_zoomx",parts[6].toDouble());
     }
     if (parts.size() > 7) {
         int chans = (int) parts[7].toDouble();
         if (chans < 0) {
             chans = -255; // Force all 8 channels when loading old format
         }
-        widget->setProperty("QCS_value", chans);
+        widget->setProperty("CSQT_value", chans);
     }
     if (parts.size() > 8) {
         int i=8;
@@ -3362,7 +3362,7 @@ QString WidgetLayout::createScope(int x, int y, int width, int height, QString w
             i++;
         }
         channelName.chop(1);  //remove last space
-        widget->setProperty("QCS_objectName", channelName);
+        widget->setProperty("CSQT_objectName", channelName);
     }
     emit registerScope(widget);
     scopeWidgets.append(widget);
@@ -3375,10 +3375,10 @@ QString WidgetLayout::createDummy(int x, int y, int width, int height, QString w
 {
     (void) widgetLine;
     QuteWidget *widget= new QuteDummy(this);
-    widget->setProperty("QCS_x",x);
-    widget->setProperty("QCS_y",y);
-    widget->setProperty("QCS_width",width);
-    widget->setProperty("QCS_height",height);
+    widget->setProperty("CSQT_x",x);
+    widget->setProperty("CSQT_y",y);
+    widget->setProperty("CSQT_width",width);
+    widget->setProperty("CSQT_height",height);
     connect(widget, SIGNAL(propertiesAccepted()), this, SLOT(markHistory()));
     widget->show();
     widgetsMutex.lock();
@@ -3395,11 +3395,11 @@ QString WidgetLayout::createDummy(int x, int y, int width, int height, QString w
 QString WidgetLayout::createTableDisplay(int x, int y, int width, int height, QString widgetLine) {
     Q_UNUSED(widgetLine);
     QuteTable *widget = new QuteTable(this);
-    widget->setProperty("QCS_x", x);
-    widget->setProperty("QCS_y", y);
-    widget->setProperty("QCS_width", width);
-    widget->setProperty("QCS_height", height);
-    widget->setProperty("QCS_tableNumber", 0);
+    widget->setProperty("CSQT_x", x);
+    widget->setProperty("CSQT_y", y);
+    widget->setProperty("CSQT_width", width);
+    widget->setProperty("CSQT_height", height);
+    widget->setProperty("CSQT_tableNumber", 0);
 
     emit requestCsoundUserData(widget);
     registerWidget(widget);
@@ -3420,8 +3420,8 @@ void WidgetLayout::setBackground(bool bg, QColor bgColor)
     w->setBackgroundRole(QPalette::Window);
     w->setAutoFillBackground(bg);
     layoutMutex.unlock();
-    this->setProperty("QCS_bg", QVariant(bg));
-    this->setProperty("QCS_bgcolor", QVariant(bgColor));
+    this->setProperty("CSQT_bg", QVariant(bg));
+    this->setProperty("CSQT_bgcolor", QVariant(bgColor));
 }
 
 FrameWidget *WidgetLayout::getEditWidget(QuteWidget *widget)
@@ -3737,7 +3737,7 @@ void WidgetLayout::savePreset(int num, QString name)
             p.addValue(id, m_widgets[i]->getValue());
         }
         if (m_widgets[i]->getWidgetType() == "BSBButton") {
-            if (static_cast<QuteButton *>(m_widgets[i])->property("QCS_latch").toBool()) {
+            if (static_cast<QuteButton *>(m_widgets[i])->property("CSQT_latch").toBool()) {
                 p.addValue(id, m_widgets[i]->getValue());
             }
         }
@@ -3956,7 +3956,7 @@ void WidgetLayout::markHistory()
     if (m_history[m_historyIndex] != text) {
         if (! m_history[m_historyIndex].isEmpty())
             m_historyIndex++;
-        if (m_historyIndex >= QCS_MAX_UNDO) {
+        if (m_historyIndex >= CSQT_MAX_UNDO) {
             m_history.pop_front();
             (m_historyIndex)--;
         }

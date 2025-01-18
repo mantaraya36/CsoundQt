@@ -47,7 +47,7 @@ CsoundEngine::CsoundEngine(ConfigLists *configlists) :
     ud->csEngine = this;
     ud->csound = nullptr;
     ud->perfThread = nullptr;
-    ud->flags = QCS_NO_FLAGS;
+    ud->flags = CSQT_NO_FLAGS;
     ud->mouseValues.resize(6); // For _MouseX _MouseY _MouseRelX _MouseRelY _MouseBut1 and _MouseBut2 channels
     ud->wl = nullptr;
     ud->midiBuffer = nullptr;
@@ -55,19 +55,19 @@ CsoundEngine::CsoundEngine(ConfigLists *configlists) :
     ud->playMutex = &m_playMutex;
     m_consoleBufferSize = 0;
     m_recording = false;
-#ifndef QCS_DESTROY_CSOUND
+#ifndef CSQT_DESTROY_CSOUND
     ud->csound=csoundCreate( (void *) ud, nullptr);
     ud->midiBuffer = csoundCreateCircularBuffer(ud->csound, 1024, sizeof(unsigned char));
     Q_ASSERT(ud->midiBuffer);
 #endif
-    eventQueue.resize(QCS_MAX_EVENTS);
-    eventTimeStamps.resize(QCS_MAX_EVENTS);
+    eventQueue.resize(CSQT_MAX_EVENTS);
+    eventTimeStamps.resize(CSQT_MAX_EVENTS);
     eventQueueSize = 0;
-    m_refreshTime = QCS_QUEUETIMER_DEFAULT_TIME;  // TODO Eventually allow this to be changed
+    m_refreshTime = CSQT_QUEUETIMER_DEFAULT_TIME;  // TODO Eventually allow this to be changed
     ud->msgRefreshTime = m_refreshTime*1000;
     ud->runDispatcher = true;
     m_msgUpdateThread = QtConcurrent::run(messageListDispatcher, (void *) ud);
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
     m_debugging = false;
 #endif
 }
@@ -79,7 +79,7 @@ CsoundEngine::~CsoundEngine()
     ud->runDispatcher = false;
     m_msgUpdateThread.waitForFinished(); // Join the message thread
     stop();
-#ifndef QCS_DESTROY_CSOUND
+#ifndef CSQT_DESTROY_CSOUND
     //csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer); // CS7 circular buffer destroyed in csoundDestroy
     csoundDestroy(ud->csound);
 #endif
@@ -319,7 +319,7 @@ int CsoundEngine::keyEventCallback(void *userData,
 void CsoundEngine::csThread(void *data)
 {
     CsoundUserData* udata = (CsoundUserData*)data;
-    if (!(udata->flags & QCS_NO_COPY_BUFFER)) {
+    if (!(udata->flags & CSQT_NO_COPY_BUFFER)) {
         MYFLT const *outputBuffer = csoundGetSpout(udata->csound);
         // outputBufferSize == ksmps
         long numSamples = udata->outputBufferSize * udata->numChnls;
@@ -337,7 +337,7 @@ void CsoundEngine::csThread(void *data)
         writeWidgetValues(udata);
         readWidgetValues(udata);
     }
-    if (!(udata->flags & QCS_NO_RT_EVENTS)) {
+    if (!(udata->flags & CSQT_NO_RT_EVENTS)) {
         udata->csEngine->processEventQueue();
     }
 }
@@ -569,7 +569,7 @@ void CsoundEngine::processEventQueue()
     while (eventQueueSize > 0) {
         eventQueueSize--;
         m_playMutex.lock();
-#ifdef QCS_DESTROY_CSOUND
+#ifdef CSQT_DESTROY_CSOUND
         if (ud->perfThread) {
             //ScoreEvent is not working
             //      ud->perfThread->ScoreEvent(0, type, eventElements.size(), pFields);
@@ -687,7 +687,7 @@ void CsoundEngine::queueEvent(QString eventLine, int delay)
         messageQueue << tr("Csound is not running! Event ignored.\n");
         return;
     }
-    if (eventQueueSize < QCS_MAX_EVENTS) {
+    if (eventQueueSize < CSQT_MAX_EVENTS) {
         eventMutex.lock();
         eventQueue[eventQueueSize] = eventLine;
         eventQueueSize++;
@@ -771,7 +771,7 @@ int CsoundEngine::runCsound()
     for (int i = 0; i < consoles.size(); i++) {
         consoles[i]->reset();
     }
-#ifdef QCS_DESTROY_CSOUND
+#ifdef CSQT_DESTROY_CSOUND
     ud->csound=csoundCreate((void *) ud, nullptr);
     ud->midiBuffer = csoundCreateCircularBuffer(ud->csound, 1024, sizeof(unsigned char));
     Q_ASSERT(ud->midiBuffer);
@@ -779,7 +779,7 @@ int CsoundEngine::runCsound()
     Q_ASSERT(ud->virtualMidiBuffer);
     csoundFlushCircularBuffer(ud->csound, ud->midiBuffer);
 #endif
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
     if(m_debugging) {
         csoundDebuggerInit(ud->csound);
         foreach(QVariantList bp, m_startBreakpoints) {
@@ -851,7 +851,7 @@ int CsoundEngine::runCsound()
     // not started from terminal
     csoundKeyPress(getCsound(),'\0');
 
-#ifdef QCS_RTMIDI
+#ifdef CSQT_RTMIDI
     if (!m_options.useCsoundMidi) {
         csoundSetOption(ud->csound, const_cast<char *>("-+rtmidi=hostbased"));
         csoundSetOption(ud->csound, const_cast<char *>("-M0"));
@@ -980,7 +980,7 @@ void CsoundEngine::stopCsound()
     // QDEBUG << "Clean up OK";
 
 
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
     stopDebug();
 #endif
 
@@ -1009,7 +1009,7 @@ void CsoundEngine::cleanupCsound()
     csoundSetKillGraphCallback(ud->csound, nullptr);
     csoundSetExitGraphCallback(ud->csound, nullptr);    
     csoundRemoveKeyboardCallback(ud->csound, &CsoundEngine::keyEventCallback);
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
     if(m_debugging) {
         csoundDebuggerClean(ud->csound);
     }
@@ -1020,7 +1020,7 @@ void CsoundEngine::cleanupCsound()
     flushQueues();
     csoundDestroyMessageBuffer(ud->csound);
 
-#ifdef QCS_DESTROY_CSOUND
+#ifdef CSQT_DESTROY_CSOUND
     //csoundDestroyCircularBuffer(ud->csound, ud->midiBuffer); // Cs7 destroyed in csoundDestroy
     ud->midiBuffer = nullptr;
     //csoundDestroyCircularBuffer(ud->csound, ud->virtualMidiBuffer); // Cs7 destroyed in csoundDestroy
@@ -1217,7 +1217,7 @@ CSOUND *CsoundEngine::getCsound()
 }
 
 
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 
 void CsoundEngine::breakpointCallback(CSOUND *csound, debug_bkpt_info_t *bkpt_info, void *udata)
 {

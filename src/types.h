@@ -30,18 +30,18 @@
 
 
 
-#define QCS_VERSION "7.0.0-alpha"
+#define CSQT_VERSION "7.0.0-alpha"
 
 
 // Time in milliseconds for widget and console messages updates
-#define QCS_QUEUETIMER_DEFAULT_TIME 50
+#define CSQT_QUEUETIMER_DEFAULT_TIME 50
 // Maximum number of files in recent files menu
-#define QCS_MAX_RECENT_FILES 20
+#define CSQT_MAX_RECENT_FILES 20
 // Maximum undo history depth for widget panel and event sheet
-#define QCS_MAX_UNDO 256
+#define CSQT_MAX_UNDO 256
 
 // Maximum MIDI message queue size for internal control
-#define QCS_MAX_MIDI_QUEUE 128
+#define CSQT_MAX_MIDI_QUEUE 128
 
 #ifdef Q_OS_LINUX
 #define DEFAULT_HTML_DIR "/usr/share/doc/csound-doc/html"
@@ -98,7 +98,7 @@
 #define DEFAULT_LOG_FILE ""
 #endif
 
-#define QCS_DEFAULT_TEMPLATE "<CsoundSynthesizer>\n<CsOptions>\n-odac\n</CsOptions>\n<CsInstruments>\n\nsr = 44100\nksmps = 64\nnchnls = 2\n0dbfs = 1\n\n\n</CsInstruments>\n<CsScore>\n\n</CsScore>\n</CsoundSynthesizer>"
+#define CSQT_DEFAULT_TEMPLATE "<CsoundSynthesizer>\n<CsOptions>\n-odac\n</CsOptions>\n<CsInstruments>\n\nsr = 44100\nksmps = 64\nnchnls = 2\n0dbfs = 1\n\n\n</CsInstruments>\n<CsScore>\n\n</CsScore>\n</CsoundSynthesizer>"
 
 #define QDEBUG qDebug() << __FUNCTION__ << ":"
 

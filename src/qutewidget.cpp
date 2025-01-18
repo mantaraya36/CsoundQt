@@ -48,17 +48,17 @@ QuteWidget::QuteWidget(QWidget *parent):
 	this->setMinimumSize(2,2);
 	this->setMouseTracking(true); // Necessary to pass mouse tracking to widget panel for _MouseX channels
 
-	setProperty("QCS_x", 0);
-	setProperty("QCS_y", 0);
+	setProperty("CSQT_x", 0);
+	setProperty("CSQT_y", 0);
     //setProperty("width", 20);
     //setProperty("height", 20);
-    setProperty("QCS_width", 20);
-    setProperty("QCS_height", 20);
-    setProperty("QCS_uuid", QUuid::createUuid().toString());
-	setProperty("QCS_visible", true);
-	setProperty("QCS_midichan", 0);
-	setProperty("QCS_midicc", -3);
-    setProperty("QCS_description", "");
+    setProperty("CSQT_width", 20);
+    setProperty("CSQT_height", 20);
+    setProperty("CSQT_uuid", QUuid::createUuid().toString());
+	setProperty("CSQT_visible", true);
+	setProperty("CSQT_midichan", 0);
+	setProperty("CSQT_midicc", -3);
+    setProperty("CSQT_description", "");
 }
 
 QuteWidget::~QuteWidget()
@@ -166,17 +166,17 @@ void QuteWidget::createXmlWriter(QXmlStreamWriter &s)
 	s.writeStartElement("bsbObject");
 	s.writeAttribute("type", getWidgetType());
 
-	s.writeAttribute("version", QCS_CURRENT_XML_VERSION);  // Only for compatibility with blue (absolute values)
+	s.writeAttribute("version", CSQT_CURRENT_XML_VERSION);  // Only for compatibility with blue (absolute values)
 
 	s.writeTextElement("objectName", m_channel);
 	s.writeTextElement("x", QString::number(x()));
 	s.writeTextElement("y", QString::number(y()));
 	s.writeTextElement("width", QString::number(width()));
 	s.writeTextElement("height", QString::number(height()));
-	s.writeTextElement("uuid", property("QCS_uuid").toString());
-	s.writeTextElement("visible", property("QCS_visible").toBool() ? "true":"false");
-	s.writeTextElement("midichan", QString::number(property("QCS_midichan").toInt()));
-	s.writeTextElement("midicc", QString::number(property("QCS_midicc").toInt()));
+	s.writeTextElement("uuid", property("CSQT_uuid").toString());
+	s.writeTextElement("visible", property("CSQT_visible").toBool() ? "true":"false");
+	s.writeTextElement("midichan", QString::number(property("CSQT_midichan").toInt()));
+	s.writeTextElement("midicc", QString::number(property("CSQT_midicc").toInt()));
     s.writeTextElement("description", m_description);
 }
 
@@ -239,8 +239,8 @@ QString QuteWidget::getQml()
 
 QString QuteWidget::getUuid()
 {
-	if (property("QCS_uuid").isValid())
-		return property("QCS_uuid").toString();
+	if (property("CSQT_uuid").isValid())
+		return property("CSQT_uuid").toString();
 	else
 		return QString();
 }
@@ -252,18 +252,18 @@ void QuteWidget::applyInternalProperties()
 	widgetLock.lockForRead();
 #endif
 	int x,y,width, height;
-	x = property("QCS_x").toInt();
-	y = property("QCS_y").toInt();
-	width = property("QCS_width").toInt();
-	height = property("QCS_height").toInt();
+	x = property("CSQT_x").toInt();
+	y = property("CSQT_y").toInt();
+	width = property("CSQT_width").toInt();
+	height = property("CSQT_height").toInt();
 	setWidgetGeometry(x,y,width, height);
-	m_channel = property("QCS_objectName").toString();
-    m_channel2 = property("QCS_objectName2").toString();
-	m_midicc = property("QCS_midicc").toInt();
-	m_midichan = property("QCS_midichan").toInt();
-	setVisible(property("QCS_visible").toBool());
+	m_channel = property("CSQT_objectName").toString();
+    m_channel2 = property("CSQT_objectName2").toString();
+	m_midicc = property("CSQT_midicc").toInt();
+	m_midichan = property("CSQT_midichan").toInt();
+	setVisible(property("CSQT_visible").toBool());
 	m_valueChanged = true;
-    m_description = property("QCS_description").toString();
+    m_description = property("CSQT_description").toString();
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif
@@ -535,16 +535,16 @@ void QuteWidget::applyProperties()
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.lockForRead();
 #endif
-	setProperty("QCS_objectName", nameLineEdit->text());
-	setProperty("QCS_x", xSpinBox->value());
-	setProperty("QCS_y",ySpinBox->value());
-	setProperty("QCS_width", wSpinBox->value());
-	setProperty("QCS_height", hSpinBox->value());
+	setProperty("CSQT_objectName", nameLineEdit->text());
+	setProperty("CSQT_x", xSpinBox->value());
+	setProperty("CSQT_y",ySpinBox->value());
+	setProperty("CSQT_width", wSpinBox->value());
+	setProperty("CSQT_height", hSpinBox->value());
 	if (acceptsMidi()) {
-		setProperty("QCS_midicc", midiccSpinBox->value());
-		setProperty("QCS_midichan", midichanSpinBox->value());
+		setProperty("CSQT_midicc", midiccSpinBox->value());
+		setProperty("CSQT_midichan", midichanSpinBox->value());
 	}
-    setProperty("QCS_description", descriptionLineEdit->text());
+    setProperty("CSQT_description", descriptionLineEdit->text());
 #ifdef  USE_WIDGET_MUTEX
 	widgetLock.unlock();
 #endif

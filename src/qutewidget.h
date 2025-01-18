@@ -26,8 +26,8 @@
 #include <QtWidgets>
 #include <QtXml>
 
-#define QCS_CURRENT_XML_VERSION "2"
-#define QCS_CURVE_BUFFER_SIZE 256
+#define CSQT_CURRENT_XML_VERSION "2"
+#define CSQT_CURVE_BUFFER_SIZE 256
 //#define USE_WIDGET_MUTEX
 
 #include "csoundengine.h"

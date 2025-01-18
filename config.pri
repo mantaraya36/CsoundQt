@@ -141,9 +141,9 @@ win32 {
     }
     rtmidi|system_rtmidi {
         message(RtMidi directory is $${RTMIDI_DIR})
-		DEFINES += QCS_RTMIDI
+		DEFINES += CSQT_RTMIDI
             exists($${RTMIDI_DIR}/RtError.h): {
-                DEFINES += QCS_OLD_RTMIDI
+                DEFINES += CSQT_OLD_RTMIDI
                 message("Using RtMidi < 2.1")
             }
     }

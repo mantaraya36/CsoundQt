@@ -1,7 +1,7 @@
 #ifndef HTML5GUIDISPLAY_H
 #define HTML5GUIDISPLAY_H
 
-#if defined(QCS_QTHTML)
+#if defined(CSQT_QTHTML)
 
 #include <atomic>
 #include <QDebug>

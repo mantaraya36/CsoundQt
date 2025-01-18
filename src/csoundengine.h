@@ -35,7 +35,7 @@
 #include <csound_graph_display.h> // necessary for WINDAT declaration
 
 
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 #include "csdebug.h"
 #endif
 
@@ -55,14 +55,14 @@ class QuteWidget;
 // Csound 5.10 needs to be destroyed for opcodes like ficlose to flush the output
 // This still necessary for 5.12 and Csound6
 
-#define QCS_DESTROY_CSOUND
+#define CSQT_DESTROY_CSOUND
 
 typedef enum {
-	QCS_NO_FLAGS = 0,
-	QCS_NO_COPY_BUFFER = 1,
-	QCS_NO_PYTHON_CALLBACK = 2,
-	QCS_NO_CONSOLE_MESSAGES = 4,
-	QCS_NO_RT_EVENTS = 8
+	CSQT_NO_FLAGS = 0,
+	CSQT_NO_COPY_BUFFER = 1,
+	CSQT_NO_PYTHON_CALLBACK = 2,
+	CSQT_NO_CONSOLE_MESSAGES = 4,
+	CSQT_NO_RT_EVENTS = 8
 } PerfFlags;
 
 struct CsoundUserData {
@@ -170,7 +170,7 @@ public:
     CsoundUserData *getUserData();
     void clearConsoles(void);
 
-#ifdef QCS_DEBUGGER
+#ifdef CSQT_DEBUGGER
 	bool m_debugging;
 
 	static void breakpointCallback(CSOUND *csound, debug_bkpt_info_t *bkpt_info, void *udata);
