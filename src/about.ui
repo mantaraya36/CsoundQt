@@ -46,9 +46,18 @@
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>171</red>
-        <green>185</green>
-        <blue>171</blue>
+        <red>146</red>
+        <green>38</green>
+        <blue>141</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Highlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>139</red>
+        <green>15</green>
+        <blue>131</blue>
        </color>
       </brush>
      </colorrole>
@@ -75,9 +84,18 @@
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>171</red>
-        <green>185</green>
-        <blue>171</blue>
+        <red>146</red>
+        <green>38</green>
+        <blue>141</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Highlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>139</red>
+        <green>15</green>
+        <blue>131</blue>
        </color>
       </brush>
      </colorrole>
@@ -86,18 +104,18 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>171</red>
-        <green>185</green>
-        <blue>171</blue>
+        <red>146</red>
+        <green>38</green>
+        <blue>141</blue>
        </color>
       </brush>
      </colorrole>
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>171</red>
-        <green>185</green>
-        <blue>171</blue>
+        <red>146</red>
+        <green>38</green>
+        <blue>141</blue>
        </color>
       </brush>
      </colorrole>
@@ -316,7 +334,7 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#2f2f2f;&quot;&gt;CsoundQt&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#2f2f2f;&quot;&gt;CsoundQt 7&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignmentFlag::AlignCenter</set>
