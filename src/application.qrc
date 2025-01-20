@@ -36,6 +36,5 @@
         <file>../images/html5.png</file>
         <file>../images/tools-wizard.svg</file>
         <file alias="AudioMidiTest.csd">Examples/CsoundQt/Useful/AudioMidiTest.csd</file>
-        <file>csoundqt.png</file>
     </qresource>
 </RCC>
