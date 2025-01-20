@@ -9,11 +9,11 @@
 # constants
 
 
-BINARY="CsoundQt-d-html-cs7"
-BUILD_DIR="../../build-cs7-qcs-Desktop_Qt5_15-Release"
+BINARY="CsoundQt-d-cs7"
+BUILD_DIR="../../build-qcs-Desktop_Qt_6_5_2_GCC_64bit-Release/"
 EXECUTABLE="$BUILD_DIR/bin/$BINARY"
 #EXECUTABLE="../bin/$BINARY"
-VERSION="1.1.3"
+VERSION="7.0.0-alpha"
 CSOUND_VERSION="7.0.0"
 CSOUND_PREFIX="$HOME/.local"
 CSOUND_PLUGINS_DIR="$CSOUND_PREFIX/lib/csound/plugins64-7.0"
@@ -37,7 +37,7 @@ LINUXDEPLOY=$(which linuxdeploy-x86_64.AppImage)
 export VERSION=$VERSION 
 export QML_SOURCES_PATHS="$SRC_DIR/src/QML"; 
 export LD_LIBRARY_PATH='/home/tarmo/.local/lib/:${LD_LIBRARY_PATH}' #TODO: use $CSOUND_PREFIX instead of hard coded path
-
+export QMAKE='/home/tarmo/Qt/6.5.2/gcc_64/bin/qmake'
 
 # correct desktop file -  instead of csoundqt as command use the actual binary name
 sed "s/Exec=csoundqt/Exec=$BINARY/g" $SRC_DIR/csoundqt.desktop > csoundqt.desktop
