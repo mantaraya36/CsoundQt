@@ -32,6 +32,9 @@
 # qmake qcs.pro INSTALL_DIR=~ SHARE_DIR=~/.local/share
 ################################################################################
 
+#temporary
+CONFIG+=bundle_csound
+
 #To prepare for Qt6 build
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 
@@ -198,12 +201,12 @@ macx {
     pythonlinks.path= $$PWD
     pythonlinks.commands = install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python Python.framework/Versions/2.7/Python $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;
 
-
+    # bundle command: install_name_tool -change /Applications/Csound/CsoundLib64.framework/CsoundLib64 @rpath/CsoundLib64.framework/Versions/6.0/CsoundLib64 /Users/tarmojohannes/Documents/src/build-qcs-Qt_6_5_3_for_macOS-Release/bin/CsoundQt-d-cs7.app/Contents/MacOS/CsoundQt-d-cs7
     bundle_csound {
         # Nothing special to do for that, just don't delete, leave the links to @rpath
         message("Bundle Csound into  the package")
         csound.path= $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/Frameworks/
-        csound.files = /Library/Frameworks/CsoundLib64.framework
+        csound.files = /Applications/Csound/CsoundLib64.framework
         INSTALLS+=csound
         final.commands += install_name_tool -change @rpath/libcsnd6.6.0.dylib @rpath/CsoundLib64.framework/Versions/6.0/libcsnd6.6.0.dylib $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;
         final.commands += install_name_tool -change  CsoundLib64.framework/CsoundLib64 @rpath/CsoundLib64.framework/Versions/6.0/CsoundLib64 $$OUT_PWD/$$DESTDIR/$${TARGET}.app/Contents/MacOS/$$TARGET ;

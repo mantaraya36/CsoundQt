@@ -21,8 +21,8 @@ HOME_DIRECTORY =
 
 
 # Set default paths. Put homebrew paths at the end
-CSOUND_FRAMEWORK_DIR = Library/Frameworks/$${MAC_LIB}.framework/Versions/Current
-
+#Csound 7:
+CSOUND_FRAMEWORK_DIR = /Applications/Csound/CsoundLib64.framework/Versions/Current
 DEFAULT_CSOUND_API_INCLUDE_DIRS =  $${CSOUND_FRAMEWORK_DIR}/Headers \
         /$${CSOUND_FRAMEWORK_DIR}/Headers \
         $${CSOUND_FRAMEWORK_DIR}/Headers \
@@ -80,17 +80,17 @@ RESOURCES += "src/quteapp_d_osx.qrc"
 }
 
 #LIBS += -framework QtCore -framework QtGui -framework QtXml
-LCSOUND = -F$${HOME_DIRECTORY}/Library/Frameworks -F/Library/Frameworks -F/usr/local/opt/csound/Frameworks -F/opt/homebrew/opt/csound/Frameworks -framework $${MAC_LIB}
-
+#LCSOUND = -F$${HOME_DIRECTORY}/Library/Frameworks -F/Library/Frameworks -F/usr/local/opt/csound/Frameworks -F/opt/homebrew/opt/csound/Frameworks -framework $${MAC_LIB}
+LCSOUND = -F /Applications/Csound -framework $${MAC_LIB}
 
 #clumsy test for github actions homebrew build. needs rewrite and setting different variable for LCSND_DIR
-exists (/opt/homebrew/opt/csound/lib/libcsnd6.6.0.dylib) {
-    LCSND = -L/opt/homebrew/opt/csound/lib/ -lcsnd6.6.0
-} else: exists(/usr/local/lib/libcsnd6.6.0.dylib) {
-    LCSND = -L/usr/local/lib/ -lcsnd6.6.0
-} else {
-    LCSND = -lcsnd6.6.0
-}
+# exists (/opt/homebrew/opt/csound/lib/libcsnd6.6.0.dylib) {
+#     LCSND = -L/opt/homebrew/opt/csound/lib/ -lcsnd6.6.0
+# } else: exists(/usr/local/lib/libcsnd6.6.0.dylib) {
+#     LCSND = -L/usr/local/lib/ -lcsnd6.6.0
+# } else {
+#     LCSND = -lcsnd6.6.0
+# }
 
 
 QMAKE_INFO_PLIST = $${PWD}/src/MyInfo.plist
