@@ -321,6 +321,7 @@ ConfigDialog::ConfigDialog(CsoundQt *parent, Options *options, ConfigLists *conf
 
 	CsdocdirLineEdit->setText(m_options->csdocdir);
     Opcode7dir64LineEdit->setText(m_options->opcode7dir64);
+    Opcode7dir64CheckBox->setChecked(m_options->opcode7dir64Active);
 	SadirCheckBox->setChecked(m_options->sadirActive);
 	SadirLineEdit->setText(m_options->sadir);
 	SsdirCheckBox->setChecked(m_options->ssdirActive);
