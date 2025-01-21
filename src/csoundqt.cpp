@@ -367,8 +367,8 @@ CsoundQt::CsoundQt(QStringList fileNames)
                          << QCoreApplication::applicationDirPath() + "/../share/doc/csound-doc/html/"   ;
 #endif
 #ifdef Q_OS_WIN
-        QString programFilesPath = QDir::fromNativeSeparators(getenv("PROGRAMFILES"));
-        QString programFilesPathx86 = QDir::fromNativeSeparators(getenv("PROGRAMFILES(X86)"));
+        QString programFilesPath = QDir::fromNativeSeparators(qgetenv("PROGRAMFILES"));
+        QString programFilesPathx86 = QDir::fromNativeSeparators(qgetenv("PROGRAMFILES(X86)"));
         possibleDirectories << initialDir +"/doc/manual/" << programFilesPath + "/Csound6/doc/manual/" << programFilesPathx86 + "/Csound6/doc/manual/" <<  programFilesPath + "/Csound6_x64/doc/manual/" <<  programFilesPath + "/csound/doc/manual/";
 #endif
 #ifdef Q_OS_MACOS
@@ -1269,7 +1269,7 @@ void CsoundQt::setupEnvironment()
         csoundSetGlobalEnv("INCDIR", "");
     }
     // set rawWavePath for stk opcodes
-    QString rawWavePath = m_options->rawWaveActive ? m_options->rawWave : QString(getenv("RAWWAVE_PATH"));
+    QString rawWavePath = m_options->rawWaveActive ? m_options->rawWave : QString(qgetenv("RAWWAVE_PATH"));
     if (rawWavePath.isNull()) {
         rawWavePath=QString(""); // NULL string may crash csoundInitilaize
     }
@@ -1284,26 +1284,28 @@ void CsoundQt::setupEnvironment()
     QString envString = "RAWWAVE_PATH="+rawWavePath;
     _putenv(envString.toLocal8Bit());
 #endif
+
     // csoundGetEnv must be called after Compile or Precompile,
     // But I need to set OPCODEDIR before compile.... So I can't know keep the old OPCODEDIR
     if (m_options->opcode7dir64Active) {
         csoundSetGlobalEnv("OPCODE7DIR64", m_options->opcode7dir64.toLatin1().constData());
-    }
+        qDebug() << "Setting OPCODE7DIR64 to: " <<  m_options->opcode7dir64;
+    } else {
 #ifdef Q_OS_WIN32
 	// if opcodes are in the same directory or in ./plugins64, then set OPCODE7DIR64 to the bundled plugins
 	// no need to support 32-opcodes any more, set only OPCODE7DIR64
-	QString opcodedir;
-	if (QFile::exists(initialDir+"/rtpa.dll" )) {
-		opcodedir = initialDir;
-	} else if (QFile::exists(initialDir+"/plugins64/rtpa.dll" )) {
-		opcodedir = initialDir+"/plugins64/";
-	} else {
-		opcodedir = QString();
-	}
-	if (!opcodedir.isEmpty()) {
-        qDebug() << "Setting OPCODE7DIR64 to: " << opcodedir;
-        csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
-	}
+        QString opcodedir;
+        if (QFile::exists(initialDir+"/rtpa.dll" )) {
+            opcodedir = initialDir;
+        } else if (QFile::exists(initialDir+"/plugins64/rtpa.dll" )) {
+            opcodedir = initialDir+"/plugins64/";
+        } else {
+            opcodedir = QString();
+        }
+        if (!opcodedir.isEmpty()) {
+            qDebug() << "Setting OPCODE7DIR64 to: " << opcodedir;
+            csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
+        }
 #endif
 #ifdef Q_OS_MACOS
     // Use bundled opcodes if available
@@ -1312,6 +1314,8 @@ void CsoundQt::setupEnvironment()
         csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
     }
 #endif
+
+    }
 }
 
 void CsoundQt::onNewConnection()
@@ -4500,7 +4504,7 @@ QString CsoundQt::getExamplePath(QString dir)
 #ifdef Q_OS_WIN32
     examplePath = qApp->applicationDirPath() + "/Examples/" + dir;
     if (!QDir(examplePath).exists()) {
-        QString programFilesPath= QDir::fromNativeSeparators(getenv("PROGRAMFILES"));
+        QString programFilesPath= QDir::fromNativeSeparators(qgetenv("PROGRAMFILES"));
         examplePath =  programFilesPath + "/Csound6/bin/Examples/" + dir; // NB! with csound6.0.6 no Floss/mCcurdy/Stria examples there. Copy manually
         //qDebug()<<"Windows examplepath: "<<examplePath;
     }
