@@ -1285,16 +1285,16 @@ void CsoundQt::setupEnvironment()
     _putenv(envString.toLocal8Bit());
 #endif
 
+    QString opcodedir;
+
     // csoundGetEnv must be called after Compile or Precompile,
     // But I need to set OPCODEDIR before compile.... So I can't know keep the old OPCODEDIR
     if (m_options->opcode7dir64Active) {
-        csoundSetGlobalEnv("OPCODE7DIR64", m_options->opcode7dir64.toLatin1().constData());
-        qDebug() << "Setting OPCODE7DIR64 to: " <<  m_options->opcode7dir64;
+       opcodedir = m_options->opcode7dir64;
     } else {
 #ifdef Q_OS_WIN32
 	// if opcodes are in the same directory or in ./plugins64, then set OPCODE7DIR64 to the bundled plugins
 	// no need to support 32-opcodes any more, set only OPCODE7DIR64
-        QString opcodedir;
         if (QFile::exists(initialDir+"/rtpa.dll" )) {
             opcodedir = initialDir;
         } else if (QFile::exists(initialDir+"/plugins64/rtpa.dll" )) {
@@ -1302,18 +1302,22 @@ void CsoundQt::setupEnvironment()
         } else {
             opcodedir = QString();
         }
-        if (!opcodedir.isEmpty()) {
-            qDebug() << "Setting OPCODE7DIR64 to: " << opcodedir;
-            csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
-        }
+
 #endif
 #ifdef Q_OS_MACOS
     // Use bundled opcodes if available
-    QString opcodedir = initialDir + "/../Frameworks/CsoundLib64.framework/Resources/Opcodes64";
-    if (QFile::exists(opcodedir)) {
-        csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLocal8Bit().constData());
+    if (QFile::exists(initialDir + "/../Frameworks/CsoundLib64.framework/Resources/Opcodes64")) {
+        opcodedir = initialDir + "/../Frameworks/CsoundLib64.framework/Resources/Opcodes64";
+    } else if (QFile::exists("/Applications/Csound/CsoundLib64.framework/Versions/7.0/Resources/Opcodes64")) { // NB! The location may change in the future
+        opcodedir = "/Applications/Csound/CsoundLib64.framework/Versions/7.0/Resources/Opcodes64";
     }
 #endif
+
+    }
+
+    qDebug() << "Setting  OPCODE7DIR64 to: " << opcodedir;
+    if (!opcodedir.isEmpty()) {
+        csoundSetGlobalEnv("OPCODE7DIR64", opcodedir.toLatin1().data());
 
     }
 }
