@@ -224,7 +224,7 @@ macx {
 
 win32 {
     first.path = $$PWD
-    first.commands = $$[QT_INSTALL_PREFIX]/bin/windeployqt  -qmldir=$$PWD/src/QML  $$OUT_PWD/$$DESTDIR/$${TARGET}.exe # first deployment
+    first.commands = $$[QT_INSTALL_PREFIX]/bin/windeployqt6  -qmldir=$$PWD/src/QML  $$OUT_PWD/$$DESTDIR/$${TARGET}.exe # first deployment
 
 	templates.path = $$OUT_PWD/$$DESTDIR/ # not sure if this works
 	templates.files = templates
